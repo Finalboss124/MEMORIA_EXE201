@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Memoria Dashboard</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#d2c3c4",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-container": "#616373",
+                        "inverse-primary": "#debfc2",
+                        "on-secondary-fixed-variant": "#314c3f",
+                        "on-surface-variant": "#4f4445",
+                        "surface-container-low": "#f5f4ec",
+                        "on-primary-fixed-variant": "#574144",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#042016",
+                        "inverse-surface": "#30312c",
+                        "surface-variant": "#e4e3db",
+                        "secondary-fixed": "#caead8",
+                        "primary-fixed-dim": "#debfc2",
+                        "error": "#ba1a1a",
+                        "surface": "#fbf9f1",
+                        "surface-container-high": "#eae8e0",
+                        "background": "#fbf9f1",
+                        "secondary-fixed-dim": "#aecebd",
+                        "on-secondary": "#ffffff",
+                        "outline": "#807475",
+                        "on-tertiary-fixed-variant": "#444655",
+                        "on-tertiary-fixed": "#191b29",
+                        "primary": "#70585b",
+                        "primary-fixed": "#fbdbde",
+                        "tertiary": "#5c5d6e",
+                        "surface-container-highest": "#e4e3db",
+                        "on-background": "#1b1c17",
+                        "on-primary-fixed": "#281719",
+                        "inverse-on-surface": "#f3f1e9",
+                        "tertiary-container": "#e0e0f4",
+                        "tertiary-fixed": "#e1e1f5",
+                        "surface-dim": "#dcdad2",
+                        "secondary-container": "#caead8",
+                        "on-surface": "#1b1c17",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "surface-tint": "#70585b",
+                        "on-primary-container": "#765e61",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#f0eee6",
+                        "secondary": "#486457",
+                        "primary-container": "#fadadd",
+                        "on-tertiary": "#ffffff",
+                        "surface-bright": "#fbf9f1",
+                        "on-secondary-container": "#4e6a5c",
+                        "tertiary-fixed-dim": "#c5c5d8"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "64px",
+                        "gutter": "24px",
+                        "section-gap": "80px",
+                        "stack-lg": "32px",
+                        "stack-md": "16px",
+                        "container-max": "1200px",
+                        "stack-sm": "8px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-sm": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "headline-xl": ["Plus Jakarta Sans"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .glass-panel {
+                @apply bg-surface-container-lowest/70 backdrop-blur-md border border-white/40;
+            }
+            .soft-shadow {
+                box-shadow: 0 10px 30px -5px rgba(112, 88, 91, 0.08);
+            }
+        }
+    </style>
+    <style>
+            .page-shell {
+                opacity: 0;
+                transform: translateY(6px);
+                transition: opacity 180ms ease, transform 180ms ease;
+            }
+            .page-shell.is-ready {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .page-shell.is-leaving {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            @media (prefers-reduced-motion: reduce) {
+                .page-shell {
+                    transition: none;
+                    transform: none;
+                }
+            }
+        </style>
+</head>
+    <body class="bg-background text-on-background font-body-md min-h-screen overflow-x-hidden flex page-shell">
+<!-- SideNavBar (Desktop) -->
+<nav class="hidden md:flex flex-col h-full py-stack-md border-r border-outline-variant/30 bg-surface-container-low dark:bg-surface-container-lowest shadow-sm fixed left-0 top-0 h-screen w-64 z-40">
+<div class="px-6 pb-8">
+<h1 class="font-headline-md text-headline-md text-primary font-bold">Memoria</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant opacity-70">Digital Legacy</p>
+</div>
+<div class="flex-1 overflow-y-auto space-y-2">
+<a class="bg-primary-container text-on-primary-container rounded-full mx-2 px-4 py-3 flex items-center gap-3 font-bold scale-98 transition-transform" href="../memoria_dashboard/code.html" data-page-link>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300" href="../memoria_family_vault/code.html" data-page-link>
+<span class="material-symbols-outlined">family_restroom</span>
+<span class="font-label-md text-label-md">Family Vault</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300" href="../memoria_legacy_transfer/code.html" data-page-link>
+<span class="material-symbols-outlined">history_edu</span>
+<span class="font-label-md text-label-md">Legacy Transfer</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300" href="../memoria_future_postbox_1/code.html" data-page-link>
+<span class="material-symbols-outlined">mark_email_unread</span>
+<span class="font-label-md text-label-md">Future Postbox</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300" href="#">
+<span class="material-symbols-outlined">shopping_bag</span>
+<span class="font-label-md text-label-md">Store</span>
+</a>
+</div>
+<div class="px-4 pt-4">
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-3 rounded-full hover:bg-surface-tint transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">add_circle</span>
+                Capture Memory
+            </button>
+</div>
+<div class="mt-auto pt-8 space-y-2">
+<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span class="font-label-md text-label-md">Help</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md">Sign Out</span>
+</a>
+</div>
+</nav>
+<!-- TopNavBar (Global) -->
+<header class="fixed top-0 right-0 left-0 md:left-64 z-50 flex items-center justify-between px-6 md:px-margin-desktop h-16 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md shadow-sm">
+<div class="md:hidden flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">menu</span>
+<span class="font-headline-md text-headline-md text-primary font-bold tracking-tight">Memoria</span>
+</div>
+<div class="hidden md:block">
+<!-- Breadcrumbs or ambient title could go here on desktop -->
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<img alt="User profile photo" class="w-8 h-8 rounded-full object-cover border border-outline-variant/30 ml-2" data-alt="A close-up portrait of a serene woman with natural lighting, soft focus background, embodying a warm and approachable aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwnO24iViiSpv5fSJ6Tb37ELdEKLgb52fKZgPhwBS-ZohqiAkLJV7KfGoTqm7RTv1-eFh7tM_sPgnYzXn-hIHCh7jdEXWGzTXlRQ4CX7DAzV18Ad648NAL__6mIvYFjF765TnNpwn1DKXTnLKWiLbfNVScfdRASi3FrKnaDQwHFAQ19yLz02f11e8m1ADrPX14JioThyov5z2VfPifyHMojfnPFxFt0mHpdxUtykg0XxdUklZ4twmTlhkABACVpk6mF32iozbH"/>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 w-full pt-20 md:ml-64 px-6 md:px-margin-desktop pb-section-gap">
+<div class="max-w-container-max mx-auto">
+<!-- Hero Welcome -->
+<div class="py-stack-lg mb-4">
+<h2 class="font-headline-xl text-headline-xl text-on-surface mb-2">Welcome back, <span class="text-primary">Eleanor</span>.</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Your digital time capsule is secure. What moments would you like to preserve today?</p>
+</div>
+<!-- Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Main Action Card (Glassmorphism + Image) -->
+<div class="md:col-span-8 bg-surface-container-lowest rounded-xl soft-shadow overflow-hidden relative group cursor-pointer h-72">
+<img alt="Family moment" class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-50 transition-opacity duration-500" data-alt="A softly lit, warm scene of a family gathered in a cozy, modern living room bathed in golden hour light, capturing a nostalgic and intimate emotional milestone." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqqcMDxjeF0nmNN5wYk6fQcXUXfJLSleZ4lVTplbh58llKnKqR13sr6YmC5_btKpoiyZRw_xS10SWRSa_kpHldKZC7ObEpsDPnAbA5jFjgb3k6gEfHaZkHOYzI-1aUZRhEIRmXTKYlgDW2K6_YDTIQ26c-vHKdOhqmnWEfQuttP0xc7CJ2hIQj4EHrNPE_Y1dF6zkU4-eSK2WVd--i93TiTIPYMOhfgzrkhDxn4P2jVoWwbUf0gu7x2p6NIerYRftCAe-nkneb"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/80 to-transparent"></div>
+<div class="absolute inset-0 p-stack-lg flex flex-col justify-end">
+<div class="w-12 h-12 bg-primary-container rounded-full flex items-center justify-center mb-4 text-primary">
+<span class="material-symbols-outlined text-3xl">add_a_photo</span>
+</div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface mb-1">Capture New Memory</h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md">Upload photos, write journal entries, or record audio to add to your Family Vault.</p>
+</div>
+</div>
+<!-- Storage Summary Card -->
+<div class="md:col-span-4 bg-secondary-container rounded-xl p-stack-lg flex flex-col justify-between soft-shadow relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-10">
+<span class="material-symbols-outlined text-8xl">cloud_done</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-secondary-container mb-1">Vault Storage</h3>
+<p class="font-body-md text-body-md text-on-secondary-container/80">Securing your legacy</p>
+</div>
+<div class="mt-8">
+<div class="flex justify-between font-label-md text-label-md text-on-secondary-container mb-2">
+<span>50 GB Used</span>
+<span>100 GB Total</span>
+</div>
+<div class="h-3 w-full bg-surface-container-lowest/50 rounded-full overflow-hidden">
+<div class="h-full bg-secondary rounded-full" style="width: 50%;"></div>
+</div>
+<p class="font-label-sm text-label-sm text-on-secondary-container/70 mt-3 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">lock</span> End-to-end encrypted
+                        </p>
+</div>
+</div>
+<!-- Quick Action: Manage Legacy -->
+<div class="md:col-span-4 bg-tertiary-container rounded-xl p-stack-lg soft-shadow flex items-start gap-4 hover:-translate-y-1 transition-transform cursor-pointer">
+<div class="w-10 h-10 bg-surface-container-lowest rounded-full flex items-center justify-center text-tertiary shrink-0">
+<span class="material-symbols-outlined">history_edu</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-1">Manage Legacy</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Review and assign trusted contacts for your digital estate.</p>
+</div>
+</div>
+<!-- Quick Action: Future Postbox -->
+<div class="md:col-span-4 bg-primary-container rounded-xl p-stack-lg soft-shadow flex items-start gap-4 hover:-translate-y-1 transition-transform cursor-pointer">
+<div class="w-10 h-10 bg-surface-container-lowest rounded-full flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined">mark_email_unread</span>
+</div>
+<div>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-1">Schedule Letter</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Draft a message to be delivered on a future milestone date.</p>
+</div>
+</div>
+<!-- Store Promo -->
+<div class="md:col-span-4 bg-surface-variant rounded-xl p-stack-lg soft-shadow flex items-center gap-4 hover:-translate-y-1 transition-transform cursor-pointer overflow-hidden relative">
+<div class="z-10">
+<h4 class="font-headline-md text-headline-md text-on-surface mb-1">Physical Prints</h4>
+<p class="font-body-md text-body-md text-on-surface-variant">Turn your digital vault into premium physical books.</p>
+</div>
+<span class="material-symbols-outlined text-6xl text-surface-container-lowest absolute right-4 -bottom-2 opacity-50 z-0">menu_book</span>
+</div>
+</div>
+<!-- Recent Activity Feed -->
+<div class="mt-section-gap">
+<div class="flex items-center justify-between mb-stack-md">
+<h3 class="font-headline-lg text-headline-lg text-on-surface">Recent Activity</h3>
+<button class="font-label-md text-label-md text-primary hover:underline">View All</button>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<!-- Activity Item 1 -->
+<div class="bg-surface-container-lowest rounded-xl p-6 soft-shadow flex gap-4">
+<div class="w-16 h-16 rounded-xl overflow-hidden shrink-0">
+<img alt="Thumbnail" class="w-full h-full object-cover" data-alt="A soft, pastel-toned photograph of a handwritten letter resting on a wooden desk next to a sprig of dried lavender, evoking nostalgia and heartfelt sentiment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGDC063Un5esEL-CxzDwjBFl8xApH78xVInp1KIrHryGmZ1vtJeXDXS2vPEPtPx_hTLoIgo2fiNLJBJWRp3P8leu52-noJWyAIjOiSY-WG7i0SrrOVRfztYAYxGj83fbe6cqRlkgFpgQX8LiQxNeARlEsDXcOlukBjAjsbac9A4dG1Wkr-2WX5cATIQDbp4J-OcEHMqO1ID9YjFVmKD_L0fFa6KCw7xsztlcqz8p6q-MZY7Zc4Yn266ZSK5HueOwlajqWeYxc6"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-label-md text-label-md text-on-surface">Sealed a Future Letter</h4>
+<span class="font-label-sm text-label-sm text-on-surface-variant">2h ago</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-2">"To Sarah on her 18th Birthday" has been securely sealed.</p>
+<span class="inline-block bg-surface-variant text-on-surface-variant font-label-sm text-label-sm px-3 py-1 rounded-full">Sealed</span>
+</div>
+</div>
+<!-- Activity Item 2 -->
+<div class="bg-surface-container-lowest rounded-xl p-6 soft-shadow flex gap-4">
+<div class="w-12 h-12 bg-secondary-container rounded-full flex items-center justify-center shrink-0 text-secondary">
+<span class="material-symbols-outlined">person_add</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h4 class="font-label-md text-label-md text-on-surface">Trusted Contact Added</h4>
+<span class="font-label-sm text-label-sm text-on-surface-variant">1d ago</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">Michael has accepted your invitation to be a Legacy Guardian.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<footer class="mt-section-gap border-t border-outline-variant/30 pt-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-on-surface-variant">
+<span class="font-label-sm text-label-sm">Memoria Digital Legacy</span>
+<div class="flex flex-wrap items-center gap-4 font-label-sm text-label-sm">
+<a class="hover:text-on-surface transition-colors" href="../memoria_dashboard/code.html" data-page-link>Home</a>
+<a class="hover:text-on-surface transition-colors" href="../memoria_family_vault/code.html" data-page-link>Family Vault</a>
+<a class="hover:text-on-surface transition-colors" href="../memoria_legacy_transfer/code.html" data-page-link>Legacy Transfer</a>
+<a class="hover:text-on-surface transition-colors" href="../memoria_future_postbox_1/code.html" data-page-link>Future Postbox</a>
+</div>
+</footer>
+</div>
+</main>
+<script>
+        (function () {
+            const page = document.body;
+            if (!page) {
+                return;
+            }
+
+            requestAnimationFrame(() => {
+                page.classList.add('is-ready');
+            });
+
+            const links = document.querySelectorAll('a[data-page-link]');
+            links.forEach((link) => {
+                link.addEventListener('click', (event) => {
+                    const url = link.getAttribute('href');
+                    if (!url || url.startsWith('#') || link.target === '_blank') {
+                        return;
+                    }
+                    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+                        return;
+                    }
+                    event.preventDefault();
+                    page.classList.add('is-leaving');
+                    window.setTimeout(() => {
+                        window.location.href = url;
+                    }, 180);
+                });
+            });
+
+            window.addEventListener('pageshow', () => {
+                page.classList.add('is-ready');
+                page.classList.remove('is-leaving');
+            });
+        })();
+    </script>
+</body></html>

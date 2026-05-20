@@ -1,0 +1,710 @@
+<!doctype html>
+
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Memoria - Future Postbox</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+      rel="stylesheet"
+    />
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "outline-variant": "#d2c3c4",
+              "on-primary": "#ffffff",
+              "on-tertiary-container": "#616373",
+              "inverse-primary": "#debfc2",
+              "on-secondary-fixed-variant": "#314c3f",
+              "on-surface-variant": "#4f4445",
+              "surface-container-low": "#f5f4ec",
+              "on-primary-fixed-variant": "#574144",
+              "surface-container-lowest": "#ffffff",
+              "on-secondary-fixed": "#042016",
+              "inverse-surface": "#30312c",
+              "surface-variant": "#e4e3db",
+              "secondary-fixed": "#caead8",
+              "primary-fixed-dim": "#debfc2",
+              error: "#ba1a1a",
+              surface: "#fbf9f1",
+              "surface-container-high": "#eae8e0",
+              background: "#fbf9f1",
+              "secondary-fixed-dim": "#aecebd",
+              "on-secondary": "#ffffff",
+              outline: "#807475",
+              "on-tertiary-fixed-variant": "#444655",
+              "on-tertiary-fixed": "#191b29",
+              primary: "#70585b",
+              "primary-fixed": "#fbdbde",
+              tertiary: "#5c5d6e",
+              "surface-container-highest": "#e4e3db",
+              "on-background": "#1b1c17",
+              "on-primary-fixed": "#281719",
+              "inverse-on-surface": "#f3f1e9",
+              "tertiary-container": "#e0e0f4",
+              "tertiary-fixed": "#e1e1f5",
+              "surface-dim": "#dcdad2",
+              "secondary-container": "#caead8",
+              "on-surface": "#1b1c17",
+              "on-error": "#ffffff",
+              "error-container": "#ffdad6",
+              "surface-tint": "#70585b",
+              "on-primary-container": "#765e61",
+              "on-error-container": "#93000a",
+              "surface-container": "#f0eee6",
+              secondary: "#486457",
+              "primary-container": "#fadadd",
+              "on-tertiary": "#ffffff",
+              "surface-bright": "#fbf9f1",
+              "on-secondary-container": "#4e6a5c",
+              "tertiary-fixed-dim": "#c5c5d8",
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+            spacing: {
+              "margin-desktop": "64px",
+              gutter: "24px",
+              "section-gap": "80px",
+              "stack-lg": "32px",
+              "stack-md": "16px",
+              "container-max": "1200px",
+              "stack-sm": "8px",
+            },
+            fontFamily: {
+              "body-md": ["Plus Jakarta Sans"],
+              "label-sm": ["Plus Jakarta Sans"],
+              "headline-md": ["Plus Jakarta Sans"],
+              "body-lg": ["Plus Jakarta Sans"],
+              "headline-xl": ["Plus Jakarta Sans"],
+              "headline-lg-mobile": ["Plus Jakarta Sans"],
+              "headline-lg": ["Plus Jakarta Sans"],
+              "label-md": ["Plus Jakarta Sans"],
+            },
+            fontSize: {
+              "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+              "label-sm": ["12px", { lineHeight: "16px", fontWeight: "500" }],
+              "headline-md": [
+                "24px",
+                { lineHeight: "32px", fontWeight: "600" },
+              ],
+              "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
+              "headline-xl": [
+                "48px",
+                {
+                  lineHeight: "56px",
+                  letterSpacing: "-0.02em",
+                  fontWeight: "700",
+                },
+              ],
+              "headline-lg-mobile": [
+                "28px",
+                { lineHeight: "36px", fontWeight: "700" },
+              ],
+              "headline-lg": [
+                "32px",
+                { lineHeight: "40px", fontWeight: "700" },
+              ],
+              "label-md": [
+                "14px",
+                {
+                  lineHeight: "20px",
+                  letterSpacing: "0.01em",
+                  fontWeight: "600",
+                },
+              ],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .marshmallow-shadow {
+        box-shadow: 0px 10px 20px -5px rgba(112, 88, 91, 0.06);
+      }
+      .marshmallow-shadow-hover {
+        box-shadow: 0px 15px 25px -5px rgba(112, 88, 91, 0.1);
+      }
+      /* Custom scrollbar for text area to match theme */
+      textarea::-webkit-scrollbar {
+        width: 8px;
+      }
+      textarea::-webkit-scrollbar-track {
+        background: #fbf9f1;
+        border-radius: 4px;
+      }
+      textarea::-webkit-scrollbar-thumb {
+        background: #e4e3db;
+        border-radius: 4px;
+      }
+      .page-shell {
+        opacity: 0;
+        transform: translateY(6px);
+        transition:
+          opacity 180ms ease,
+          transform 180ms ease;
+      }
+      .page-shell.is-ready {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .page-shell.is-leaving {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .page-shell {
+          transition: none;
+          transform: none;
+        }
+      }
+    </style>
+  </head>
+  <body
+    class="bg-background text-on-background min-h-screen flex font-body-md page-shell"
+  >
+    <!-- SideNavBar (Desktop) -->
+    <nav
+      class="hidden md:flex flex-col h-full py-stack-md border-r border-outline-variant/30 bg-surface-container-low dark:bg-surface-container-lowest shadow-sm fixed left-0 top-0 h-screen w-64 z-40"
+    >
+      <div class="px-6 pb-8">
+        <h1 class="font-headline-md text-headline-md text-primary font-bold">
+          Memoria
+        </h1>
+        <p
+          class="font-label-sm text-label-sm text-on-surface-variant opacity-70"
+        >
+          Digital Legacy
+        </p>
+      </div>
+      <div class="flex-1 overflow-y-auto space-y-2">
+        <a
+          class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300"
+          href="../memoria_dashboard/code.html"
+          data-page-link
+        >
+          <span class="material-symbols-outlined">home</span>
+          <span class="font-label-md text-label-md">Home</span>
+        </a>
+        <a
+          class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300"
+          href="../memoria_family_vault/code.html"
+          data-page-link
+        >
+          <span class="material-symbols-outlined">family_restroom</span>
+          <span class="font-label-md text-label-md">Family Vault</span>
+        </a>
+        <a
+          class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300"
+          href="../memoria_legacy_transfer/code.html"
+          data-page-link
+        >
+          <span class="material-symbols-outlined">history_edu</span>
+          <span class="font-label-md text-label-md">Legacy Transfer</span>
+        </a>
+        <a
+          class="bg-primary-container text-on-primary-container rounded-full mx-2 px-4 py-3 flex items-center gap-3 font-bold scale-98 transition-transform"
+          href="../memoria_future_postbox_1/code.html"
+          data-page-link
+        >
+          <span
+            class="material-symbols-outlined"
+            style="font-variation-settings: &quot;FILL&quot; 1"
+            >mark_email_unread</span
+          >
+          <span class="font-label-md text-label-md">Future Postbox</span>
+        </a>
+        <a
+          class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300"
+          href="#"
+        >
+          <span class="material-symbols-outlined">shopping_bag</span>
+          <span class="font-label-md text-label-md">Store</span>
+        </a>
+      </div>
+      <div class="px-4 pt-4">
+        <button
+          class="w-full bg-primary text-on-primary font-label-md text-label-md py-3 rounded-full hover:bg-surface-tint transition-colors flex items-center justify-center gap-2"
+        >
+          <span class="material-symbols-outlined">add_circle</span>
+          Capture Memory
+        </button>
+      </div>
+      <div class="mt-auto pt-8 space-y-2">
+        <a
+          class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300"
+          href="#"
+        >
+          <span class="material-symbols-outlined">help_outline</span>
+          <span class="font-label-md text-label-md">Help</span>
+        </a>
+        <a
+          class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300"
+          href="#"
+        >
+          <span class="material-symbols-outlined">logout</span>
+          <span class="font-label-md text-label-md">Sign Out</span>
+        </a>
+      </div>
+    </nav>
+    <!-- TopNavBar (Global) -->
+    <header
+      class="fixed top-0 right-0 left-0 md:left-64 z-50 flex items-center justify-between px-6 md:px-margin-desktop h-16 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md shadow-sm"
+    >
+      <div class="md:hidden flex items-center gap-3">
+        <span class="material-symbols-outlined text-primary">menu</span>
+        <span
+          class="font-headline-md text-headline-md text-primary font-bold tracking-tight"
+          >Memoria</span
+        >
+      </div>
+      <div class="hidden md:block">
+        <!-- Breadcrumbs or ambient title could go here on desktop -->
+      </div>
+      <div class="flex items-center gap-4">
+        <button
+          class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full"
+        >
+          <span class="material-symbols-outlined">search</span>
+        </button>
+        <button
+          class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full relative"
+        >
+          <span class="material-symbols-outlined">notifications</span>
+          <span
+            class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"
+          ></span>
+        </button>
+        <button
+          class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full"
+        >
+          <span class="material-symbols-outlined">settings</span>
+        </button>
+        <img
+          alt="User profile photo"
+          class="w-8 h-8 rounded-full object-cover border border-outline-variant/30 ml-2"
+          data-alt="A close-up portrait of a serene woman with natural lighting, soft focus background, embodying a warm and approachable aesthetic."
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwnO24iViiSpv5fSJ6Tb37ELdEKLgb52fKZgPhwBS-ZohqiAkLJV7KfGoTqm7RTv1-eFh7tM_sPgnYzXn-hIHCh7jdEXWGzTXlRQ4CX7DAzV18Ad648NAL__6mIvYFjF765TnNpwn1DKXTnLKWiLbfNVScfdRASi3FrKnaDQwHFAQ19yLz02f11e8m1ADrPX14JioThyov5z2VfPifyHMojfnPFxFt0mHpdxUtykg0XxdUklZ4twmTlhkABACVpk6mF32iozbH"
+        />
+      </div>
+    </header>
+    <!-- Main Content Canvas -->
+    <main
+      class="flex-1 w-full pt-20 md:ml-64 px-6 md:px-margin-desktop pb-section-gap bg-surface min-h-screen"
+    >
+      <div class="max-w-container-max mx-auto">
+        <!-- Page Header -->
+        <header
+          class="mb-section-gap flex flex-col md:flex-row md:items-end justify-between gap-6"
+        >
+          <div>
+            <h1 class="font-headline-xl text-headline-xl text-primary mb-4">
+              Future Postbox
+            </h1>
+            <p
+              class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl"
+            >
+              Schedule messages, letters, and digital capsules to be delivered
+              to your loved ones at precise moments in the future.
+            </p>
+          </div>
+        </header>
+        <!-- Prominent Create Action (Soft Lavender hue as requested, mapped to tertiary-container) -->
+        <button
+          class="w-full text-left bg-tertiary-container rounded-[2rem] p-8 mb-section-gap flex items-center justify-between group transition-all duration-300 hover:scale-[1.01] marshmallow-shadow-hover cursor-pointer border border-white/50 relative overflow-hidden"
+          id="openComposerBtn"
+        >
+          <!-- Decorative blurred shapes behind text -->
+          <div
+            class="absolute -right-20 -top-20 w-64 h-64 bg-white/40 rounded-full blur-3xl group-hover:bg-white/50 transition-colors duration-500"
+          ></div>
+          <div class="relative z-10 flex items-center gap-6">
+            <div
+              class="w-16 h-16 bg-white rounded-full flex items-center justify-center marshmallow-shadow text-tertiary"
+            >
+              <span class="material-symbols-outlined text-[32px]"
+                >edit_document</span
+              >
+            </div>
+            <div>
+              <h2
+                class="font-headline-lg text-headline-lg text-on-tertiary-container"
+              >
+                Create New Future Letter
+              </h2>
+              <p
+                class="font-body-md text-body-md text-on-tertiary-container/80 mt-1"
+              >
+                Compose a message that transcends time.
+              </p>
+            </div>
+          </div>
+          <div
+            class="relative z-10 w-12 h-12 bg-white/50 rounded-full flex items-center justify-center text-on-tertiary-container group-hover:bg-white transition-colors duration-300"
+          >
+            <span class="material-symbols-outlined">arrow_forward</span>
+          </div>
+        </button>
+        <!-- Scheduled Deliveries Section -->
+        <section>
+          <div class="flex items-center justify-between mb-stack-lg">
+            <h3 class="font-headline-md text-headline-md text-on-surface">
+              Scheduled Deliveries
+            </h3>
+            <div class="flex items-center gap-2">
+              <span class="font-label-md text-label-md text-on-surface-variant"
+                >Filter by</span
+              >
+              <button
+                class="bg-surface-container-high text-on-surface-variant px-4 py-2 rounded-full font-label-sm text-label-sm flex items-center gap-1 hover:bg-surface-variant transition-colors"
+              >
+                All Statuses
+                <span class="material-symbols-outlined text-[16px]"
+                  >expand_more</span
+                >
+              </button>
+            </div>
+          </div>
+          <!-- Specialized List / Bento Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+            <!-- Delivery Card 1: Sealed -->
+            <div
+              class="bg-surface-container-lowest rounded-2xl p-6 marshmallow-shadow flex flex-col gap-4 relative overflow-hidden group hover:shadow-md transition-shadow"
+            >
+              <!-- Subtle color accent edge -->
+              <div
+                class="absolute left-0 top-0 bottom-0 w-1.5 bg-secondary-fixed"
+              ></div>
+              <div class="flex justify-between items-start">
+                <div class="flex flex-col">
+                  <span
+                    class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1"
+                    >To: Elena Vance</span
+                  >
+                  <h4 class="font-headline-md text-headline-md text-on-surface">
+                    On Your 30th Birthday
+                  </h4>
+                </div>
+                <div
+                  class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-sm text-label-sm flex items-center gap-1"
+                >
+                  <span class="material-symbols-outlined text-[14px]"
+                    >lock</span
+                  >
+                  Sealed
+                </div>
+              </div>
+              <div
+                class="flex items-center gap-3 mt-auto pt-4 border-t border-surface-variant/50"
+              >
+                <div
+                  class="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center text-on-surface-variant"
+                >
+                  <span class="material-symbols-outlined text-[20px]"
+                    >calendar_clock</span
+                  >
+                </div>
+                <div>
+                  <p
+                    class="font-label-sm text-label-sm text-on-surface-variant"
+                  >
+                    Delivery Date
+                  </p>
+                  <p
+                    class="font-body-md text-body-md text-on-surface font-medium"
+                  >
+                    December 31, 2030
+                  </p>
+                </div>
+                <button
+                  class="ml-auto w-10 h-10 rounded-full hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-colors"
+                >
+                  <span class="material-symbols-outlined">more_horiz</span>
+                </button>
+              </div>
+            </div>
+            <!-- Delivery Card 2: Draft -->
+            <div
+              class="bg-surface-container-lowest rounded-2xl p-6 marshmallow-shadow flex flex-col gap-4 relative overflow-hidden group hover:shadow-md transition-shadow"
+            >
+              <div
+                class="absolute left-0 top-0 bottom-0 w-1.5 bg-outline-variant"
+              ></div>
+              <div class="flex justify-between items-start">
+                <div class="flex flex-col">
+                  <span
+                    class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-1"
+                    >To: Marcus</span
+                  >
+                  <h4
+                    class="font-headline-md text-headline-md text-on-surface text-opacity-70"
+                  >
+                    Graduation Advice
+                  </h4>
+                </div>
+                <div
+                  class="bg-surface-container-high text-on-surface-variant px-3 py-1 rounded-full font-label-sm text-label-sm flex items-center gap-1"
+                >
+                  <span class="material-symbols-outlined text-[14px]"
+                    >edit</span
+                  >
+                  Draft
+                </div>
+              </div>
+              <div
+                class="flex items-center gap-3 mt-auto pt-4 border-t border-surface-variant/50"
+              >
+                <div
+                  class="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center text-on-surface-variant"
+                >
+                  <span class="material-symbols-outlined text-[20px]"
+                    >calendar_clock</span
+                  >
+                </div>
+                <div>
+                  <p
+                    class="font-label-sm text-label-sm text-on-surface-variant"
+                  >
+                    Delivery Date
+                  </p>
+                  <p
+                    class="font-body-md text-body-md text-on-surface text-opacity-70 italic"
+                  >
+                    Not set
+                  </p>
+                </div>
+                <button
+                  class="ml-auto w-10 h-10 rounded-full hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-colors"
+                >
+                  <span class="material-symbols-outlined">edit_square</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+        </div>
+        <footer class="mt-section-gap border-t border-outline-variant/30 pt-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-on-surface-variant">
+        <span class="font-label-sm text-label-sm">Memoria Digital Legacy</span>
+        <div class="flex flex-wrap items-center gap-4 font-label-sm text-label-sm">
+        <a class="hover:text-on-surface transition-colors" href="../memoria_dashboard/code.html" data-page-link>Home</a>
+        <a class="hover:text-on-surface transition-colors" href="../memoria_family_vault/code.html" data-page-link>Family Vault</a>
+        <a class="hover:text-on-surface transition-colors" href="../memoria_legacy_transfer/code.html" data-page-link>Legacy Transfer</a>
+        <a class="hover:text-on-surface transition-colors" href="../memoria_future_postbox_1/code.html" data-page-link>Future Postbox</a>
+        </div>
+        </footer>
+    </main>
+    <!-- Composer Modal Overlay (Hidden by default) -->
+    <div
+      class="fixed inset-0 z-50 flex items-center justify-center px-4 py-8 opacity-0 pointer-events-none transition-opacity duration-300"
+      id="composerModal"
+    >
+      <!-- Backdrop -->
+      <div
+        class="absolute inset-0 bg-inverse-surface/40 backdrop-blur-sm"
+        id="composerBackdrop"
+      ></div>
+      <!-- Modal Content (Marshmallow Geometry) -->
+      <div
+        class="relative bg-surface-container-lowest w-full max-w-3xl max-h-full rounded-[32px] marshmallow-shadow flex flex-col overflow-hidden transform scale-95 transition-transform duration-300"
+        id="composerCard"
+      >
+        <!-- Header -->
+        <div
+          class="px-8 py-6 border-b border-surface-variant flex items-center justify-between bg-surface/50"
+        >
+          <h2 class="font-headline-md text-headline-md text-on-surface">
+            Compose Future Letter
+          </h2>
+          <button
+            class="w-10 h-10 rounded-full bg-surface-container-high hover:bg-surface-variant flex items-center justify-center text-on-surface-variant transition-colors"
+            id="closeComposerBtn"
+          >
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <!-- Body/Form -->
+        <div class="p-8 overflow-y-auto flex-1 flex flex-col gap-stack-lg">
+          <!-- Delivery Settings Row -->
+          <div class="flex flex-col md:flex-row gap-gutter">
+            <div class="flex-1 flex flex-col gap-2">
+              <label class="font-label-md text-label-md text-on-surface-variant"
+                >Recipient</label
+              >
+              <div class="relative">
+                <span
+                  class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant"
+                  >person</span
+                >
+                <input
+                  class="w-full bg-surface text-on-surface font-body-md text-body-md rounded-xl pl-12 pr-4 py-4 border-none shadow-inner focus:ring-2 focus:ring-primary-container transition-shadow outline-none placeholder:text-on-surface-variant/50"
+                  placeholder="Who is this for?"
+                  type="text"
+                />
+              </div>
+            </div>
+            <div class="flex-1 flex flex-col gap-2">
+              <label class="font-label-md text-label-md text-on-surface-variant"
+                >Delivery Date</label
+              >
+              <div class="relative">
+                <span
+                  class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant"
+                  >event</span
+                >
+                <input
+                  class="w-full bg-surface text-on-surface font-body-md text-body-md rounded-xl pl-12 pr-4 py-4 border-none shadow-inner focus:ring-2 focus:ring-primary-container transition-shadow outline-none"
+                  type="date"
+                />
+              </div>
+            </div>
+          </div>
+          <!-- Rich Text Area -->
+          <div class="flex flex-col gap-2 flex-1">
+            <label class="font-label-md text-label-md text-on-surface-variant"
+              >Message</label
+            >
+            <div
+              class="bg-surface rounded-2xl flex flex-col shadow-inner overflow-hidden border border-surface-variant/30 flex-1 min-h-[300px]"
+            >
+              <!-- Formatting Toolbar (Visual only for mockup) -->
+              <div
+                class="bg-surface-container px-4 py-2 flex items-center gap-2 border-b border-surface-variant/30 text-on-surface-variant"
+              >
+                <button
+                  class="w-8 h-8 rounded flex items-center justify-center hover:bg-surface-variant"
+                >
+                  <span class="material-symbols-outlined text-[18px]"
+                    >format_bold</span
+                  >
+                </button>
+                <button
+                  class="w-8 h-8 rounded flex items-center justify-center hover:bg-surface-variant"
+                >
+                  <span class="material-symbols-outlined text-[18px]"
+                    >format_italic</span
+                  >
+                </button>
+                <div class="w-px h-4 bg-outline-variant mx-1"></div>
+                <button
+                  class="w-8 h-8 rounded flex items-center justify-center hover:bg-surface-variant"
+                >
+                  <span class="material-symbols-outlined text-[18px]"
+                    >format_list_bulleted</span
+                  >
+                </button>
+                <button
+                  class="w-8 h-8 rounded flex items-center justify-center hover:bg-surface-variant"
+                >
+                  <span class="material-symbols-outlined text-[18px]"
+                    >image</span
+                  >
+                </button>
+              </div>
+              <textarea
+                class="w-full flex-1 bg-transparent border-none p-6 resize-none outline-none font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/40"
+                placeholder="Write something meaningful for the future..."
+              ></textarea>
+            </div>
+          </div>
+        </div>
+        <!-- Footer / Actions -->
+        <div
+          class="px-8 py-6 border-t border-surface-variant bg-surface/50 flex items-center justify-end gap-4"
+        >
+          <button
+            class="px-6 py-3 rounded-full font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors"
+          >
+            Save as Draft
+          </button>
+          <button
+            class="px-8 py-3 rounded-full bg-primary text-on-primary font-label-md text-label-md flex items-center gap-2 marshmallow-shadow hover:opacity-90 transition-opacity"
+          >
+            <span class="material-symbols-outlined text-[18px]">lock</span>
+            Seal &amp; Schedule
+          </button>
+        </div>
+      </div>
+    </div>
+    <script>
+      // Simple modal toggle logic
+      const modal = document.getElementById("composerModal");
+      const card = document.getElementById("composerCard");
+      const openBtn = document.getElementById("openComposerBtn");
+      const closeBtn = document.getElementById("closeComposerBtn");
+      const backdrop = document.getElementById("composerBackdrop");
+
+      function openModal() {
+        modal.classList.remove("opacity-0", "pointer-events-none");
+        card.classList.remove("scale-95");
+        card.classList.add("scale-100");
+      }
+
+      function closeModal() {
+        modal.classList.add("opacity-0", "pointer-events-none");
+        card.classList.remove("scale-100");
+        card.classList.add("scale-95");
+      }
+
+      openBtn.addEventListener("click", openModal);
+      closeBtn.addEventListener("click", closeModal);
+      backdrop.addEventListener("click", closeModal);
+    </script>
+    <script>
+      (function () {
+        const page = document.body;
+        if (!page) {
+          return;
+        }
+
+        requestAnimationFrame(() => {
+          page.classList.add("is-ready");
+        });
+
+        const links = document.querySelectorAll("a[data-page-link]");
+        links.forEach((link) => {
+          link.addEventListener("click", (event) => {
+            const url = link.getAttribute("href");
+            if (!url || url.startsWith("#") || link.target === "_blank") {
+              return;
+            }
+            if (
+              event.metaKey ||
+              event.ctrlKey ||
+              event.shiftKey ||
+              event.altKey
+            ) {
+              return;
+            }
+            event.preventDefault();
+            page.classList.add("is-leaving");
+            window.setTimeout(() => {
+              window.location.href = url;
+            }, 180);
+          });
+        });
+
+        window.addEventListener("pageshow", () => {
+          page.classList.add("is-ready");
+          page.classList.remove("is-leaving");
+        });
+      })();
+    </script>
+  </body>
+</html>

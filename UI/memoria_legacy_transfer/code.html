@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Memoria - Legacy Transfer</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "outline-variant": "#d2c3c4",
+                      "on-primary": "#ffffff",
+                      "on-tertiary-container": "#616373",
+                      "inverse-primary": "#debfc2",
+                      "on-secondary-fixed-variant": "#314c3f",
+                      "on-surface-variant": "#4f4445",
+                      "surface-container-low": "#f5f4ec",
+                      "on-primary-fixed-variant": "#574144",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary-fixed": "#042016",
+                      "inverse-surface": "#30312c",
+                      "surface-variant": "#e4e3db",
+                      "secondary-fixed": "#caead8",
+                      "primary-fixed-dim": "#debfc2",
+                      "error": "#ba1a1a",
+                      "surface": "#fbf9f1",
+                      "surface-container-high": "#eae8e0",
+                      "background": "#fbf9f1",
+                      "secondary-fixed-dim": "#aecebd",
+                      "on-secondary": "#ffffff",
+                      "outline": "#807475",
+                      "on-tertiary-fixed-variant": "#444655",
+                      "on-tertiary-fixed": "#191b29",
+                      "primary": "#70585b",
+                      "primary-fixed": "#fbdbde",
+                      "tertiary": "#5c5d6e",
+                      "surface-container-highest": "#e4e3db",
+                      "on-background": "#1b1c17",
+                      "on-primary-fixed": "#281719",
+                      "inverse-on-surface": "#f3f1e9",
+                      "tertiary-container": "#e0e0f4",
+                      "tertiary-fixed": "#e1e1f5",
+                      "surface-dim": "#dcdad2",
+                      "secondary-container": "#caead8",
+                      "on-surface": "#1b1c17",
+                      "on-error": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "surface-tint": "#70585b",
+                      "on-primary-container": "#765e61",
+                      "on-error-container": "#93000a",
+                      "surface-container": "#f0eee6",
+                      "secondary": "#486457",
+                      "primary-container": "#fadadd",
+                      "on-tertiary": "#ffffff",
+                      "surface-bright": "#fbf9f1",
+                      "on-secondary-container": "#4e6a5c",
+                      "tertiary-fixed-dim": "#c5c5d8"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "64px",
+                      "gutter": "24px",
+                      "section-gap": "80px",
+                      "stack-lg": "32px",
+                      "stack-md": "16px",
+                      "container-max": "1200px",
+                      "stack-sm": "8px"
+              },
+              "fontFamily": {
+                      "body-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "label-sm": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-md": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "body-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-xl": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-lg-mobile": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "headline-lg": [
+                              "Plus Jakarta Sans"
+                      ],
+                      "label-md": [
+                              "Plus Jakarta Sans"
+                      ]
+              },
+              "fontSize": {
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-xl": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+            },
+          }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        .soft-shadow {
+            box-shadow: 0 10px 20px -5px rgba(222, 191, 194, 0.2);
+        }
+        .interactive-shadow {
+            box-shadow: 0 4px 12px rgba(112, 88, 91, 0.15);
+        }
+                .page-shell {
+                        opacity: 0;
+                        transform: translateY(6px);
+                        transition: opacity 180ms ease, transform 180ms ease;
+                }
+                .page-shell.is-ready {
+                        opacity: 1;
+                        transform: translateY(0);
+                }
+                .page-shell.is-leaving {
+                        opacity: 0;
+                        transform: translateY(6px);
+                }
+                @media (prefers-reduced-motion: reduce) {
+                        .page-shell {
+                                transition: none;
+                                transform: none;
+                        }
+                }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex font-body-md text-body-md page-shell">
+<!-- SideNavBar (Desktop) -->
+<nav class="hidden md:flex flex-col h-full py-stack-md border-r border-outline-variant/30 bg-surface-container-low dark:bg-surface-container-lowest shadow-sm fixed left-0 top-0 h-screen w-64 z-40">
+<div class="px-6 pb-8">
+<h1 class="font-headline-md text-headline-md text-primary font-bold">Memoria</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant opacity-70">Digital Legacy</p>
+</div>
+<div class="flex-1 overflow-y-auto space-y-2">
+<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300" href="../memoria_dashboard/code.html" data-page-link>
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300" href="../memoria_family_vault/code.html" data-page-link>
+<span class="material-symbols-outlined">family_restroom</span>
+<span class="font-label-md text-label-md">Family Vault</span>
+</a>
+<a class="bg-primary-container text-on-primary-container rounded-full mx-2 px-4 py-3 flex items-center gap-3 font-bold scale-98 transition-transform" href="../memoria_legacy_transfer/code.html" data-page-link>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">history_edu</span>
+<span class="font-label-md text-label-md">Legacy Transfer</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300" href="../memoria_future_postbox_1/code.html" data-page-link>
+<span class="material-symbols-outlined">mark_email_unread</span>
+<span class="font-label-md text-label-md">Future Postbox</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300" href="#">
+<span class="material-symbols-outlined">shopping_bag</span>
+<span class="font-label-md text-label-md">Store</span>
+</a>
+</div>
+<div class="px-4 pt-4">
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-3 rounded-full hover:bg-surface-tint transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">add_circle</span>
+                                Capture Memory
+                        </button>
+</div>
+<div class="mt-auto pt-8 space-y-2">
+<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+<span class="font-label-md text-label-md">Help</span>
+</a>
+<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md">Sign Out</span>
+</a>
+</div>
+</nav>
+<!-- TopNavBar (Global) -->
+<header class="fixed top-0 right-0 left-0 md:left-64 z-50 flex items-center justify-between px-6 md:px-margin-desktop h-16 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md shadow-sm">
+<div class="md:hidden flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">menu</span>
+<span class="font-headline-md text-headline-md text-primary font-bold tracking-tight">Memoria</span>
+</div>
+<div class="hidden md:block">
+<!-- Breadcrumbs or ambient title could go here on desktop -->
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<img alt="User profile photo" class="w-8 h-8 rounded-full object-cover border border-outline-variant/30 ml-2" data-alt="A close-up portrait of a serene woman with natural lighting, soft focus background, embodying a warm and approachable aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwnO24iViiSpv5fSJ6Tb37ELdEKLgb52fKZgPhwBS-ZohqiAkLJV7KfGoTqm7RTv1-eFh7tM_sPgnYzXn-hIHCh7jdEXWGzTXlRQ4CX7DAzV18Ad648NAL__6mIvYFjF765TnNpwn1DKXTnLKWiLbfNVScfdRASi3FrKnaDQwHFAQ19yLz02f11e8m1ADrPX14JioThyov5z2VfPifyHMojfnPFxFt0mHpdxUtykg0XxdUklZ4twmTlhkABACVpk6mF32iozbH"/>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 w-full pt-20 md:ml-64 px-6 md:px-margin-desktop pb-section-gap min-h-screen">
+<div class="max-w-container-max mx-auto">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-stack-lg gap-stack-md">
+<div>
+<h2 class="font-headline-xl text-headline-lg-mobile md:text-headline-xl text-on-surface mb-2">Legacy Transfer</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Manage how and when your digital assets are securely passed on to your chosen beneficiaries.</p>
+</div>
+<div class="flex items-center bg-tertiary-container/50 px-4 py-2 rounded-full gap-2 soft-shadow border border-white/40">
+<span class="material-symbols-outlined text-secondary" data-icon="shield">shield</span>
+<span class="font-label-md text-label-md text-secondary font-bold">Status: Secure</span>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Beneficiaries -->
+<div class="lg:col-span-5 flex flex-col gap-gutter">
+<div class="bg-surface-container-lowest rounded-[24px] p-stack-lg soft-shadow relative overflow-hidden group">
+<!-- Decorative gradient blob -->
+<div class="absolute -top-10 -right-10 w-32 h-32 bg-primary-container rounded-full blur-2xl opacity-50"></div>
+<div class="flex justify-between items-center mb-stack-md relative z-10">
+<h3 class="font-headline-md text-headline-md text-on-surface">Assigned Beneficiaries</h3>
+<button class="text-primary hover:bg-primary-container/50 p-2 rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="person_add">person_add</span>
+</button>
+</div>
+<div class="space-y-stack-sm relative z-10">
+<!-- Beneficiary Card 1 -->
+<div class="bg-surface p-4 rounded-xl flex items-center gap-4 hover:bg-surface-container-high transition-colors cursor-pointer border border-transparent hover:border-outline-variant/20">
+<img alt="Sarah Jenkins" class="w-12 h-12 rounded-full object-cover shadow-sm" data-alt="A portrait of a young man with short dark hair and a slight smile, wearing a casual shirt. The lighting is soft and natural, emphasizing a warm and approachable tone suitable for a family-oriented digital legacy app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBa6aYP3otpUVVyZs3U6Q1LNBCgEEY5UUiYz1gXUwriMFviAzMth4aJd6qD14VCGkAIaiCM4LyS3L7jGaLyV_Gx0yHrreJwL-AIMGmCyyaWIiQP_XD5psx7FfdbXRrUdiqO1qQC9ywc0BtvtXyMQhRMSHqlIxLBByMQCYJQr6ubYGWjaRovFQfHtkjXUpw-S2ITLQE8rb6sqGxykezZOHH514B4Uy4KMAI0-NZD8ZJi-h8QEnhoY1XwlOtPFjHpleYb_a8g9fJY"/>
+<div class="flex-1">
+<h4 class="font-label-md text-label-md text-on-surface">Sarah Jenkins</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Primary Executive • Daughter</p>
+</div>
+<div class="bg-secondary-container/50 text-on-secondary-container px-3 py-1 rounded-full font-label-sm text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="check_circle">check_circle</span>
+                                    Ready
+                                </div>
+</div>
+<!-- Beneficiary Card 2 -->
+<div class="bg-surface p-4 rounded-xl flex items-center gap-4 hover:bg-surface-container-high transition-colors cursor-pointer border border-transparent hover:border-outline-variant/20">
+<div class="w-12 h-12 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container font-headline-md shadow-sm">
+                                    M
+                                </div>
+<div class="flex-1">
+<h4 class="font-label-md text-label-md text-on-surface">Michael Chen</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Secondary • Legal Counsel</p>
+</div>
+<div class="bg-surface-variant text-on-surface-variant px-3 py-1 rounded-full font-label-sm text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="hourglass_empty">hourglass_empty</span>
+                                    Pending
+                                </div>
+</div>
+</div>
+<button class="mt-stack-md w-full bg-primary-container/30 hover:bg-primary-container text-on-primary-container font-label-md text-label-md py-3 rounded-xl transition-colors border border-primary/10 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                            Add Beneficiary
+                        </button>
+</div>
+<!-- Transfer Trigger Info -->
+<div class="bg-surface-container-low rounded-[24px] p-stack-lg border border-outline-variant/20 flex flex-col items-center text-center">
+<div class="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center text-primary mb-4">
+<span class="material-symbols-outlined text-3xl" data-icon="timer">timer</span>
+</div>
+<h4 class="font-headline-md text-headline-md text-on-surface mb-2">Transfer Triggers</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">Assets will be released based on your predefined inactivity period.</p>
+<div class="bg-surface px-4 py-2 rounded-lg font-label-md text-label-md text-primary w-full text-center border border-primary/10">
+                            Current setting: 6 Months Inactivity
+                        </div>
+</div>
+</div>
+<!-- Right Column: Legacy Assets -->
+<div class="lg:col-span-7 flex flex-col gap-gutter">
+<div class="bg-surface-container-lowest rounded-[24px] p-stack-lg soft-shadow flex-1">
+<div class="flex justify-between items-center mb-stack-md">
+<h3 class="font-headline-md text-headline-md text-on-surface">Legacy Assets Overview</h3>
+<button class="text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm flex items-center gap-1">
+                                View Details <span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<!-- Assets Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-stack-lg">
+<!-- Asset Card: Vaults -->
+<div class="bg-gradient-to-br from-primary-container/40 to-surface-container-lowest p-6 rounded-2xl border border-primary/10 hover:shadow-md transition-shadow cursor-pointer group">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="folder_special">folder_special</span>
+</div>
+<span class="font-headline-md text-headline-md text-primary">12</span>
+</div>
+<h4 class="font-label-md text-label-md text-on-surface mb-1">Family Vaults</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Photos, videos &amp; stories</p>
+</div>
+<!-- Asset Card: Documents -->
+<div class="bg-gradient-to-br from-secondary-container/40 to-surface-container-lowest p-6 rounded-2xl border border-secondary/10 hover:shadow-md transition-shadow cursor-pointer group">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+</div>
+<span class="font-headline-md text-headline-md text-secondary">5</span>
+</div>
+<h4 class="font-label-md text-label-md text-on-surface mb-1">Legal Documents</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Wills &amp; instructions</p>
+</div>
+<!-- Asset Card: Postbox -->
+<div class="bg-gradient-to-br from-tertiary-container/40 to-surface-container-lowest p-6 rounded-2xl border border-tertiary/10 hover:shadow-md transition-shadow cursor-pointer group sm:col-span-2">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined" data-icon="mail">mail</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface mb-1">Future Postbox</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant">3 messages scheduled for delivery</p>
+</div>
+</div>
+<button class="bg-surface px-4 py-2 rounded-full font-label-sm text-label-sm border border-outline-variant/30 hover:bg-surface-container-high transition-colors">
+                                        Manage
+                                    </button>
+</div>
+</div>
+</div>
+<!-- Progress Section -->
+<div>
+<div class="flex justify-between items-end mb-2">
+<h4 class="font-label-md text-label-md text-on-surface">Transfer Readiness</h4>
+<span class="font-headline-md text-headline-md text-primary">85%</span>
+</div>
+<div class="h-3 w-full bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-primary to-inverse-primary rounded-full" style="width: 85%;"></div>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-2 text-right">Complete legal review to reach 100%</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<footer class="mt-section-gap border-t border-outline-variant/30 pt-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 text-on-surface-variant">
+<span class="font-label-sm text-label-sm">Memoria Digital Legacy</span>
+<div class="flex flex-wrap items-center gap-4 font-label-sm text-label-sm">
+<a class="hover:text-on-surface transition-colors" href="../memoria_dashboard/code.html" data-page-link>Home</a>
+<a class="hover:text-on-surface transition-colors" href="../memoria_family_vault/code.html" data-page-link>Family Vault</a>
+<a class="hover:text-on-surface transition-colors" href="../memoria_legacy_transfer/code.html" data-page-link>Legacy Transfer</a>
+<a class="hover:text-on-surface transition-colors" href="../memoria_future_postbox_1/code.html" data-page-link>Future Postbox</a>
+</div>
+</footer>
+</main>
+<script>
+                (function () {
+                        const page = document.body;
+                        if (!page) {
+                                return;
+                        }
+
+                        requestAnimationFrame(() => {
+                                page.classList.add('is-ready');
+                        });
+
+                        const links = document.querySelectorAll('a[data-page-link]');
+                        links.forEach((link) => {
+                                link.addEventListener('click', (event) => {
+                                        const url = link.getAttribute('href');
+                                        if (!url || url.startsWith('#') || link.target === '_blank') {
+                                                return;
+                                        }
+                                        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+                                                return;
+                                        }
+                                        event.preventDefault();
+                                        page.classList.add('is-leaving');
+                                        window.setTimeout(() => {
+                                                window.location.href = url;
+                                        }, 180);
+                                });
+                        });
+
+                        window.addEventListener('pageshow', () => {
+                                page.classList.add('is-ready');
+                                page.classList.remove('is-leaving');
+                        });
+                })();
+        </script>
+</body></html>
