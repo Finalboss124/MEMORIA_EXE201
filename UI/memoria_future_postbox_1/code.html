@@ -250,6 +250,7 @@
         <a
           class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300"
           href="#"
+          data-auth-logout
         >
           <span class="material-symbols-outlined">help_outline</span>
           <span class="font-label-md text-label-md">Help</span>
@@ -295,6 +296,13 @@
           class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full"
         >
           <span class="material-symbols-outlined">settings</span>
+        </button>
+        <button
+          class="text-on-surface-variant hover:bg-primary-container hover:text-primary transition-colors duration-200 p-2 rounded-full"
+          data-auth-logout
+          title="Sign out"
+        >
+          <span class="material-symbols-outlined">logout</span>
         </button>
         <img
           alt="User profile photo"
@@ -642,6 +650,8 @@
         </div>
       </div>
     </div>
+    <script src="../config.js"></script>
+    <script src="../auth.js"></script>
     <script>
       // Simple modal toggle logic
       const modal = document.getElementById("composerModal");

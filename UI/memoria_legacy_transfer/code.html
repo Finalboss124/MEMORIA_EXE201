@@ -239,7 +239,7 @@
 <span class="material-symbols-outlined">help_outline</span>
 <span class="font-label-md text-label-md">Help</span>
 </a>
-<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300" href="#">
+<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300" href="#" data-auth-logout>
 <span class="material-symbols-outlined">logout</span>
 <span class="font-label-md text-label-md">Sign Out</span>
 </a>
@@ -264,6 +264,9 @@
 </button>
 <button class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full">
 <span class="material-symbols-outlined">settings</span>
+</button>
+<button class="text-on-surface-variant hover:bg-primary-container hover:text-primary transition-colors duration-200 p-2 rounded-full" data-auth-logout title="Sign out">
+<span class="material-symbols-outlined">logout</span>
 </button>
 <img alt="User profile photo" class="w-8 h-8 rounded-full object-cover border border-outline-variant/30 ml-2" data-alt="A close-up portrait of a serene woman with natural lighting, soft focus background, embodying a warm and approachable aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwnO24iViiSpv5fSJ6Tb37ELdEKLgb52fKZgPhwBS-ZohqiAkLJV7KfGoTqm7RTv1-eFh7tM_sPgnYzXn-hIHCh7jdEXWGzTXlRQ4CX7DAzV18Ad648NAL__6mIvYFjF765TnNpwn1DKXTnLKWiLbfNVScfdRASi3FrKnaDQwHFAQ19yLz02f11e8m1ADrPX14JioThyov5z2VfPifyHMojfnPFxFt0mHpdxUtykg0XxdUklZ4twmTlhkABACVpk6mF32iozbH"/>
 </div>
@@ -417,6 +420,8 @@
 </div>
 </footer>
 </main>
+<script src="../config.js"></script>
+<script src="../auth.js"></script>
 <script>
                 (function () {
                         const page = document.body;

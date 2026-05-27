@@ -1,0 +1,446 @@
+<!doctype html>
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Memoria - Login</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              "outline-variant": "#d2c3c4",
+              "on-surface-variant": "#4f4445",
+              "surface-container-low": "#f5f4ec",
+              "surface-container-lowest": "#ffffff",
+              "surface-container-high": "#eae8e0",
+              "surface-variant": "#e4e3db",
+              surface: "#fbf9f1",
+              background: "#fbf9f1",
+              primary: "#70585b",
+              "primary-container": "#fadadd",
+              "on-primary": "#ffffff",
+              secondary: "#486457",
+              "secondary-container": "#caead8",
+              tertiary: "#5c5d6e",
+              "tertiary-container": "#e0e0f4",
+              "on-background": "#1b1c17",
+              "on-surface": "#1b1c17",
+              error: "#ba1a1a",
+              "error-container": "#ffdad6",
+            },
+            fontFamily: {
+              body: ["Plus Jakarta Sans", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+      }
+      .soft-shadow {
+        box-shadow: 0 24px 70px -28px rgba(112, 88, 91, 0.42);
+      }
+      .ambient-shadow {
+        box-shadow: 0 18px 38px -20px rgba(72, 100, 87, 0.38);
+      }
+      .auth-bg {
+        background:
+          radial-gradient(circle at 20% 18%, rgba(250, 218, 221, 0.72), transparent 32%),
+          radial-gradient(circle at 84% 12%, rgba(202, 234, 216, 0.62), transparent 30%),
+          radial-gradient(circle at 52% 88%, rgba(224, 224, 244, 0.72), transparent 34%),
+          #fbf9f1;
+      }
+      .photo-veil {
+        background:
+          linear-gradient(105deg, rgba(251, 249, 241, 0.96) 0%, rgba(251, 249, 241, 0.76) 44%, rgba(250, 218, 221, 0.18) 100%),
+          linear-gradient(0deg, rgba(27, 28, 23, 0.14), rgba(27, 28, 23, 0.02));
+      }
+      .grain {
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.16) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.16) 1px, transparent 1px);
+        background-size: 42px 42px;
+        mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.42), transparent 76%);
+      }
+      .glass-card {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(245, 244, 236, 0.82));
+        box-shadow:
+          0 30px 80px -34px rgba(112, 88, 91, 0.56),
+          inset 0 1px 0 rgba(255, 255, 255, 0.86);
+      }
+      .glass-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 32px;
+        padding: 1px;
+        background: linear-gradient(135deg, rgba(250, 218, 221, 0.95), rgba(202, 234, 216, 0.78), rgba(224, 224, 244, 0.82));
+        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+      }
+      .soft-float {
+        animation: softFloat 7s ease-in-out infinite;
+      }
+      .soft-float-delayed {
+        animation: softFloat 8.5s ease-in-out 900ms infinite;
+      }
+      .input-shell:focus-within {
+        transform: translateY(-1px);
+        box-shadow: 0 16px 34px -24px rgba(112, 88, 91, 0.75);
+      }
+      .primary-action {
+        background: linear-gradient(135deg, #70585b 0%, #836366 52%, #486457 100%);
+        box-shadow: 0 18px 34px -18px rgba(112, 88, 91, 0.85);
+      }
+      .primary-action:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 22px 42px -18px rgba(112, 88, 91, 0.92);
+      }
+      .tab-active {
+        background: linear-gradient(135deg, #70585b, #85666a);
+        color: #ffffff;
+        box-shadow: 0 10px 22px -14px rgba(112, 88, 91, 0.9);
+      }
+      .otp-card {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(245, 244, 236, 0.92));
+      }
+      @keyframes softFloat {
+        0%, 100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+      .page-shell {
+        opacity: 0;
+        transform: translateY(8px);
+        transition: opacity 180ms ease, transform 180ms ease;
+      }
+      .page-shell.is-ready {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    </style>
+  </head>
+  <body class="page-shell min-h-screen auth-bg text-on-background antialiased">
+    <main class="grid min-h-screen lg:grid-cols-[1.08fr_0.92fr]">
+      <section class="relative hidden overflow-hidden bg-surface lg:block">
+        <img alt="Warm family memory wall" class="absolute inset-0 h-full w-full object-cover" src="https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=1600&q=85" />
+        <div class="absolute inset-0 photo-veil"></div>
+        <div class="grain absolute inset-0"></div>
+        <div class="soft-float absolute left-14 top-16 rounded-[28px] bg-surface-container-lowest/72 px-5 py-4 backdrop-blur-md ring-1 ring-white/70 soft-shadow">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-secondary-container text-secondary">
+              <span class="material-symbols-outlined text-[20px]">lock_clock</span>
+            </div>
+            <div>
+              <p class="text-xs font-bold uppercase text-secondary">Protected</p>
+              <p class="text-sm font-semibold text-on-surface">Two-step access</p>
+            </div>
+          </div>
+        </div>
+        <div class="soft-float-delayed absolute bottom-48 right-16 rounded-[28px] bg-surface-container-lowest/70 px-5 py-4 backdrop-blur-md ring-1 ring-white/70 soft-shadow">
+          <div class="flex items-center gap-3">
+            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-tertiary-container text-tertiary">
+              <span class="material-symbols-outlined text-[20px]">mail_lock</span>
+            </div>
+            <div>
+              <p class="text-xs font-bold uppercase text-tertiary">Verified</p>
+              <p class="text-sm font-semibold text-on-surface">Email OTP</p>
+            </div>
+          </div>
+        </div>
+        <div class="absolute inset-x-0 bottom-0 p-16">
+          <div class="max-w-xl">
+            <div class="mb-5 inline-flex items-center gap-2 rounded-full bg-surface-container-lowest/75 px-4 py-2 text-sm font-semibold text-primary backdrop-blur-md">
+              <span class="material-symbols-outlined text-[18px]">verified_user</span>
+              Email OTP protected
+            </div>
+            <h1 class="text-[52px] font-bold leading-[1.05] text-on-surface">Preserve memories, deliver them at the right time.</h1>
+            <p class="mt-5 max-w-lg text-lg leading-8 text-on-surface-variant">
+              Memoria protects family vaults, future letters, and digital assets with email-based two-step verification.
+            </p>
+            <div class="mt-8 grid max-w-lg grid-cols-3 gap-3">
+              <div class="rounded-2xl bg-surface-container-lowest/68 p-4 backdrop-blur-md ring-1 ring-white/60">
+                <p class="text-2xl font-bold text-primary">256</p>
+                <p class="mt-1 text-xs font-semibold text-on-surface-variant">Encrypted memories</p>
+              </div>
+              <div class="rounded-2xl bg-secondary-container/70 p-4 backdrop-blur-md ring-1 ring-white/60">
+                <p class="text-2xl font-bold text-secondary">24/7</p>
+                <p class="mt-1 text-xs font-semibold text-on-surface-variant">Vault protection</p>
+              </div>
+              <div class="rounded-2xl bg-tertiary-container/78 p-4 backdrop-blur-md ring-1 ring-white/60">
+                <p class="text-2xl font-bold text-tertiary">OTP</p>
+                <p class="mt-1 text-xs font-semibold text-on-surface-variant">Mail verified</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="relative flex min-h-screen items-center justify-center overflow-hidden px-5 py-10 sm:px-8 lg:px-14">
+        <div class="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.36),rgba(245,244,236,0.18))]"></div>
+        <div class="w-full max-w-[500px]">
+          <div class="relative mb-8 flex items-center justify-between">
+            <div>
+              <h2 class="text-3xl font-bold text-primary">Memoria</h2>
+              <p class="mt-1 text-sm font-medium text-on-surface-variant">Digital Legacy</p>
+            </div>
+            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary-container text-primary ambient-shadow ring-4 ring-white/60">
+              <span class="material-symbols-outlined">memory</span>
+            </div>
+          </div>
+
+          <div class="glass-card relative rounded-[32px] p-6 backdrop-blur-xl md:p-8">
+            <div class="mb-6 grid grid-cols-2 rounded-full bg-surface-container-low/90 p-1 ring-1 ring-white/70">
+              <button class="tab-active rounded-full px-4 py-3 text-sm font-bold transition duration-300" id="loginTab" type="button">Sign In</button>
+              <button class="rounded-full px-4 py-3 text-sm font-bold text-on-surface-variant transition duration-300 hover:bg-white/60" id="registerTab" type="button">Create Account</button>
+            </div>
+
+            <div class="mb-7">
+              <p class="text-sm font-semibold uppercase tracking-[0.18em] text-secondary" id="eyebrow">Welcome back</p>
+              <h1 class="mt-3 text-3xl font-bold leading-tight text-on-surface md:text-4xl" id="title">Sign in to your vault</h1>
+              <p class="mt-3 text-sm leading-6 text-on-surface-variant">Secure your legacy workspace with a quick email verification step.</p>
+            </div>
+
+            <form class="space-y-5" id="authForm">
+              <div class="hidden" id="fullNameGroup">
+                <label class="mb-2 block text-sm font-semibold text-on-surface-variant" for="fullName">Full Name</label>
+                <div class="input-shell relative rounded-2xl transition duration-300">
+                  <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary">badge</span>
+                  <input class="h-14 w-full rounded-2xl border-0 bg-surface/95 px-12 text-base text-on-surface shadow-inner ring-1 ring-surface-variant transition focus:ring-2 focus:ring-primary-container" id="fullName" name="fullName" placeholder="Your name" type="text" />
+                </div>
+              </div>
+
+              <div>
+                <label class="mb-2 block text-sm font-semibold text-on-surface-variant" for="email">Email</label>
+                <div class="input-shell relative rounded-2xl transition duration-300">
+                  <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary">mail</span>
+                  <input class="h-14 w-full rounded-2xl border-0 bg-surface/95 px-12 text-base text-on-surface shadow-inner ring-1 ring-surface-variant transition focus:ring-2 focus:ring-primary-container" id="email" name="email" placeholder="you@memoria.vn" required type="email" />
+                </div>
+              </div>
+
+              <div class="hidden" id="phoneGroup">
+                <label class="mb-2 block text-sm font-semibold text-on-surface-variant" for="phoneNumber">Phone Number</label>
+                <div class="input-shell relative rounded-2xl transition duration-300">
+                  <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary">call</span>
+                  <input class="h-14 w-full rounded-2xl border-0 bg-surface/95 px-12 text-base text-on-surface shadow-inner ring-1 ring-surface-variant transition focus:ring-2 focus:ring-primary-container" id="phoneNumber" name="phoneNumber" placeholder="Optional" type="tel" />
+                </div>
+              </div>
+
+              <div>
+                <label class="mb-2 block text-sm font-semibold text-on-surface-variant" for="password">Password</label>
+                <div class="input-shell relative rounded-2xl transition duration-300">
+                  <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-primary">key</span>
+                  <input class="h-14 w-full rounded-2xl border-0 bg-surface/95 px-12 pr-14 text-base text-on-surface shadow-inner ring-1 ring-surface-variant transition focus:ring-2 focus:ring-primary-container" id="password" name="password" placeholder="Enter your password" required type="password" />
+                  <button class="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-on-surface-variant transition hover:bg-surface-variant" id="togglePassword" type="button">
+                    <span class="material-symbols-outlined text-[20px]">visibility</span>
+                  </button>
+                </div>
+              </div>
+
+              <p class="hidden rounded-2xl bg-error-container px-4 py-3 text-sm font-semibold text-error" id="authError"></p>
+
+              <button class="primary-action flex h-14 w-full items-center justify-center gap-2 rounded-full px-6 text-base font-bold text-on-primary transition duration-300 disabled:cursor-not-allowed disabled:opacity-70" id="submitButton" type="submit">
+                <span class="material-symbols-outlined text-[20px]">login</span>
+                Send Verification Code
+              </button>
+            </form>
+
+            <div class="my-6 flex items-center gap-3">
+              <div class="h-px flex-1 bg-outline-variant"></div>
+              <span class="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant">or</span>
+              <div class="h-px flex-1 bg-outline-variant"></div>
+            </div>
+
+            <div class="overflow-hidden rounded-full bg-surface/90 ring-1 ring-outline-variant transition duration-300 hover:-translate-y-0.5 hover:bg-white hover:shadow-lg" id="googleButtonWrap">
+              <div class="flex min-h-14 w-full items-center justify-center" id="googleButton"></div>
+            </div>
+            <p class="mt-3 hidden rounded-2xl bg-error-container px-4 py-3 text-center text-xs font-semibold text-error" id="googleHint"></p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="fixed inset-0 z-50 hidden items-center justify-center bg-[#30312c]/45 px-4 backdrop-blur-sm" id="otpModal">
+      <div class="otp-card w-full max-w-md rounded-[32px] p-7 soft-shadow ring-1 ring-white/80">
+        <div class="mb-6 flex items-start justify-between gap-4">
+          <div>
+            <p class="text-sm font-bold uppercase tracking-[0.16em] text-secondary">Email verification</p>
+            <h2 class="mt-2 text-2xl font-bold text-on-surface">Enter the 6-digit code</h2>
+            <p class="mt-2 text-sm leading-6 text-on-surface-variant" id="otpMessage">A code has been sent to your email.</p>
+          </div>
+          <button class="flex h-10 w-10 items-center justify-center rounded-full bg-surface-container-low text-on-surface-variant hover:bg-surface-variant" id="closeOtp" type="button">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        <form class="space-y-4" id="otpForm">
+          <input class="h-16 w-full rounded-2xl border-0 bg-surface text-center text-2xl font-bold tracking-[0.35em] text-on-surface shadow-inner ring-1 ring-surface-variant transition focus:ring-2 focus:ring-primary-container" id="otpCode" inputmode="numeric" maxlength="6" placeholder="000000" required />
+          <p class="hidden rounded-2xl bg-error-container px-4 py-3 text-sm font-semibold text-error" id="otpError"></p>
+          <button class="primary-action flex h-14 w-full items-center justify-center gap-2 rounded-full text-base font-bold text-on-primary transition duration-300" id="verifyButton" type="submit">
+            <span class="material-symbols-outlined text-[20px]">verified</span>
+            Verify
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <script src="../config.js"></script>
+    <script src="../auth.js"></script>
+    <script>
+      requestAnimationFrame(() => document.body.classList.add("is-ready"));
+
+      if (window.MemoriaAuth.getToken()) {
+        window.location.href = window.MemoriaAuth.getDashboardUrl();
+      }
+
+      let mode = "login";
+      let pendingVerificationId = null;
+      const loginTab = document.getElementById("loginTab");
+      const registerTab = document.getElementById("registerTab");
+      const fullNameGroup = document.getElementById("fullNameGroup");
+      const phoneGroup = document.getElementById("phoneGroup");
+      const title = document.getElementById("title");
+      const eyebrow = document.getElementById("eyebrow");
+      const form = document.getElementById("authForm");
+      const authError = document.getElementById("authError");
+      const submitButton = document.getElementById("submitButton");
+      const otpModal = document.getElementById("otpModal");
+      const otpForm = document.getElementById("otpForm");
+      const otpError = document.getElementById("otpError");
+      const otpMessage = document.getElementById("otpMessage");
+      const googleButton = document.getElementById("googleButton");
+      const googleHint = document.getElementById("googleHint");
+
+      function setMode(nextMode) {
+        mode = nextMode;
+        const isRegister = mode === "register";
+        fullNameGroup.classList.toggle("hidden", !isRegister);
+        phoneGroup.classList.toggle("hidden", !isRegister);
+        document.getElementById("fullName").required = isRegister;
+        loginTab.className = isRegister
+          ? "rounded-full px-4 py-3 text-sm font-bold text-on-surface-variant transition duration-300 hover:bg-white/60"
+          : "tab-active rounded-full px-4 py-3 text-sm font-bold transition duration-300";
+        registerTab.className = isRegister
+          ? "tab-active rounded-full px-4 py-3 text-sm font-bold transition duration-300"
+          : "rounded-full px-4 py-3 text-sm font-bold text-on-surface-variant transition duration-300 hover:bg-white/60";
+        eyebrow.textContent = isRegister ? "Create account" : "Welcome back";
+        title.textContent = isRegister ? "Create your vault" : "Sign in to your vault";
+      }
+
+      function showError(box, message) {
+        box.textContent = message;
+        box.classList.remove("hidden");
+      }
+
+      function showGoogleHint(message) {
+        googleHint.textContent = message;
+        googleHint.classList.remove("hidden");
+      }
+
+      function openOtp(challenge) {
+        pendingVerificationId = challenge.verificationId;
+        otpMessage.textContent = `A verification code has been sent to ${challenge.email}.`;
+        otpError.classList.add("hidden");
+        otpModal.classList.remove("hidden");
+        otpModal.classList.add("flex");
+        document.getElementById("otpCode").focus();
+      }
+
+      loginTab.addEventListener("click", () => setMode("login"));
+      registerTab.addEventListener("click", () => setMode("register"));
+      document.getElementById("closeOtp").addEventListener("click", () => {
+        otpModal.classList.add("hidden");
+        otpModal.classList.remove("flex");
+      });
+
+      document.getElementById("togglePassword").addEventListener("click", () => {
+        const input = document.getElementById("password");
+        const nextType = input.type === "password" ? "text" : "password";
+        input.type = nextType;
+        document.querySelector("#togglePassword .material-symbols-outlined").textContent = nextType === "password" ? "visibility" : "visibility_off";
+      });
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        authError.classList.add("hidden");
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<span class="material-symbols-outlined text-[20px] animate-spin">progress_activity</span> Sending code';
+
+        try {
+          const data = new FormData(form);
+          const challenge =
+            mode === "register"
+              ? await window.MemoriaAuth.register(data.get("fullName"), data.get("email"), data.get("password"), data.get("phoneNumber"))
+              : await window.MemoriaAuth.login(data.get("email"), data.get("password"));
+          openOtp(challenge);
+        } catch (error) {
+          showError(authError, error.message);
+        } finally {
+          submitButton.disabled = false;
+          submitButton.innerHTML = '<span class="material-symbols-outlined text-[20px]">login</span> Send Verification Code';
+        }
+      });
+
+      otpForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        otpError.classList.add("hidden");
+        try {
+          await window.MemoriaAuth.verifyCode(pendingVerificationId, document.getElementById("otpCode").value);
+          window.location.href = window.MemoriaAuth.getDashboardUrl();
+        } catch (error) {
+          showError(otpError, error.message);
+        }
+      });
+
+      function initGoogle() {
+        if (!window.MemoriaAuth.googleClientId || !window.google?.accounts?.id) {
+          showGoogleHint("Google Client ID is not configured or the Google script did not load.");
+          return;
+        }
+
+        try {
+          google.accounts.id.initialize({
+            client_id: window.MemoriaAuth.googleClientId,
+            callback: async (response) => {
+              authError.classList.add("hidden");
+              googleHint.classList.add("hidden");
+              try {
+                const challenge = await window.MemoriaAuth.loginWithGoogle(response.credential);
+                openOtp(challenge);
+              } catch (error) {
+                showError(authError, error.message);
+              }
+            },
+          });
+
+          google.accounts.id.renderButton(googleButton, {
+            theme: "outline",
+            size: "large",
+            type: "standard",
+            shape: "pill",
+            text: "continue_with",
+            logo_alignment: "center",
+            width: 492,
+          });
+        } catch (error) {
+          showGoogleHint("Could not initialize Google Sign-In. Check that Authorized JavaScript origins includes http://localhost:5500.");
+        }
+      }
+
+      window.addEventListener("load", initGoogle);
+    </script>
+  </body>
+</html>
