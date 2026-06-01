@@ -26,14 +26,64 @@
     return localStorage.getItem(TOKEN_KEY);
   }
 
+  function getUser() {
+    const raw = localStorage.getItem(USER_KEY);
+    if (!raw) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return null;
+    }
+  }
+
+  function isTokenExpired(token) {
+    if (!token) {
+      return true;
+    }
+
+    const parts = token.split(".");
+    if (parts.length !== 3) {
+      return false;
+    }
+
+    try {
+      const base64 = parts[1]
+        .replace(/-/g, "+")
+        .replace(/_/g, "/")
+        .padEnd(Math.ceil(parts[1].length / 4) * 4, "=");
+      const payload = JSON.parse(atob(base64));
+      return typeof payload.exp !== "number" || payload.exp * 1000 <= Date.now();
+    } catch {
+      return false;
+    }
+  }
+
   function logout() {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
     window.location.href = getLoginUrl();
   }
 
+  function clearSession() {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+  }
+
+  function handleUnauthorized() {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+    const loginUrl = new URL(getLoginUrl());
+    loginUrl.searchParams.set("reason", "session-expired");
+    window.location.href = loginUrl.href;
+  }
+
   function requireAuth() {
-    if (!isLoginPage() && !getToken()) {
+    const token = getToken();
+    if (!isLoginPage() && (!token || isTokenExpired(token))) {
+      clearSession();
       window.location.href = getLoginUrl();
     }
   }
@@ -52,6 +102,7 @@
   }
 
   async function login(email, password) {
+    clearSession();
     const response = await fetch(`${apiBase}/api/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -67,6 +118,7 @@
   }
 
   async function register(fullName, email, password, phoneNumber) {
+    clearSession();
     const response = await fetch(`${apiBase}/api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -82,6 +134,7 @@
   }
 
   async function loginWithGoogle(idToken) {
+    clearSession();
     const response = await fetch(`${apiBase}/api/auth/google`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -108,20 +161,45 @@
       throw new Error(payload.message || "The verification code is invalid.");
     }
 
+    storeSession(payload);
+    return payload;
+  }
+
+  function storeSession(payload) {
     localStorage.setItem(TOKEN_KEY, payload.token);
     localStorage.setItem(USER_KEY, JSON.stringify(payload.user));
-    return payload;
+  }
+
+  async function validateSession() {
+    const token = getToken();
+    if (!token) {
+      return false;
+    }
+
+    const response = await fetch(`${apiBase}/api/auth/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.ok;
   }
 
   window.MemoriaAuth = {
     apiBase,
     googleClientId,
     getToken,
+    getUser,
+    isTokenExpired,
     login,
     register,
     loginWithGoogle,
     verifyCode,
+    storeSession,
+    validateSession,
+    clearSession,
     logout,
+    handleUnauthorized,
     requireAuth,
     getDashboardUrl,
     getLoginUrl,

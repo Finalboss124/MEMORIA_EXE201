@@ -379,18 +379,19 @@
               <span class="font-label-md text-label-md text-on-surface-variant"
                 >Filter by</span
               >
-              <button
-                class="bg-surface-container-high text-on-surface-variant px-4 py-2 rounded-full font-label-sm text-label-sm flex items-center gap-1 hover:bg-surface-variant transition-colors"
+              <select
+                class="bg-surface-container-high text-on-surface-variant px-4 py-2 rounded-full font-label-sm text-label-sm border-none focus:ring-2 focus:ring-primary-container"
+                id="statusFilter"
               >
-                All Statuses
-                <span class="material-symbols-outlined text-[16px]"
-                  >expand_more</span
-                >
-              </button>
+                <option value="All">All Statuses</option>
+                <option value="Draft">Draft</option>
+                <option value="Scheduled">Scheduled</option>
+                <option value="Delivered">Delivered</option>
+              </select>
             </div>
           </div>
           <!-- Specialized List / Bento Grid -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter" id="lettersGrid">
             <!-- Delivery Card 1: Sealed -->
             <div
               class="bg-surface-container-lowest rounded-2xl p-6 marshmallow-shadow flex flex-col gap-4 relative overflow-hidden group hover:shadow-md transition-shadow"
@@ -537,7 +538,10 @@
         <div
           class="px-8 py-6 border-b border-surface-variant flex items-center justify-between bg-surface/50"
         >
-          <h2 class="font-headline-md text-headline-md text-on-surface">
+          <h2
+            class="font-headline-md text-headline-md text-on-surface"
+            id="composerTitle"
+          >
             Compose Future Letter
           </h2>
           <button
@@ -549,6 +553,24 @@
         </div>
         <!-- Body/Form -->
         <div class="p-8 overflow-y-auto flex-1 flex flex-col gap-stack-lg">
+          <div class="flex flex-col gap-2">
+            <label class="font-label-md text-label-md text-on-surface-variant"
+              >Title</label
+            >
+            <div class="relative">
+              <span
+                class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant"
+                >title</span
+              >
+              <input
+                class="w-full bg-surface text-on-surface font-body-md text-body-md rounded-xl pl-12 pr-4 py-4 border-none shadow-inner focus:ring-2 focus:ring-primary-container transition-shadow outline-none placeholder:text-on-surface-variant/50"
+                id="letterTitleInput"
+                maxlength="200"
+                placeholder="A title for this future letter"
+                type="text"
+              />
+            </div>
+          </div>
           <!-- Delivery Settings Row -->
           <div class="flex flex-col md:flex-row gap-gutter">
             <div class="flex-1 flex flex-col gap-2">
@@ -562,6 +584,7 @@
                 >
                 <input
                   class="w-full bg-surface text-on-surface font-body-md text-body-md rounded-xl pl-12 pr-4 py-4 border-none shadow-inner focus:ring-2 focus:ring-primary-container transition-shadow outline-none placeholder:text-on-surface-variant/50"
+                  id="recipientNameInput"
                   placeholder="Who is this for?"
                   type="text"
                 />
@@ -571,16 +594,73 @@
               <label class="font-label-md text-label-md text-on-surface-variant"
                 >Delivery Date</label
               >
+              <div class="grid grid-cols-[1fr_72px_72px_86px] gap-2">
+                <div class="relative">
+                  <span
+                    class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant"
+                    >event</span
+                  >
+                  <input
+                    class="w-full bg-surface text-on-surface font-body-md text-body-md rounded-xl pl-12 pr-4 py-4 border-none shadow-inner focus:ring-2 focus:ring-primary-container transition-shadow outline-none"
+                    id="deliveryDateInput"
+                    type="date"
+                  />
+                </div>
+                <select
+                  class="bg-surface text-on-surface font-body-md text-body-md rounded-xl px-3 py-4 border-none shadow-inner focus:ring-2 focus:ring-primary-container outline-none"
+                  id="deliveryHourInput"
+                ></select>
+                <select
+                  class="bg-surface text-on-surface font-body-md text-body-md rounded-xl px-3 py-4 border-none shadow-inner focus:ring-2 focus:ring-primary-container outline-none"
+                  id="deliveryMinuteInput"
+                ></select>
+                <select
+                  class="bg-surface text-on-surface font-body-md text-body-md rounded-xl px-3 py-4 border-none shadow-inner focus:ring-2 focus:ring-primary-container outline-none"
+                  id="deliveryPeriodInput"
+                >
+                  <option value="AM">AM</option>
+                  <option value="PM">PM</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col md:flex-row gap-gutter">
+            <div class="flex-1 flex flex-col gap-2">
+              <label class="font-label-md text-label-md text-on-surface-variant"
+                >Recipient Email</label
+              >
               <div class="relative">
                 <span
                   class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant"
-                  >event</span
+                  >alternate_email</span
                 >
                 <input
-                  class="w-full bg-surface text-on-surface font-body-md text-body-md rounded-xl pl-12 pr-4 py-4 border-none shadow-inner focus:ring-2 focus:ring-primary-container transition-shadow outline-none"
-                  type="date"
+                  class="w-full bg-surface text-on-surface font-body-md text-body-md rounded-xl pl-12 pr-4 py-4 border-none shadow-inner focus:ring-2 focus:ring-primary-container transition-shadow outline-none placeholder:text-on-surface-variant/50"
+                  id="recipientEmailInput"
+                  placeholder="name@example.com"
+                  type="email"
                 />
               </div>
+            </div>
+            <div class="flex-1 flex flex-col gap-2">
+              <label class="font-label-md text-label-md text-on-surface-variant"
+                >Attachments</label
+              >
+              <label
+                class="bg-surface text-on-surface font-body-md text-body-md rounded-xl px-4 py-4 shadow-inner cursor-pointer flex items-center gap-3 hover:bg-surface-container transition-colors"
+              >
+                <span class="material-symbols-outlined text-on-surface-variant"
+                  >attach_file</span
+                >
+                <span id="fileInputLabel">Document, video, or audio</span>
+                <input
+                  accept="text/*,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,video/*,audio/*"
+                  class="hidden"
+                  id="letterFilesInput"
+                  multiple
+                  type="file"
+                />
+              </label>
             </div>
           </div>
           <!-- Rich Text Area -->
@@ -627,10 +707,15 @@
               </div>
               <textarea
                 class="w-full flex-1 bg-transparent border-none p-6 resize-none outline-none font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/40"
+                id="letterBodyInput"
                 placeholder="Write something meaningful for the future..."
               ></textarea>
             </div>
           </div>
+          <p
+            class="hidden rounded-xl bg-error-container px-4 py-3 font-label-md text-label-md text-on-error-container"
+            id="composerStatus"
+          ></p>
         </div>
         <!-- Footer / Actions -->
         <div
@@ -638,11 +723,13 @@
         >
           <button
             class="px-6 py-3 rounded-full font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-colors"
+            id="saveDraftBtn"
           >
             Save as Draft
           </button>
           <button
             class="px-8 py-3 rounded-full bg-primary text-on-primary font-label-md text-label-md flex items-center gap-2 marshmallow-shadow hover:opacity-90 transition-opacity"
+            id="sealScheduleBtn"
           >
             <span class="material-symbols-outlined text-[18px]">lock</span>
             Seal &amp; Schedule
@@ -650,17 +737,38 @@
         </div>
       </div>
     </div>
-    <script src="../config.js"></script>
-    <script src="../auth.js"></script>
+    <script src="../config.js?v=20260601-auth6"></script>
+    <script src="../auth.js?v=20260601-auth6"></script>
     <script>
-      // Simple modal toggle logic
       const modal = document.getElementById("composerModal");
       const card = document.getElementById("composerCard");
+      const composerTitle = document.getElementById("composerTitle");
       const openBtn = document.getElementById("openComposerBtn");
       const closeBtn = document.getElementById("closeComposerBtn");
       const backdrop = document.getElementById("composerBackdrop");
+      const lettersGrid = document.getElementById("lettersGrid");
+      const titleInput = document.getElementById("letterTitleInput");
+      const recipientNameInput = document.getElementById("recipientNameInput");
+      const recipientEmailInput = document.getElementById("recipientEmailInput");
+      const deliveryDateInput = document.getElementById("deliveryDateInput");
+      const deliveryHourInput = document.getElementById("deliveryHourInput");
+      const deliveryMinuteInput = document.getElementById("deliveryMinuteInput");
+      const deliveryPeriodInput = document.getElementById("deliveryPeriodInput");
+      const bodyInput = document.getElementById("letterBodyInput");
+      const filesInput = document.getElementById("letterFilesInput");
+      const fileInputLabel = document.getElementById("fileInputLabel");
+      const statusBox = document.getElementById("composerStatus");
+      const saveDraftBtn = document.getElementById("saveDraftBtn");
+      const sealScheduleBtn = document.getElementById("sealScheduleBtn");
+      const statusFilter = document.getElementById("statusFilter");
+      const maxUploadBytes = 450 * 1024 * 1024;
+      let currentEditingLetterId = null;
+      let loadedLetters = [];
+      initTimeSelectors();
 
       function openModal() {
+        clearStatus();
+        setDefaultDeliveryDate();
         modal.classList.remove("opacity-0", "pointer-events-none");
         card.classList.remove("scale-95");
         card.classList.add("scale-100");
@@ -672,9 +780,351 @@
         card.classList.add("scale-95");
       }
 
-      openBtn.addEventListener("click", openModal);
+      openBtn.addEventListener("click", () => {
+        resetComposer();
+        openModal();
+      });
       closeBtn.addEventListener("click", closeModal);
       backdrop.addEventListener("click", closeModal);
+
+      filesInput.addEventListener("change", () => {
+        const files = Array.from(filesInput.files || []);
+        fileInputLabel.textContent = files.length
+          ? `${files.length} file${files.length > 1 ? "s" : ""} selected`
+          : "Document, video, or audio";
+      });
+
+      saveDraftBtn.addEventListener("click", () => createLetter(false));
+      sealScheduleBtn.addEventListener("click", () => createLetter(true));
+      statusFilter.addEventListener("change", () => renderLetters(loadedLetters));
+
+      document.addEventListener("DOMContentLoaded", loadLetters);
+
+      async function loadLetters() {
+        if (!window.MemoriaAuth?.getToken()) {
+          return;
+        }
+
+        lettersGrid.innerHTML = `
+          <div class="md:col-span-2 bg-surface-container-lowest rounded-2xl p-6 marshmallow-shadow text-on-surface-variant">
+            Loading future letters...
+          </div>
+        `;
+
+        try {
+          const response = await fetch(`${window.MemoriaAuth.apiBase}/api/future-letters`, {
+            headers: {
+              Authorization: `Bearer ${window.MemoriaAuth.getToken()}`,
+              "X-Memoria-User-Id": window.MemoriaAuth.getUser()?.userId || "",
+            },
+          });
+          const payload = await readPayload(response);
+          if (response.status === 401) {
+            throw new Error("Your login token was rejected by the API. Please sign out and sign in again.");
+            return;
+          }
+
+          if (!response.ok) {
+            throw new Error(payload.message || "Unable to load future letters.");
+          }
+          renderLetters(payload);
+        } catch (error) {
+          lettersGrid.innerHTML = `
+            <div class="md:col-span-2 bg-error-container rounded-2xl p-6 text-on-error-container">
+              ${escapeHtml(error.message)}
+            </div>
+          `;
+        }
+      }
+
+      async function createLetter(seal) {
+        clearStatus();
+        setBusy(true);
+        try {
+          const formData = new FormData();
+          formData.append("title", titleInput.value.trim());
+          formData.append("recipientName", recipientNameInput.value.trim());
+          formData.append("recipientEmail", recipientEmailInput.value.trim());
+          const deliveryDate = getSelectedDeliveryDate();
+          if (!deliveryDate || deliveryDate <= new Date()) {
+            throw new Error("Delivery date must be in the future.");
+          }
+
+          formData.append("deliveryDate", deliveryDate.toISOString());
+          formData.append("body", bodyInput.value.trim());
+          formData.append("deliveryChannel", "Email");
+          formData.append("seal", String(seal));
+
+          if (seal) {
+            Array.from(filesInput.files || []).forEach((file) => {
+              if (file.size > maxUploadBytes) {
+                throw new Error(`${file.name} is too large. Maximum size is 450 MB.`);
+              }
+
+              formData.append("files", file);
+            });
+          }
+
+          const endpoint = currentEditingLetterId
+            ? `${window.MemoriaAuth.apiBase}/api/future-letters/${currentEditingLetterId}`
+            : `${window.MemoriaAuth.apiBase}/api/future-letters`;
+          const response = await fetch(endpoint, {
+            method: currentEditingLetterId ? "PUT" : "POST",
+            headers: {
+              Authorization: `Bearer ${window.MemoriaAuth.getToken()}`,
+              "X-Memoria-User-Id": window.MemoriaAuth.getUser()?.userId || "",
+            },
+            body: formData,
+          });
+          const payload = await readPayload(response);
+          if (response.status === 401) {
+            throw new Error("Your login token was rejected by the API. Please sign out and sign in again.");
+            return;
+          }
+
+          if (!response.ok) {
+            throw new Error(payload.message || `Unable to save this future letter. HTTP ${response.status}.`);
+          }
+
+          resetComposer();
+          closeModal();
+          await loadLetters();
+        } catch (error) {
+          showStatus(error.message);
+        } finally {
+          setBusy(false);
+        }
+      }
+
+      function renderLetters(letters) {
+        loadedLetters = letters;
+        const selectedStatus = statusFilter.value;
+        const visibleLetters = selectedStatus === "All"
+          ? letters
+          : letters.filter((letter) => letter.sealStatus === selectedStatus);
+
+        if (!visibleLetters.length) {
+          lettersGrid.innerHTML = `
+            <div class="md:col-span-2 bg-surface-container-lowest rounded-2xl p-8 marshmallow-shadow text-on-surface-variant">
+              No ${selectedStatus === "All" ? "future letters" : selectedStatus.toLowerCase() + " letters"} yet.
+            </div>
+          `;
+          return;
+        }
+
+        lettersGrid.innerHTML = visibleLetters.map((letter) => {
+          const recipient = letter.recipients?.[0]?.recipientName || "Unknown recipient";
+          const attachmentCount = letter.attachments?.length || 0;
+          const isLocked = letter.isLocked;
+          const accentClass = isLocked ? "bg-secondary-fixed" : "bg-outline-variant";
+          const statusClass = isLocked
+            ? "bg-secondary-container text-on-secondary-container"
+            : "bg-surface-container-high text-on-surface-variant";
+          const statusIcon = isLocked ? "lock" : "edit";
+          const actionHtml = isLocked
+            ? ""
+            : `
+                <button
+                  class="mt-2 self-start px-4 py-2 rounded-full bg-primary text-on-primary font-label-sm text-label-sm hover:opacity-90 transition-opacity"
+                  data-edit-letter-id="${escapeHtml(letter.letterId)}"
+                  type="button"
+                >
+                  Continue draft
+                </button>
+              `;
+
+          return `
+            <article class="bg-surface-container-lowest rounded-2xl p-6 marshmallow-shadow flex flex-col gap-4 relative overflow-hidden group hover:shadow-md transition-shadow">
+              <div class="absolute left-0 top-0 bottom-0 w-1.5 ${accentClass}"></div>
+              <div class="flex justify-between items-start gap-4">
+                <div class="flex flex-col">
+                  <span class="font-label-sm text-label-sm text-on-surface-variant uppercase mb-1">To: ${escapeHtml(recipient)}</span>
+                  <h4 class="font-headline-md text-headline-md text-on-surface">${escapeHtml(letter.title)}</h4>
+                  ${actionHtml}
+                </div>
+                <div class="${statusClass} px-3 py-1 rounded-full font-label-sm text-label-sm flex items-center gap-1 shrink-0">
+                  <span class="material-symbols-outlined text-[14px]">${statusIcon}</span>
+                  ${escapeHtml(letter.sealStatus)}
+                </div>
+              </div>
+              <div class="flex items-center gap-3 mt-auto pt-4 border-t border-surface-variant/50">
+                <div class="w-10 h-10 bg-surface-container rounded-full flex items-center justify-center text-on-surface-variant">
+                  <span class="material-symbols-outlined text-[20px]">calendar_clock</span>
+                </div>
+                <div>
+                  <p class="font-label-sm text-label-sm text-on-surface-variant">Delivery Date</p>
+                  <p class="font-body-md text-body-md text-on-surface font-medium">${formatDate(letter.deliveryDate)}</p>
+                </div>
+                <div class="ml-auto bg-surface-container px-3 py-2 rounded-full font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[16px]">attach_file</span>
+                  ${attachmentCount}
+                </div>
+              </div>
+            </article>
+          `;
+        }).join("");
+
+        document.querySelectorAll("[data-edit-letter-id]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const letter = loadedLetters.find((item) => item.letterId === button.dataset.editLetterId);
+            if (letter) {
+              openDraft(letter);
+            }
+          });
+        });
+      }
+
+      function setBusy(isBusy) {
+        saveDraftBtn.disabled = isBusy;
+        sealScheduleBtn.disabled = isBusy;
+        saveDraftBtn.classList.toggle("opacity-50", isBusy);
+        sealScheduleBtn.classList.toggle("opacity-50", isBusy);
+      }
+
+      async function readPayload(response) {
+        const text = await response.text().catch(() => "");
+        if (!text) {
+          return {};
+        }
+
+        try {
+          return JSON.parse(text);
+        } catch {
+          return { message: text };
+        }
+      }
+
+      function showStatus(message) {
+        statusBox.textContent = message;
+        statusBox.classList.remove("hidden");
+      }
+
+      function clearStatus() {
+        statusBox.textContent = "";
+        statusBox.classList.add("hidden");
+      }
+
+      function resetComposer() {
+        currentEditingLetterId = null;
+        composerTitle.textContent = "Compose Future Letter";
+        saveDraftBtn.textContent = "Save as Draft";
+        titleInput.value = "";
+        recipientNameInput.value = "";
+        recipientEmailInput.value = "";
+        deliveryDateInput.value = "";
+        setDefaultDeliveryDate();
+        bodyInput.value = "";
+        filesInput.value = "";
+        fileInputLabel.textContent = "Document, video, or audio";
+      }
+
+      function openDraft(letter) {
+        currentEditingLetterId = letter.letterId;
+        composerTitle.textContent = "Continue Draft";
+        saveDraftBtn.textContent = "Update Draft";
+        titleInput.value = letter.title || "";
+        recipientNameInput.value = letter.recipients?.[0]?.recipientName || "";
+        recipientEmailInput.value = letter.recipients?.[0]?.recipientEmail || "";
+        bodyInput.value = letter.body || "";
+        filesInput.value = "";
+        fileInputLabel.textContent = "Add attachments when scheduling";
+        setDeliveryInputs(parseApiDate(letter.deliveryDate));
+        openModal();
+      }
+
+      function setDefaultDeliveryDate() {
+        if (deliveryDateInput.value) {
+          return;
+        }
+
+        const nextHour = new Date(Date.now() + 60 * 60 * 1000);
+        nextHour.setMinutes(0, 0, 0);
+        const localDate = new Date(nextHour.getTime() - nextHour.getTimezoneOffset() * 60000)
+          .toISOString()
+          .slice(0, 10);
+        const hour24 = nextHour.getHours();
+        const hour12 = hour24 % 12 || 12;
+
+        deliveryDateInput.value = localDate;
+        deliveryDateInput.min = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+          .toISOString()
+          .slice(0, 10);
+        deliveryHourInput.value = String(hour12).padStart(2, "0");
+        deliveryMinuteInput.value = "00";
+        deliveryPeriodInput.value = hour24 >= 12 ? "PM" : "AM";
+      }
+
+      function setDeliveryInputs(value) {
+        const localDate = new Date(value.getTime() - value.getTimezoneOffset() * 60000)
+          .toISOString()
+          .slice(0, 10);
+        const hour24 = value.getHours();
+        const hour12 = hour24 % 12 || 12;
+        deliveryDateInput.value = localDate;
+        deliveryDateInput.min = new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+          .toISOString()
+          .slice(0, 10);
+        deliveryHourInput.value = String(hour12).padStart(2, "0");
+        deliveryMinuteInput.value = String(value.getMinutes()).padStart(2, "0");
+        deliveryPeriodInput.value = hour24 >= 12 ? "PM" : "AM";
+      }
+
+      function parseApiDate(value) {
+        if (value instanceof Date) {
+          return value;
+        }
+
+        const text = String(value || "");
+        const hasTimeZone = /(?:z|[+-]\d{2}:\d{2})$/i.test(text);
+        return new Date(hasTimeZone ? text : `${text}Z`);
+      }
+
+      function initTimeSelectors() {
+        deliveryHourInput.innerHTML = Array.from({ length: 12 }, (_, index) => {
+          const value = String(index + 1).padStart(2, "0");
+          return `<option value="${value}">${value}</option>`;
+        }).join("");
+
+        deliveryMinuteInput.innerHTML = Array.from({ length: 60 }, (_, index) => {
+          const value = String(index).padStart(2, "0");
+          return `<option value="${value}">${value}</option>`;
+        }).join("");
+      }
+
+      function getSelectedDeliveryDate() {
+        if (!deliveryDateInput.value) {
+          return null;
+        }
+
+        const [year, month, day] = deliveryDateInput.value.split("-").map(Number);
+        let hour = Number(deliveryHourInput.value);
+        const minute = Number(deliveryMinuteInput.value);
+        if (deliveryPeriodInput.value === "PM" && hour !== 12) {
+          hour += 12;
+        }
+        if (deliveryPeriodInput.value === "AM" && hour === 12) {
+          hour = 0;
+        }
+
+        return new Date(year, month - 1, day, hour, minute, 0, 0);
+      }
+
+      function formatDate(value) {
+        return new Intl.DateTimeFormat("en", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        }).format(parseApiDate(value));
+      }
+
+      function escapeHtml(value) {
+        return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
     </script>
     <script>
       (function () {

@@ -77,7 +77,7 @@ public class AuthController : ControllerBase
 
     [HttpPost("login")]
     [AllowAnonymous]
-    public async Task<ActionResult<AuthChallengeResponse>> Login(LoginRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<object>> Login(LoginRequest request, CancellationToken cancellationToken)
     {
         var email = NormalizeEmail(request.Email);
         var user = await _dbContext.Users.FirstOrDefaultAsync(item => item.Email.ToLower() == email, cancellationToken);
@@ -87,12 +87,21 @@ public class AuthController : ControllerBase
             return Unauthorized(new { message = "Email or password is incorrect." });
         }
 
-        return Ok(await CreateAndSendChallengeAsync(user, "Login", cancellationToken));
+        if (!user.IsEmailVerified)
+        {
+            return Ok(await CreateAndSendChallengeAsync(user, "Register", cancellationToken));
+        }
+
+        user.LastLoginAt = DateTime.UtcNow;
+        user.UpdatedAt = DateTime.UtcNow;
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return Ok(CreateLoginResponse(user));
     }
 
     [HttpPost("google")]
     [AllowAnonymous]
-    public async Task<ActionResult<AuthChallengeResponse>> GoogleLogin(GoogleLoginRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<LoginResponse>> GoogleLogin(GoogleLoginRequest request, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(_googleAuthSettings.ClientId))
         {
@@ -141,8 +150,9 @@ public class AuthController : ControllerBase
             user.UpdatedAt = DateTime.UtcNow;
         }
 
+        user.LastLoginAt = DateTime.UtcNow;
         await _dbContext.SaveChangesAsync(cancellationToken);
-        return Ok(await CreateAndSendChallengeAsync(user, "GoogleLogin", cancellationToken));
+        return Ok(CreateLoginResponse(user));
     }
 
     [HttpPost("verify-login-code")]
@@ -187,32 +197,36 @@ public class AuthController : ControllerBase
         user.UpdatedAt = DateTime.UtcNow;
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        var expiresAt = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes);
-        var token = CreateToken(user, expiresAt);
-
-        return Ok(new LoginResponse(
-            token,
-            expiresAt,
-            new AuthUserResponse(user.UserId, user.FullName, user.Email, user.AvatarUrl)
-        ));
+        return Ok(CreateLoginResponse(user));
     }
 
     [HttpGet("me")]
     [Authorize]
     public async Task<ActionResult<AuthUserResponse>> Me(CancellationToken cancellationToken)
     {
-        var userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (!Guid.TryParse(userIdValue, out var userId))
+        var userId = GetCurrentUserId();
+        if (userId is null)
         {
             return Unauthorized();
         }
 
         var user = await _dbContext.Users
-            .Where(item => item.UserId == userId && item.IsActive)
+            .Where(item => item.UserId == userId.Value && item.IsActive)
             .Select(item => new AuthUserResponse(item.UserId, item.FullName, item.Email, item.AvatarUrl))
             .FirstOrDefaultAsync(cancellationToken);
 
         return user is null ? Unauthorized() : Ok(user);
+    }
+
+    private Guid? GetCurrentUserId()
+    {
+        var userIdValue =
+            User.FindFirstValue(JwtRegisteredClaimNames.Sub) ??
+            User.FindFirstValue("sub") ??
+            User.FindFirstValue("nameid") ??
+            User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        return Guid.TryParse(userIdValue, out var userId) ? userId : null;
     }
 
     private async Task<AuthChallengeResponse> CreateAndSendChallengeAsync(User user, string purpose, CancellationToken cancellationToken)
@@ -237,6 +251,18 @@ public class AuthController : ControllerBase
             MaskEmail(user.Email),
             verification.ExpiresAt,
             null);
+    }
+
+    private LoginResponse CreateLoginResponse(User user)
+    {
+        var expiresAt = DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes);
+        var token = CreateToken(user, expiresAt);
+
+        return new LoginResponse(
+            token,
+            expiresAt,
+            new AuthUserResponse(user.UserId, user.FullName, user.Email, user.AvatarUrl)
+        );
     }
 
     private async Task AssignUserRoleAsync(Guid userId, CancellationToken cancellationToken)

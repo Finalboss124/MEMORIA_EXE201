@@ -5,10 +5,17 @@ namespace MEMORIA_BE.Middlewares;
 public class ErrorHandlingMiddleware
 {
     private readonly RequestDelegate _next;
+    private readonly IWebHostEnvironment _environment;
+    private readonly ILogger<ErrorHandlingMiddleware> _logger;
 
-    public ErrorHandlingMiddleware(RequestDelegate next)
+    public ErrorHandlingMiddleware(
+        RequestDelegate next,
+        IWebHostEnvironment environment,
+        ILogger<ErrorHandlingMiddleware> logger)
     {
         _next = next;
+        _environment = environment;
+        _logger = logger;
     }
 
     public async Task InvokeAsync(HttpContext context)
@@ -17,16 +24,18 @@ public class ErrorHandlingMiddleware
         {
             await _next(context);
         }
-        catch
+        catch (Exception ex)
         {
             if (context.Response.HasStarted)
             {
                 throw;
             }
 
+            _logger.LogError(ex, "Unhandled request error.");
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-            await context.Response.WriteAsync("{\"message\":\"An unexpected error occurred.\"}");
+            var message = _environment.IsDevelopment() ? ex.Message.Replace("\"", "\\\"") : "An unexpected error occurred.";
+            await context.Response.WriteAsync($"{{\"message\":\"{message}\"}}");
         }
     }
 }
