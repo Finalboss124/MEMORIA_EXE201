@@ -19,6 +19,8 @@ public partial class Beneficiary
 
     public string? IdentityDocumentMasked { get; set; }
 
+    public string? IdentityDocumentHash { get; set; }
+
     public bool IsPrimary { get; set; }
 
     public DateTime CreatedAt { get; set; }

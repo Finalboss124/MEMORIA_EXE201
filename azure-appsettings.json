@@ -1,0 +1,90 @@
+﻿[
+    {
+        "value":  "Server=tcp:memori3453.database.windows.net,1433;Initial Catalog=MemoriaDbDeploy;Persist Security Info=False;User ID=deployAzuresa;Password=Deploy@15122004;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+        "name":  "ConnectionStrings__DefaultConnection"
+    },
+    {
+        "value":  "Production",
+        "name":  "ASPNETCORE_ENVIRONMENT"
+    },
+    {
+        "value":  "MEMORIA",
+        "name":  "Jwt__Issuer"
+    },
+    {
+        "value":  "MEMORIA",
+        "name":  "Jwt__Audience"
+    },
+    {
+        "value":  "9zB#mk7$wP2vX\u0026eR4JQ!nT5yc*uM8i01aZ@bY3cX6fV9gH2jK5lN8pQ1rS4tU7vW",
+        "name":  "Jwt__Key"
+    },
+    {
+        "value":  "60",
+        "name":  "Jwt__ExpiryMinutes"
+    },
+    {
+        "value":  "smtp.gmail.com",
+        "name":  "Smtp__Host"
+    },
+    {
+        "value":  "587",
+        "name":  "Smtp__Port"
+    },
+    {
+        "value":  "true",
+        "name":  "Smtp__EnableSsl"
+    },
+    {
+        "value":  "thienlnde180547@fpt.edu.vn",
+        "name":  "Smtp__Username"
+    },
+    {
+        "value":  "mohb akrq irzi uwjw",
+        "name":  "Smtp__Password"
+    },
+    {
+        "value":  "thienlnde180547@fpt.edu.vn",
+        "name":  "Smtp__FromEmail"
+    },
+    {
+        "value":  "Memoria",
+        "name":  "Smtp__FromName"
+    },
+    {
+        "value":  "CO_THI_DIEN_KHONG_THI_THOI",
+        "name":  "GoogleAuth__ClientId"
+    },
+    {
+        "value":  "dcdy2hhwb",
+        "name":  "Cloudinary__CloudName"
+    },
+    {
+        "value":  "333584288784575",
+        "name":  "Cloudinary__ApiKey"
+    },
+    {
+        "value":  "NVPYuZPS8t3bVf42EDxSelojp6g",
+        "name":  "Cloudinary__ApiSecret"
+    },
+    {
+        "value":  "upload-begin",
+        "name":  "Cloudinary__UploadPreset"
+    },
+    {
+        "value":  "memoria/future-letters",
+        "name":  "Cloudinary__Folder"
+    },
+    {
+        "value":  "60",
+        "name":  "FutureLetterDelivery__PollIntervalSeconds"
+    },
+    {
+        "value":  "25",
+        "name":  "FutureLetterDelivery__BatchSize"
+    },
+    {
+        "value":  "7VpaACkSqRW93lNTRIQ+r1GbB4XnfNhLhe3U1AUn4cg=",
+        "name":  "FutureLetterEncryption__Key"
+    }
+]

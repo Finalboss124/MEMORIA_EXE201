@@ -1,11 +1,12 @@
-<!doctype html>
+﻿<!doctype html>
 
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Memoria - Family Vault</title>
-    <!-- Google Fonts & Material Symbols -->
+    <link rel="icon" type="image/svg+xml" href="../assets/memoria-logo.svg" />
+<!-- Google Fonts & Material Symbols -->
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
     <link
@@ -220,14 +221,13 @@
       class="hidden md:flex flex-col h-full py-stack-md border-r border-outline-variant/30 bg-surface-container-low dark:bg-surface-container-lowest shadow-sm fixed left-0 top-0 h-screen w-64 z-40"
     >
       <div class="px-6 pb-8">
-        <h1 class="font-headline-md text-headline-md text-primary font-bold">
-          Memoria
-        </h1>
-        <p
-          class="font-label-sm text-label-sm text-on-surface-variant opacity-70"
-        >
-          Digital Legacy
-        </p>
+        <div class="flex items-center gap-2">
+  <img src="../assets/memoria-logo.svg" alt="Memoria" class="h-16 w-20 object-contain" />
+  <div class="leading-tight">
+    <h1 class="text-3xl font-extrabold tracking-tight text-primary">Memoria</h1>
+    <p class="mt-0.5 text-sm font-semibold text-on-surface-variant/80">Digital Legacy</p>
+  </div>
+</div>
       </div>
       <div class="flex-1 overflow-y-auto space-y-2">
         <a
@@ -274,31 +274,8 @@
           <span class="font-label-md text-label-md">Store</span>
         </a>
       </div>
-      <div class="px-4 pt-4">
-        <button
-          class="w-full bg-primary text-on-primary font-label-md text-label-md py-3 rounded-full hover:bg-surface-tint transition-colors flex items-center justify-center gap-2"
-        >
-          <span class="material-symbols-outlined">add_circle</span>
-          Capture Memory
-        </button>
-      </div>
-      <div class="mt-auto pt-8 space-y-2">
-        <a
-          class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300"
-          href="#"
-          data-auth-logout
-        >
-          <span class="material-symbols-outlined">help_outline</span>
-          <span class="font-label-md text-label-md">Help</span>
-        </a>
-        <a
-          class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300"
-          href="#"
-        >
-          <span class="material-symbols-outlined">logout</span>
-          <span class="font-label-md text-label-md">Sign Out</span>
-        </a>
-      </div>
+      
+      
     </nav>
     <!-- TopNavBar (Global) -->
     <header
@@ -314,7 +291,7 @@
       <div class="hidden md:block">
         <!-- Breadcrumbs or ambient title could go here on desktop -->
       </div>
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-3">
         <button
           class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full"
         >
@@ -532,14 +509,14 @@
                   Summer Lake House
                 </h3>
                 <p class="font-body-md text-body-md text-on-surface-variant">
-                  August 2023 • 142 Memories
+                  August 2023 â€¢ 142 Memories
                 </p>
               </div>
               <!-- Interaction Bar -->
               <div
                 class="flex items-center justify-between pt-4 border-t border-outline-variant/20"
               >
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3">
                   <button
                     class="flex items-center gap-1.5 text-on-surface-variant hover:text-primary transition-colors"
                   >
@@ -600,7 +577,7 @@
               <div
                 class="flex items-center justify-between pt-4 border-t border-outline-variant/20"
               >
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3">
                   <button
                     class="flex items-center gap-1.5 text-on-surface-variant hover:text-primary transition-colors"
                   >
@@ -739,7 +716,480 @@
       </footer>
     </main>
     <script src="../config.js"></script>
-    <script src="../auth.js?v=20260601-auth6"></script>
+    <script src="../auth.js?v=20260603-family-vault"></script>
+    <script>
+      (function () {
+        const API_BASE =
+          localStorage.getItem("memoria.api.baseUrl") ||
+          window.MEMORIA_CONFIG?.apiBaseUrl ||
+          "http://localhost:5284";
+        const token = localStorage.getItem("memoria.auth.token") || "";
+        const user = JSON.parse(localStorage.getItem("memoria.auth.user") || "null") || {};
+        const root = document.querySelector("main .max-w-container-max");
+        if (!root) {
+          return;
+        }
+
+        let vaultState = { members: [], posts: [] };
+        let selectedPost = null;
+
+        function headers(json = true) {
+          return {
+            ...(json ? { "Content-Type": "application/json" } : {}),
+            Authorization: token ? `Bearer ${token}` : "",
+            "X-Memoria-User-Id": user.userId || "",
+          };
+        }
+
+        function escapeHtml(value) {
+          return String(value ?? "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+        }
+
+        function initials(name) {
+          return String(name || "M")
+            .split(/\s+/)
+            .filter(Boolean)
+            .slice(0, 2)
+            .map((part) => part[0])
+            .join("")
+            .toUpperCase();
+        }
+
+        function avatar(member) {
+          if (member.avatarUrl) {
+            return `<img class="h-12 w-12 rounded-full object-cover ring-2 ring-background" src="${escapeHtml(member.avatarUrl)}" alt="${escapeHtml(member.name)}" />`;
+          }
+          return `<div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary-container text-sm font-extrabold text-primary ring-2 ring-background">${escapeHtml(initials(member.name))}</div>`;
+        }
+
+        function formatDate(value) {
+          if (!value) {
+            return "Just now";
+          }
+          const date = new Date(String(value).endsWith("Z") ? value : `${value}Z`);
+          if (Number.isNaN(date.getTime())) {
+            return "Just now";
+          }
+          return date.toLocaleString();
+        }
+
+        function renderShell() {
+          root.innerHTML = `
+            <header class="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <p class="text-sm font-extrabold uppercase tracking-[0.18em] text-secondary">Private Group Album</p>
+                <h1 class="mt-2 text-5xl font-extrabold tracking-tight text-on-background">Family Vault</h1>
+                <p class="mt-3 max-w-2xl text-base font-medium text-on-surface-variant">Invite trusted Memoria users, share small stories, preserve photos, and keep the conversation inside one private album.</p>
+              </div>
+              <div class="flex flex-wrap gap-3">
+                <button class="flex items-center gap-2 rounded-full bg-surface-container-lowest px-5 py-3 text-sm font-extrabold text-primary shadow-ambient ring-1 ring-outline-variant/30 hover:bg-surface-container-high" type="button" data-open-invite>
+                  <span class="material-symbols-outlined text-[20px]">group_add</span>
+                  Invite member
+                </button>
+                <button class="flex items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-extrabold text-on-primary shadow-interactive hover:opacity-90" type="button" data-open-post>
+                  <span class="material-symbols-outlined text-[20px]">add_photo_alternate</span>
+                  New post
+                </button>
+              </div>
+            </header>
+
+            <section class="mb-10 bg-secondary-container p-7 shadow-ambient" style="border-radius: 8px;">
+              <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h2 class="text-2xl font-extrabold text-on-secondary-container" data-vault-name>Family Vault</h2>
+                  <p class="mt-1 text-sm font-semibold text-on-secondary-container/75" data-vault-description>A private shared album for family memories.</p>
+                </div>
+                <span class="rounded-full bg-background/65 px-4 py-2 text-sm font-extrabold text-on-secondary-container" data-member-count>0 members</span>
+              </div>
+              <div class="grid grid-cols-1 gap-4 md:grid-cols-3" data-member-list></div>
+            </section>
+
+            <section class="mb-8 bg-surface-container-lowest p-5 shadow-ambient ring-1 ring-outline-variant/30" style="border-radius: 8px;">
+              <button class="flex w-full items-center gap-4 text-left" type="button" data-open-post>
+                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-primary-container text-sm font-extrabold text-primary">${escapeHtml(initials(user.fullName || user.email))}</div>
+                <div class="min-h-12 flex-1 rounded-full bg-surface px-5 py-3 text-on-surface-variant ring-1 ring-outline-variant/30">Share a photo or a short family story...</div>
+                <span class="material-symbols-outlined text-primary">photo_camera</span>
+              </button>
+            </section>
+
+            <section class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3" data-post-feed></section>
+          `;
+
+          document.querySelectorAll("[data-open-invite]").forEach((button) => button.addEventListener("click", openInviteModal));
+          document.querySelectorAll("[data-open-post]").forEach((button) => button.addEventListener("click", openPostModal));
+        }
+
+        function renderVault() {
+          root.querySelector("[data-vault-name]").textContent = vaultState.vaultName || "Family Vault";
+          root.querySelector("[data-vault-description]").textContent = vaultState.description || "A private shared album for family memories.";
+          const accepted = vaultState.members.filter((member) => member.status === "Accepted");
+          root.querySelector("[data-member-count]").textContent = `${accepted.length} member${accepted.length === 1 ? "" : "s"}`;
+          root.querySelector("[data-member-list]").innerHTML = vaultState.members.map((member) => `
+            <div class="bg-background/55 p-4 ring-1 ring-white/50" style="border-radius: 8px;">
+              <div class="flex items-center gap-3">
+                ${avatar(member)}
+                <div class="min-w-0 flex-1">
+                  <p class="truncate text-sm font-extrabold text-on-secondary-container">${escapeHtml(member.name)}</p>
+                  <p class="truncate text-xs font-semibold text-on-secondary-container/70">${escapeHtml(member.email || "")}</p>
+                </div>
+                <span class="rounded-full ${member.status === "Accepted" ? "bg-secondary-fixed" : "bg-primary-container"} px-3 py-1 text-xs font-extrabold text-primary">${escapeHtml(member.role === "Owner" ? "Owner" : member.status)}</span>
+              </div>
+            </div>
+          `).join("");
+
+          const feed = root.querySelector("[data-post-feed]");
+          if (!vaultState.posts.length) {
+            feed.innerHTML = `
+              <div class="md:col-span-2 xl:col-span-3 bg-surface-container-lowest p-10 text-center shadow-ambient ring-1 ring-outline-variant/30" style="border-radius: 8px;">
+                <span class="material-symbols-outlined text-5xl text-primary">add_photo_alternate</span>
+                <h3 class="mt-3 text-2xl font-extrabold text-on-background">Start your shared album</h3>
+                <p class="mx-auto mt-2 max-w-xl text-sm font-semibold text-on-surface-variant">Post the first photo or short memory. Everyone accepted into this vault can react and comment.</p>
+              </div>
+            `;
+            return;
+          }
+
+          feed.innerHTML = vaultState.posts.map(renderPostCard).join("");
+          feed.querySelectorAll("[data-like-post]").forEach((button) => button.addEventListener("click", toggleLike));
+          feed.querySelectorAll("[data-open-post-detail]").forEach((button) => button.addEventListener("click", openPostDetail));
+        }
+
+        function renderPostCard(post) {
+          const hasImage = post.fileUrl && String(post.fileMimeType || "").startsWith("image/");
+          if (!hasImage) {
+            return `
+              <article class="flex min-h-[310px] flex-col justify-between bg-primary-container p-7 shadow-ambient" style="border-radius: 8px;">
+                <button class="text-left" type="button" data-open-post-detail="${escapeHtml(post.memoryId)}">
+                  <span class="material-symbols-outlined text-4xl text-primary/50">format_quote</span>
+                  <p class="mt-4 text-xl font-semibold italic leading-8 text-on-primary-container">${escapeHtml(post.description || post.title)}</p>
+                  <p class="mt-6 text-sm font-bold text-on-primary-container/75">${escapeHtml(post.authorName)} • ${escapeHtml(formatDate(post.createdAt))}</p>
+                </button>
+                ${renderActions(post)}
+              </article>
+            `;
+          }
+
+          return `
+            <article class="group overflow-hidden bg-surface-container-lowest shadow-ambient ring-1 ring-outline-variant/30" style="border-radius: 8px;">
+              <button class="block w-full text-left" type="button" data-open-post-detail="${escapeHtml(post.memoryId)}">
+                <div class="aspect-[4/3] overflow-hidden bg-surface-container-high">
+                  <img class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" src="${escapeHtml(post.fileUrl)}" alt="${escapeHtml(post.title)}" />
+                </div>
+                <div class="p-5">
+                  <div class="flex items-center gap-3">
+                    <div class="flex h-9 w-9 items-center justify-center rounded-full bg-primary-container text-xs font-extrabold text-primary">${escapeHtml(initials(post.authorName))}</div>
+                    <div>
+                      <p class="text-sm font-extrabold text-on-background">${escapeHtml(post.authorName)}</p>
+                      <p class="text-xs font-semibold text-on-surface-variant">${escapeHtml(formatDate(post.createdAt))}</p>
+                    </div>
+                  </div>
+                  <h3 class="mt-4 text-2xl font-extrabold text-on-background">${escapeHtml(post.title)}</h3>
+                  ${post.description ? `<p class="mt-2 line-clamp-2 text-sm font-medium text-on-surface-variant">${escapeHtml(post.description)}</p>` : ""}
+                </div>
+              </button>
+              <div class="px-5 pb-5">${renderActions(post)}</div>
+            </article>
+          `;
+        }
+
+        function renderActions(post) {
+          return `
+            <div class="mt-4 flex items-center justify-between border-t border-outline-variant/30 pt-4">
+              <div class="flex items-center gap-4">
+                <button class="flex items-center gap-1.5 text-sm font-bold ${post.likedByMe ? "text-primary" : "text-on-surface-variant"} hover:text-primary" type="button" data-like-post="${escapeHtml(post.memoryId)}">
+                  <span class="material-symbols-outlined text-[22px]" style="font-variation-settings:'FILL' ${post.likedByMe ? 1 : 0}">favorite</span>
+                  <span>${post.likeCount || 0}</span>
+                </button>
+                <button class="flex items-center gap-1.5 text-sm font-bold text-on-surface-variant hover:text-primary" type="button" data-open-post-detail="${escapeHtml(post.memoryId)}">
+                  <span class="material-symbols-outlined text-[22px]">chat_bubble</span>
+                  <span>${post.commentCount || 0}</span>
+                </button>
+              </div>
+              <button class="text-on-surface-variant hover:text-primary" type="button" title="Share">
+                <span class="material-symbols-outlined text-[22px]">ios_share</span>
+              </button>
+            </div>
+          `;
+        }
+
+        async function loadVault() {
+          try {
+            const response = await fetch(`${API_BASE}/api/family-vault`, { headers: headers() });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok) {
+              throw new Error(payload.message || "Unable to load Family Vault.");
+            }
+            vaultState = payload;
+            renderVault();
+          } catch (error) {
+            root.querySelector("[data-post-feed]").innerHTML = `<div class="md:col-span-2 xl:col-span-3 bg-error-container p-5 text-sm font-bold text-error" style="border-radius: 8px;">${escapeHtml(error.message)}</div>`;
+          }
+        }
+
+        function ensureModalLayer() {
+          let layer = document.querySelector("[data-family-modal-layer]");
+          if (!layer) {
+            layer = document.createElement("div");
+            layer.dataset.familyModalLayer = "true";
+            layer.className = "hidden fixed inset-0 z-[90] items-center justify-center overflow-hidden bg-[#30312c]/45 p-4 backdrop-blur-sm";
+          }
+          if (layer.parentElement !== document.documentElement) {
+            document.documentElement.appendChild(layer);
+          }
+          Object.assign(layer.style, {
+            position: "fixed",
+            inset: "0",
+            width: "100vw",
+            height: "100svh",
+          });
+          return layer;
+        }
+
+        function closeModal() {
+          const layer = ensureModalLayer();
+          layer.classList.add("hidden");
+          layer.classList.remove("flex");
+          layer.innerHTML = "";
+          document.documentElement.style.overflow = "";
+          document.body.style.overflow = "";
+        }
+
+        function showModal(html) {
+          const layer = ensureModalLayer();
+          layer.innerHTML = html;
+          layer.classList.remove("hidden");
+          layer.classList.add("flex");
+          document.documentElement.style.overflow = "hidden";
+          document.body.style.overflow = "hidden";
+          layer.querySelectorAll("[data-close-modal]").forEach((button) => button.addEventListener("click", closeModal));
+        }
+
+        function openInviteModal() {
+          showModal(`
+            <div class="mx-auto mt-16 w-[min(92vw,34rem)] bg-surface-container-lowest p-7 shadow-2xl ring-1 ring-outline-variant/40" style="border-radius: 8px;">
+              <div class="mb-6 flex items-start justify-between gap-4">
+                <div>
+                  <p class="text-sm font-extrabold uppercase tracking-[0.18em] text-secondary">Family Vault</p>
+                  <h2 class="mt-2 text-3xl font-extrabold text-on-background">Invite member</h2>
+                  <p class="mt-2 text-sm font-semibold text-on-surface-variant">Only existing Memoria accounts can join this private album.</p>
+                </div>
+                <button class="flex h-11 w-11 items-center justify-center rounded-full bg-surface-container-high text-on-surface-variant" type="button" data-close-modal><span class="material-symbols-outlined">close</span></button>
+              </div>
+              <form data-invite-form>
+                <label class="text-sm font-bold text-on-surface-variant">Member email
+                  <input class="mt-2 h-14 w-full border-0 bg-surface px-4 text-base font-semibold text-on-surface ring-1 ring-outline-variant focus:ring-2 focus:ring-primary-container" style="border-radius: 8px;" name="email" type="email" placeholder="family@example.com" required />
+                </label>
+                <p class="mt-4 hidden bg-error-container p-3 text-sm font-bold text-error" style="border-radius: 8px;" data-invite-error></p>
+                <button class="mt-5 w-full rounded-full bg-primary px-5 py-4 text-base font-extrabold text-on-primary" type="submit">Send invitation</button>
+              </form>
+            </div>
+          `);
+          document.querySelector("[data-invite-form]").addEventListener("submit", submitInvite);
+        }
+
+        async function submitInvite(event) {
+          event.preventDefault();
+          const form = event.currentTarget;
+          const error = form.querySelector("[data-invite-error]");
+          error.classList.add("hidden");
+          try {
+            const response = await fetch(`${API_BASE}/api/family-vault/invite`, {
+              method: "POST",
+              headers: headers(),
+              body: JSON.stringify({ email: form.elements.email.value.trim() }),
+            });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok) {
+              throw new Error(payload.message || "Unable to send invitation.");
+            }
+            closeModal();
+            await loadVault();
+          } catch (err) {
+            error.textContent = err.message;
+            error.classList.remove("hidden");
+          }
+        }
+
+        function openPostModal() {
+          showModal(`
+            <div class="mx-auto mt-10 w-[min(94vw,44rem)] bg-surface-container-lowest shadow-2xl ring-1 ring-outline-variant/40" style="border-radius: 8px;">
+              <div class="flex items-center justify-between border-b border-outline-variant/30 p-6">
+                <div>
+                  <p class="text-sm font-extrabold uppercase tracking-[0.18em] text-secondary">Family Vault</p>
+                  <h2 class="mt-1 text-3xl font-extrabold text-on-background">Create post</h2>
+                </div>
+                <button class="flex h-11 w-11 items-center justify-center rounded-full bg-surface-container-high text-on-surface-variant" type="button" data-close-modal><span class="material-symbols-outlined">close</span></button>
+              </div>
+              <form class="grid gap-4 p-6" data-post-form>
+                <input class="h-13 border-0 bg-surface px-4 text-base font-semibold ring-1 ring-outline-variant focus:ring-2 focus:ring-primary-container" style="border-radius: 8px;" name="title" placeholder="Memory title" />
+                <textarea class="min-h-32 border-0 bg-surface px-4 py-3 text-base font-medium ring-1 ring-outline-variant focus:ring-2 focus:ring-primary-container" style="border-radius: 8px;" name="description" placeholder="Write a short story for your family..."></textarea>
+                <label class="flex min-h-40 cursor-pointer flex-col items-center justify-center border-2 border-dashed border-outline-variant bg-surface text-center" style="border-radius: 8px;">
+                  <span class="material-symbols-outlined text-4xl text-primary">add_photo_alternate</span>
+                  <span class="mt-2 text-sm font-extrabold text-on-surface">Upload image or video</span>
+                  <span class="mt-1 text-xs font-semibold text-on-surface-variant" data-post-file-name>PNG, JPG, MP4 up to 80 MB</span>
+                  <input class="hidden" name="file" type="file" accept="image/*,video/*" />
+                </label>
+                <p class="hidden bg-error-container p-3 text-sm font-bold text-error" style="border-radius: 8px;" data-post-error></p>
+                <button class="rounded-full bg-primary px-5 py-4 text-base font-extrabold text-on-primary" type="submit">Publish post</button>
+              </form>
+            </div>
+          `);
+          const form = document.querySelector("[data-post-form]");
+          form.elements.file.addEventListener("change", () => {
+            form.querySelector("[data-post-file-name]").textContent = form.elements.file.files?.[0]?.name || "PNG, JPG, MP4 up to 80 MB";
+          });
+          form.addEventListener("submit", submitPost);
+        }
+
+        async function submitPost(event) {
+          event.preventDefault();
+          const form = event.currentTarget;
+          const error = form.querySelector("[data-post-error]");
+          error.classList.add("hidden");
+          const data = new FormData();
+          data.append("title", form.elements.title.value.trim());
+          data.append("description", form.elements.description.value.trim());
+          if (form.elements.file.files?.[0]) {
+            data.append("file", form.elements.file.files[0]);
+          }
+          try {
+            const response = await fetch(`${API_BASE}/api/family-vault/posts`, {
+              method: "POST",
+              headers: headers(false),
+              body: data,
+            });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok) {
+              throw new Error(payload.message || "Unable to publish post.");
+            }
+            closeModal();
+            await loadVault();
+          } catch (err) {
+            error.textContent = err.message;
+            error.classList.remove("hidden");
+          }
+        }
+
+        async function toggleLike(event) {
+          event.preventDefault();
+          event.stopPropagation();
+          const id = event.currentTarget.dataset.likePost;
+          const response = await fetch(`${API_BASE}/api/family-vault/posts/${id}/like`, {
+            method: "POST",
+            headers: headers(),
+          });
+          if (!response.ok) {
+            return;
+          }
+          const result = await response.json();
+          vaultState.posts = vaultState.posts.map((post) => post.memoryId === id ? { ...post, ...result } : post);
+          renderVault();
+        }
+
+        function openPostDetail(event) {
+          const id = event.currentTarget.dataset.openPostDetail;
+          selectedPost = vaultState.posts.find((post) => post.memoryId === id);
+          if (!selectedPost) {
+            return;
+          }
+          renderDetailModal();
+        }
+
+        function renderDetailModal() {
+          const post = selectedPost;
+          const hasImage = post.fileUrl && String(post.fileMimeType || "").startsWith("image/");
+          showModal(`
+            <div class="grid h-[min(760px,calc(100svh-32px))] w-[min(calc(100vw-32px),88rem)] grid-cols-1 overflow-hidden bg-surface-container-lowest shadow-2xl ring-1 ring-outline-variant/40 lg:grid-cols-[1.35fr_0.65fr]" style="border-radius: 8px;">
+              <div class="flex min-h-0 items-center justify-center overflow-hidden bg-[#191b17]">
+                ${hasImage ? `<img class="max-h-full max-w-full object-contain" src="${escapeHtml(post.fileUrl)}" alt="${escapeHtml(post.title)}" />` : `<div class="p-10 text-center text-white"><span class="material-symbols-outlined text-6xl opacity-60">format_quote</span><p class="mt-4 text-3xl font-bold italic leading-tight">${escapeHtml(post.description || post.title)}</p></div>`}
+              </div>
+              <div class="flex min-h-0 flex-col">
+                <div class="flex items-start justify-between gap-4 border-b border-outline-variant/30 p-5">
+                  <div>
+                    <h2 class="text-2xl font-extrabold text-on-background">${escapeHtml(post.title)}</h2>
+                    <p class="mt-1 text-sm font-semibold text-on-surface-variant">${escapeHtml(post.authorName)} • ${escapeHtml(formatDate(post.createdAt))}</p>
+                    ${post.description && hasImage ? `<p class="mt-3 text-sm font-medium leading-6 text-on-surface-variant">${escapeHtml(post.description)}</p>` : ""}
+                  </div>
+                  <button class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-container-high text-on-surface-variant" type="button" data-close-modal><span class="material-symbols-outlined">close</span></button>
+                </div>
+                <div class="flex items-center gap-5 border-b border-outline-variant/30 px-5 py-3">
+                  <button class="flex items-center gap-2 text-sm font-extrabold ${post.likedByMe ? "text-primary" : "text-on-surface-variant"}" type="button" data-detail-like="${escapeHtml(post.memoryId)}">
+                    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' ${post.likedByMe ? 1 : 0}">favorite</span>
+                    <span>${post.likeCount || 0}</span>
+                  </button>
+                  <div class="flex items-center gap-2 text-sm font-extrabold text-on-surface-variant">
+                    <span class="material-symbols-outlined">chat_bubble</span>
+                    <span>${post.commentCount || 0}</span>
+                  </div>
+                </div>
+                <div class="min-h-0 flex-1 overflow-y-auto p-5" data-comment-list>
+                  ${renderComments(post)}
+                </div>
+                <form class="border-t border-outline-variant/30 p-4" data-comment-form>
+                  <div class="flex gap-3">
+                    <input class="h-12 flex-1 border-0 bg-surface px-4 text-sm font-semibold ring-1 ring-outline-variant focus:ring-2 focus:ring-primary-container" style="border-radius: 8px;" name="text" placeholder="Write a comment..." required />
+                    <button class="rounded-full bg-primary px-5 text-sm font-extrabold text-on-primary" type="submit">Send</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          `);
+          document.querySelector("[data-detail-like]").addEventListener("click", async (event) => {
+            event.preventDefault();
+            await toggleLike({ preventDefault() {}, stopPropagation() {}, currentTarget: { dataset: { likePost: post.memoryId } } });
+            selectedPost = vaultState.posts.find((item) => item.memoryId === post.memoryId);
+            renderDetailModal();
+          });
+          document.querySelector("[data-comment-form]").addEventListener("submit", submitComment);
+        }
+
+        function renderComments(post) {
+          if (!post.comments?.length) {
+            return `<div class="bg-surface p-5 text-sm font-semibold text-on-surface-variant" style="border-radius: 8px;">No comments yet. Start the conversation.</div>`;
+          }
+          return post.comments.map((comment) => `
+            <div class="mb-4 flex gap-3">
+              <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-container text-xs font-extrabold text-primary">${escapeHtml(initials(comment.authorName))}</div>
+              <div class="bg-surface px-4 py-3" style="border-radius: 8px;">
+                <p class="text-sm font-extrabold text-on-background">${escapeHtml(comment.authorName)}</p>
+                <p class="mt-1 text-sm font-medium leading-6 text-on-surface-variant">${escapeHtml(comment.text)}</p>
+              </div>
+            </div>
+          `).join("");
+        }
+
+        async function submitComment(event) {
+          event.preventDefault();
+          const form = event.currentTarget;
+          const text = form.elements.text.value.trim();
+          if (!text || !selectedPost) {
+            return;
+          }
+          const response = await fetch(`${API_BASE}/api/family-vault/posts/${selectedPost.memoryId}/comments`, {
+            method: "POST",
+            headers: headers(),
+            body: JSON.stringify({ text }),
+          });
+          const payload = await response.json().catch(() => ({}));
+          if (!response.ok) {
+            return;
+          }
+          vaultState.posts = vaultState.posts.map((post) => post.memoryId === selectedPost.memoryId
+            ? { ...post, comments: [...(post.comments || []), payload], commentCount: (post.commentCount || 0) + 1 }
+            : post);
+          selectedPost = vaultState.posts.find((post) => post.memoryId === selectedPost.memoryId);
+          renderDetailModal();
+        }
+
+        renderShell();
+        loadVault();
+      })();
+    </script>
     <script>
       (function () {
         const page = document.body;
@@ -782,3 +1232,11 @@
     </script>
   </body>
 </html>
+
+
+
+
+
+
+
+

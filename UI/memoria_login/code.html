@@ -1,10 +1,11 @@
-<!doctype html>
+﻿<!doctype html>
 <html class="light" lang="en">
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Memoria - Login</title>
-    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link rel="icon" type="image/svg+xml" href="../assets/memoria-logo.svg" />
+<link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
@@ -226,13 +227,13 @@
       <section class="relative flex min-h-screen items-center justify-center overflow-hidden px-5 py-8 sm:px-8 lg:px-10">
         <div class="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.36),rgba(245,244,236,0.18))]"></div>
         <div class="w-full max-w-[420px]">
-          <div class="relative mb-5 flex items-center justify-between">
-            <div>
-              <h2 class="text-2xl font-bold text-primary">Memoria</h2>
-              <p class="mt-1 text-sm font-medium text-on-surface-variant">Digital Legacy</p>
-            </div>
-            <div class="flex h-11 w-11 items-center justify-center rounded-full bg-primary-container text-primary ambient-shadow ring-4 ring-white/60">
-              <span class="material-symbols-outlined">memory</span>
+          <div class="relative mb-5 flex items-center justify-center">
+            <div class="flex items-center gap-2">
+  <img src="../assets/memoria-logo.svg" alt="Memoria" class="h-20 w-24 object-contain" />
+              <div class="leading-tight">
+                <h2 class="text-4xl font-extrabold tracking-tight text-primary">Memoria</h2>
+                <p class="mt-1 text-lg font-semibold text-on-surface-variant/80">Digital Legacy</p>
+              </div>
             </div>
           </div>
 
@@ -331,7 +332,7 @@
     </div>
 
     <script src="../config.js?v=20260601-auth6"></script>
-    <script src="../auth.js?v=20260601-auth6"></script>
+    <script src="../auth.js?v=20260603-role3"></script>
     <script>
       requestAnimationFrame(() => document.body.classList.add("is-ready"));
 
@@ -444,7 +445,7 @@
         otpError.classList.add("hidden");
         try {
           await window.MemoriaAuth.verifyCode(pendingVerificationId, document.getElementById("otpCode").value);
-          window.location.href = window.MemoriaAuth.getDashboardUrl();
+          window.location.href = window.MemoriaAuth.getHomeUrl();
         } catch (error) {
           showError(otpError, error.message);
         }
@@ -490,7 +491,7 @@
       function handleAuthPayload(payload) {
         if (payload?.token) {
           window.MemoriaAuth.storeSession(payload);
-          window.location.href = window.MemoriaAuth.getDashboardUrl();
+          window.location.href = window.MemoriaAuth.getHomeUrl();
           return;
         }
 
@@ -499,3 +500,8 @@
     </script>
   </body>
 </html>
+
+
+
+
+

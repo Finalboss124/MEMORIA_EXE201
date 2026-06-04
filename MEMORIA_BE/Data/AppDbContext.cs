@@ -58,6 +58,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<MemoryFile> MemoryFiles { get; set; }
 
+    public virtual DbSet<MemoryLike> MemoryLikes { get; set; }
+
     public virtual DbSet<NotificationLog> NotificationLogs { get; set; }
 
     public virtual DbSet<ProofOfLifeCheckin> ProofOfLifeCheckins { get; set; }
@@ -130,6 +132,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetime())");
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.FullName).HasMaxLength(150);
+            entity.Property(e => e.IdentityDocumentHash).HasMaxLength(128);
             entity.Property(e => e.IdentityDocumentMasked).HasMaxLength(50);
             entity.Property(e => e.PhoneNumber).HasMaxLength(20);
             entity.Property(e => e.Relationship).HasMaxLength(100);
@@ -457,6 +460,7 @@ public partial class AppDbContext : DbContext
 
             entity.Property(e => e.UnlockRequestId).HasDefaultValueSql("(newid())");
             entity.Property(e => e.RequestReason).HasMaxLength(1000);
+            entity.Property(e => e.ClaimTokenHash).HasMaxLength(128);
             entity.Property(e => e.RequestStatus)
                 .HasMaxLength(40)
                 .HasDefaultValue("Submitted");
@@ -561,6 +565,25 @@ public partial class AppDbContext : DbContext
                 .HasConstraintName("FK_MemoryFiles_Memories");
         });
 
+        modelBuilder.Entity<MemoryLike>(entity =>
+        {
+            entity.HasKey(e => e.MemoryLikeId).HasName("PK_MemoryLikes");
+
+            entity.HasIndex(e => new { e.MemoryId, e.UserId }, "IX_MemoryLikes_Memory_User").IsUnique();
+
+            entity.Property(e => e.MemoryLikeId).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetime())");
+
+            entity.HasOne(d => d.Memory).WithMany()
+                .HasForeignKey(d => d.MemoryId)
+                .HasConstraintName("FK_MemoryLikes_Memories");
+
+            entity.HasOne(d => d.User).WithMany()
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_MemoryLikes_Users");
+        });
+
         modelBuilder.Entity<NotificationLog>(entity =>
         {
             entity.HasKey(e => e.NotificationId).HasName("PK__Notifica__20CF2E123DF37A8F");
@@ -608,9 +631,11 @@ public partial class AppDbContext : DbContext
 
             entity.Property(e => e.ScheduleId).HasDefaultValueSql("(newid())");
             entity.Property(e => e.CheckIntervalDays).HasDefaultValue(30);
+            entity.Property(e => e.CheckIntervalMinutes).HasDefaultValue(0);
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetime())");
             entity.Property(e => e.GracePeriodDays).HasDefaultValue(14);
             entity.Property(e => e.IsActive).HasDefaultValue(true);
+            entity.Property(e => e.IsConfigurationLocked).HasDefaultValue(false);
             entity.Property(e => e.MaxFailedAttempts).HasDefaultValue(3);
             entity.Property(e => e.PreferredChannel)
                 .HasMaxLength(30)
@@ -668,6 +693,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.MimeType).HasMaxLength(100);
             entity.Property(e => e.OriginalFileName).HasMaxLength(255);
             entity.Property(e => e.Sha256Hash).HasMaxLength(128);
+            entity.Property(e => e.StoragePurpose).HasMaxLength(50);
             entity.Property(e => e.StoredFileName).HasMaxLength(255);
 
             entity.HasOne(d => d.OwnerUser).WithMany(p => p.StoredFiles)
@@ -757,6 +783,8 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.UserId).HasDefaultValueSql("(newid())");
             entity.Property(e => e.Address).HasMaxLength(500);
             entity.Property(e => e.AvatarUrl).HasMaxLength(1000);
+            entity.Property(e => e.CccdIssuedPlace).HasMaxLength(255);
+            entity.Property(e => e.CccdNumber).HasMaxLength(30);
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetime())");
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.FullName).HasMaxLength(150);
@@ -764,6 +792,9 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.IsActive).HasDefaultValue(true);
             entity.Property(e => e.PasswordHash).HasMaxLength(500);
             entity.Property(e => e.PhoneNumber).HasMaxLength(20);
+            entity.Property(e => e.UserStatus)
+                .HasMaxLength(40)
+                .HasDefaultValue("Active");
         });
 
         modelBuilder.Entity<UserRole>(entity =>

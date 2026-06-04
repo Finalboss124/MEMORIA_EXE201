@@ -37,9 +37,13 @@ CREATE TABLE Users (
     DateOfBirth DATE NULL,
     Gender NVARCHAR(20) NULL,
     Address NVARCHAR(500) NULL,
+    CccdNumber NVARCHAR(30) NULL,
+    CccdIssuedDate DATE NULL,
+    CccdIssuedPlace NVARCHAR(255) NULL,
     IsEmailVerified BIT NOT NULL DEFAULT 0,
     IsPhoneVerified BIT NOT NULL DEFAULT 0,
     IsActive BIT NOT NULL DEFAULT 1,
+    UserStatus NVARCHAR(40) NOT NULL DEFAULT 'Active',
     LastLoginAt DATETIME2 NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
     UpdatedAt DATETIME2 NULL
@@ -84,13 +88,13 @@ CREATE TABLE AuthVerificationCodes (
     VerificationId UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID() PRIMARY KEY,
     UserId UNIQUEIDENTIFIER NOT NULL,
     CodeHash NVARCHAR(500) NOT NULL,
-    Purpose NVARCHAR(40) NOT NULL, -- Login, Register, GoogleLogin
+    Purpose NVARCHAR(40) NOT NULL, -- Login, Register, GoogleLogin, LegacyContract
     ExpiresAt DATETIME2 NOT NULL,
     ConsumedAt DATETIME2 NULL,
     AttemptCount INT NOT NULL DEFAULT 0,
     CreatedAt DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
     CONSTRAINT FK_AuthVerificationCodes_Users FOREIGN KEY (UserId) REFERENCES Users(UserId),
-    CONSTRAINT CK_AuthVerificationCodes_Purpose CHECK (Purpose IN ('Login','Register','GoogleLogin'))
+    CONSTRAINT CK_AuthVerificationCodes_Purpose CHECK (Purpose IN ('Login','Register','GoogleLogin','LegacyContract','LegacyClaimOtp'))
 );
 
 -- =========================================================
@@ -160,6 +164,7 @@ CREATE TABLE StoredFiles (
     MimeType NVARCHAR(100) NOT NULL,
     FileSizeBytes BIGINT NOT NULL,
     Sha256Hash NVARCHAR(128) NULL,
+    StoragePurpose NVARCHAR(50) NULL,
     EncryptionStatus NVARCHAR(30) NOT NULL DEFAULT 'Encrypted', -- Plain, Encrypted
     CreatedAt DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
     CONSTRAINT FK_StoredFiles_Users FOREIGN KEY (OwnerUserId) REFERENCES Users(UserId),
@@ -305,6 +310,7 @@ CREATE TABLE Beneficiaries (
     PhoneNumber NVARCHAR(20) NULL,
     Relationship NVARCHAR(100) NOT NULL,
     IdentityDocumentMasked NVARCHAR(50) NULL,
+    IdentityDocumentHash NVARCHAR(128) NULL,
     IsPrimary BIT NOT NULL DEFAULT 0,
     CreatedAt DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
     CONSTRAINT FK_Beneficiaries_Users FOREIGN KEY (OwnerUserId) REFERENCES Users(UserId)
@@ -391,10 +397,12 @@ CREATE TABLE ProofOfLifeSchedules (
     ScheduleId UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID() PRIMARY KEY,
     LegacyPlanId UNIQUEIDENTIFIER NOT NULL,
     CheckIntervalDays INT NOT NULL DEFAULT 30,
+    CheckIntervalMinutes INT NOT NULL DEFAULT 0,
     GracePeriodDays INT NOT NULL DEFAULT 14,
     MaxFailedAttempts INT NOT NULL DEFAULT 3,
     PreferredChannel NVARCHAR(30) NOT NULL DEFAULT 'Email', -- App, Email, SMS, Zalo
     IsActive BIT NOT NULL DEFAULT 1,
+    IsConfigurationLocked BIT NOT NULL DEFAULT 0,
     NextCheckAt DATETIME2 NOT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
     CONSTRAINT FK_POLSchedules_Plans FOREIGN KEY (LegacyPlanId) REFERENCES LegacyPlans(LegacyPlanId) ON DELETE CASCADE,
@@ -425,6 +433,10 @@ CREATE TABLE LegacyUnlockRequests (
     RequestedByBeneficiaryId UNIQUEIDENTIFIER NOT NULL,
     RequestStatus NVARCHAR(40) NOT NULL DEFAULT 'Submitted', -- Submitted, OcrChecking, HumanReview, Approved, Rejected, Released
     RequestReason NVARCHAR(1000) NULL,
+    ClaimTokenHash NVARCHAR(128) NULL,
+    ClaimTokenExpiresAt DATETIME2 NULL,
+    BeneficiaryNotifiedAt DATETIME2 NULL,
+    BeneficiaryVerifiedAt DATETIME2 NULL,
     SubmittedAt DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
     DecidedAt DATETIME2 NULL,
     CONSTRAINT FK_UnlockRequests_Plans FOREIGN KEY (LegacyPlanId) REFERENCES LegacyPlans(LegacyPlanId),
@@ -445,7 +457,7 @@ CREATE TABLE LegalDocumentSubmissions (
     CreatedAt DATETIME2 NOT NULL DEFAULT SYSDATETIME(),
     CONSTRAINT FK_LegalDocs_Requests FOREIGN KEY (UnlockRequestId) REFERENCES LegacyUnlockRequests(UnlockRequestId) ON DELETE CASCADE,
     CONSTRAINT FK_LegalDocs_Files FOREIGN KEY (FileId) REFERENCES StoredFiles(FileId),
-    CONSTRAINT CK_LegalDoc_Type CHECK (DocumentType IN ('DeathCertificate','MissingPersonCourtDecision')),
+    CONSTRAINT CK_LegalDoc_Type CHECK (DocumentType IN ('DeathCertificate','MissingPersonCourtDecision','BeneficiaryIdentityDocument')),
     CONSTRAINT CK_LegalDoc_Ocr CHECK (OcrStatus IN ('Pending','Passed','Failed')),
     CONSTRAINT CK_LegalDoc_Human CHECK (HumanReviewStatus IN ('Pending','Approved','Rejected'))
 );

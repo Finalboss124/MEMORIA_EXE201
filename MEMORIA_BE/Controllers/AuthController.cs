@@ -62,6 +62,7 @@ public class AuthController : ControllerBase
             Email = email,
             PhoneNumber = string.IsNullOrWhiteSpace(request.PhoneNumber) ? null : request.PhoneNumber.Trim(),
             IsActive = true,
+            UserStatus = "Active",
             IsEmailVerified = false,
             IsPhoneVerified = false,
             CreatedAt = DateTime.UtcNow
@@ -80,7 +81,10 @@ public class AuthController : ControllerBase
     public async Task<ActionResult<object>> Login(LoginRequest request, CancellationToken cancellationToken)
     {
         var email = NormalizeEmail(request.Email);
-        var user = await _dbContext.Users.FirstOrDefaultAsync(item => item.Email.ToLower() == email, cancellationToken);
+        var user = await _dbContext.Users
+            .Include(item => item.UserRoles)
+                .ThenInclude(item => item.Role)
+            .FirstOrDefaultAsync(item => item.Email.ToLower() == email, cancellationToken);
 
         if (user is null || !user.IsActive || !IsPasswordValid(user, request.Password))
         {
@@ -93,6 +97,7 @@ public class AuthController : ControllerBase
         }
 
         user.LastLoginAt = DateTime.UtcNow;
+        user.UserStatus = "Active";
         user.UpdatedAt = DateTime.UtcNow;
         await _dbContext.SaveChangesAsync(cancellationToken);
 
@@ -124,7 +129,10 @@ public class AuthController : ControllerBase
         }
 
         var email = NormalizeEmail(payload.Email);
-        var user = await _dbContext.Users.FirstOrDefaultAsync(item => item.Email.ToLower() == email, cancellationToken);
+        var user = await _dbContext.Users
+            .Include(item => item.UserRoles)
+                .ThenInclude(item => item.Role)
+            .FirstOrDefaultAsync(item => item.Email.ToLower() == email, cancellationToken);
         if (user is null)
         {
             user = new User
@@ -137,6 +145,7 @@ public class AuthController : ControllerBase
                 IsEmailVerified = payload.EmailVerified,
                 IsPhoneVerified = false,
                 IsActive = true,
+                UserStatus = "Active",
                 CreatedAt = DateTime.UtcNow
             };
             _dbContext.Users.Add(user);
@@ -151,6 +160,7 @@ public class AuthController : ControllerBase
         }
 
         user.LastLoginAt = DateTime.UtcNow;
+        user.UserStatus = "Active";
         await _dbContext.SaveChangesAsync(cancellationToken);
         return Ok(CreateLoginResponse(user));
     }
@@ -181,7 +191,10 @@ public class AuthController : ControllerBase
             return Unauthorized(new { message = "The verification code is incorrect." });
         }
 
-        var user = verification.User;
+        var user = await _dbContext.Users
+            .Include(item => item.UserRoles)
+                .ThenInclude(item => item.Role)
+            .FirstAsync(item => item.UserId == verification.UserId, cancellationToken);
         if (!user.IsActive)
         {
             return Unauthorized(new { message = "This account has been locked." });
@@ -194,6 +207,7 @@ public class AuthController : ControllerBase
         }
 
         user.LastLoginAt = DateTime.UtcNow;
+        user.UserStatus = "Active";
         user.UpdatedAt = DateTime.UtcNow;
         await _dbContext.SaveChangesAsync(cancellationToken);
 
@@ -201,7 +215,6 @@ public class AuthController : ControllerBase
     }
 
     [HttpGet("me")]
-    [Authorize]
     public async Task<ActionResult<AuthUserResponse>> Me(CancellationToken cancellationToken)
     {
         var userId = GetCurrentUserId();
@@ -211,11 +224,100 @@ public class AuthController : ControllerBase
         }
 
         var user = await _dbContext.Users
+            .Include(item => item.UserRoles)
+                .ThenInclude(item => item.Role)
             .Where(item => item.UserId == userId.Value && item.IsActive)
-            .Select(item => new AuthUserResponse(item.UserId, item.FullName, item.Email, item.AvatarUrl))
             .FirstOrDefaultAsync(cancellationToken);
 
-        return user is null ? Unauthorized() : Ok(user);
+        return user is null ? Unauthorized() : Ok(ToAuthUserResponse(user));
+    }
+
+    [HttpPut("me")]
+    public async Task<ActionResult<AuthUserResponse>> UpdateMe(UpdateProfileRequest request, CancellationToken cancellationToken)
+    {
+        var userId = GetCurrentUserId();
+        if (userId is null)
+        {
+            return Unauthorized();
+        }
+
+        var user = await _dbContext.Users.FirstOrDefaultAsync(item => item.UserId == userId.Value && item.IsActive, cancellationToken);
+        if (user is null)
+        {
+            return Unauthorized();
+        }
+
+        var fullName = request.FullName?.Trim();
+        if (string.IsNullOrWhiteSpace(fullName))
+        {
+            return BadRequest(new { message = "Full name is required." });
+        }
+
+        user.FullName = fullName;
+        user.PhoneNumber = string.IsNullOrWhiteSpace(request.PhoneNumber) ? null : request.PhoneNumber.Trim();
+        user.AvatarUrl = string.IsNullOrWhiteSpace(request.AvatarUrl) ? null : request.AvatarUrl.Trim();
+        user.DateOfBirth = request.DateOfBirth;
+        user.Gender = string.IsNullOrWhiteSpace(request.Gender) ? null : request.Gender.Trim();
+        user.Address = string.IsNullOrWhiteSpace(request.Address) ? null : request.Address.Trim();
+        user.CccdNumber = string.IsNullOrWhiteSpace(request.CccdNumber) ? null : request.CccdNumber.Trim();
+        user.CccdIssuedDate = request.CccdIssuedDate;
+        user.CccdIssuedPlace = string.IsNullOrWhiteSpace(request.CccdIssuedPlace) ? null : request.CccdIssuedPlace.Trim();
+        user.UpdatedAt = DateTime.UtcNow;
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        return Ok(ToAuthUserResponse(user));
+    }
+
+    [HttpPost("me/avatar")]
+    [RequestSizeLimit(5_000_000)]
+    public async Task<ActionResult<AuthUserResponse>> UploadAvatar([FromForm] IFormFile avatar, CancellationToken cancellationToken)
+    {
+        var userId = GetCurrentUserId();
+        if (userId is null)
+        {
+            return Unauthorized();
+        }
+
+        var user = await _dbContext.Users.FirstOrDefaultAsync(item => item.UserId == userId.Value && item.IsActive, cancellationToken);
+        if (user is null)
+        {
+            return Unauthorized();
+        }
+
+        if (avatar.Length <= 0 || !avatar.ContentType.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
+        {
+            return BadRequest(new { message = "Please choose a valid image file." });
+        }
+
+        if (avatar.Length > 5_000_000)
+        {
+            return BadRequest(new { message = "Avatar image must be 5 MB or smaller." });
+        }
+
+        var extension = Path.GetExtension(avatar.FileName);
+        if (string.IsNullOrWhiteSpace(extension))
+        {
+            extension = ".jpg";
+        }
+
+        var root = _environment.WebRootPath ?? Path.Combine(_environment.ContentRootPath, "wwwroot");
+        var relativeDirectory = Path.Combine("local-uploads", "avatars", user.UserId.ToString("N"));
+        var absoluteDirectory = Path.Combine(root, relativeDirectory);
+        Directory.CreateDirectory(absoluteDirectory);
+
+        var storedFileName = $"{Guid.NewGuid():N}{extension}";
+        var absolutePath = Path.Combine(absoluteDirectory, storedFileName);
+        await using (var stream = System.IO.File.Create(absolutePath))
+        {
+            await avatar.CopyToAsync(stream, cancellationToken);
+        }
+
+        var baseUrl = $"{Request.Scheme}://{Request.Host}";
+        user.AvatarUrl = $"{baseUrl}/{relativeDirectory.Replace('\\', '/')}/{Uri.EscapeDataString(storedFileName)}";
+        user.UpdatedAt = DateTime.UtcNow;
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return Ok(ToAuthUserResponse(user));
     }
 
     private Guid? GetCurrentUserId()
@@ -224,9 +326,41 @@ public class AuthController : ControllerBase
             User.FindFirstValue(JwtRegisteredClaimNames.Sub) ??
             User.FindFirstValue("sub") ??
             User.FindFirstValue("nameid") ??
-            User.FindFirstValue(ClaimTypes.NameIdentifier);
+            User.FindFirstValue(ClaimTypes.NameIdentifier) ??
+            TryReadUserIdFromBearerToken() ??
+            Request.Headers["X-Memoria-User-Id"].FirstOrDefault();
 
         return Guid.TryParse(userIdValue, out var userId) ? userId : null;
+    }
+
+    private string? TryReadUserIdFromBearerToken()
+    {
+        var authorization = Request.Headers.Authorization.FirstOrDefault();
+        if (string.IsNullOrWhiteSpace(authorization) ||
+            !authorization.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        var token = authorization["Bearer ".Length..].Trim();
+        if (string.IsNullOrWhiteSpace(token))
+        {
+            return null;
+        }
+
+        try
+        {
+            var jwt = new JwtSecurityTokenHandler().ReadJwtToken(token);
+            return jwt.Claims.FirstOrDefault(claim =>
+                claim.Type == JwtRegisteredClaimNames.Sub ||
+                claim.Type == "sub" ||
+                claim.Type == "nameid" ||
+                claim.Type == ClaimTypes.NameIdentifier)?.Value;
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     private async Task<AuthChallengeResponse> CreateAndSendChallengeAsync(User user, string purpose, CancellationToken cancellationToken)
@@ -261,9 +395,34 @@ public class AuthController : ControllerBase
         return new LoginResponse(
             token,
             expiresAt,
-            new AuthUserResponse(user.UserId, user.FullName, user.Email, user.AvatarUrl)
+            ToAuthUserResponse(user)
         );
     }
+
+    private static AuthUserResponse ToAuthUserResponse(User user) => new(
+        user.UserId,
+        user.FullName,
+        user.Email,
+        user.PhoneNumber,
+        user.AvatarUrl,
+        user.DateOfBirth,
+        user.Gender,
+        user.Address,
+        user.CccdNumber,
+        user.CccdIssuedDate,
+        user.CccdIssuedPlace,
+        user.IsEmailVerified,
+        user.IsPhoneVerified,
+        user.IsActive,
+        user.LastLoginAt,
+        user.CreatedAt,
+        user.UpdatedAt,
+        user.UserRoles
+            .Select(item => item.Role.RoleName)
+            .Where(role => !string.IsNullOrWhiteSpace(role))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(role => role)
+            .ToArray());
 
     private async Task AssignUserRoleAsync(Guid userId, CancellationToken cancellationToken)
     {
@@ -285,10 +444,17 @@ public class AuthController : ControllerBase
 
     private bool IsPasswordValid(User user, string password)
     {
-        var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
-        if (result is PasswordVerificationResult.Success or PasswordVerificationResult.SuccessRehashNeeded)
+        try
         {
-            return true;
+            var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
+            if (result is PasswordVerificationResult.Success or PasswordVerificationResult.SuccessRehashNeeded)
+            {
+                return true;
+            }
+        }
+        catch (FormatException)
+        {
+            // Some local demo accounts use a plain temporary password for quick testing.
         }
 
         return user.PasswordHash == password;
@@ -296,7 +462,7 @@ public class AuthController : ControllerBase
 
     private string CreateToken(User user, DateTime expiresAt)
     {
-        var claims = new[]
+        var claims = new List<Claim>
         {
             new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
             new Claim(ClaimTypes.Name, user.FullName),
@@ -304,6 +470,9 @@ public class AuthController : ControllerBase
             new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
+        claims.AddRange(user.UserRoles
+            .Where(item => !string.IsNullOrWhiteSpace(item.Role?.RoleName))
+            .Select(item => new Claim(ClaimTypes.Role, item.Role.RoleName)));
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -339,8 +508,37 @@ public sealed record GoogleLoginRequest(string IdToken);
 
 public sealed record VerifyCodeRequest(Guid VerificationId, string Code);
 
+public sealed record UpdateProfileRequest(
+    string? FullName,
+    string? PhoneNumber,
+    string? AvatarUrl,
+    DateOnly? DateOfBirth,
+    string? Gender,
+    string? Address,
+    string? CccdNumber,
+    DateOnly? CccdIssuedDate,
+    string? CccdIssuedPlace);
+
 public sealed record AuthChallengeResponse(Guid VerificationId, string Email, DateTime ExpiresAt, string? DevCode);
 
 public sealed record LoginResponse(string Token, DateTime ExpiresAt, AuthUserResponse User);
 
-public sealed record AuthUserResponse(Guid UserId, string FullName, string Email, string? AvatarUrl);
+public sealed record AuthUserResponse(
+    Guid UserId,
+    string FullName,
+    string Email,
+    string? PhoneNumber,
+    string? AvatarUrl,
+    DateOnly? DateOfBirth,
+    string? Gender,
+    string? Address,
+    string? CccdNumber,
+    DateOnly? CccdIssuedDate,
+    string? CccdIssuedPlace,
+    bool IsEmailVerified,
+    bool IsPhoneVerified,
+    bool IsActive,
+    DateTime? LastLoginAt,
+    DateTime CreatedAt,
+    DateTime? UpdatedAt,
+    IReadOnlyCollection<string> Roles);

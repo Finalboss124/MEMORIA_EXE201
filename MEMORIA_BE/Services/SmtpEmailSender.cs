@@ -103,6 +103,216 @@ public class SmtpEmailSender : IEmailSender
         }
     }
 
+    public async Task SendProofOfLifePingAsync(string toEmail, string toName, int attemptNumber, DateTime responseDeadline, string confirmAliveUrl, CancellationToken cancellationToken)
+    {
+        var subject = $"Memoria proof-of-life check #{attemptNumber}";
+        var body = $"""
+            Hi {Fallback(toName, "there")},
+
+            Memoria has not detected activity on your account. Please sign in before {responseDeadline:yyyy-MM-dd HH:mm} UTC to confirm you are safe and still controlling your account.
+
+            If you have already signed in, you can ignore this message.
+            """;
+        var html = $$"""
+            <!doctype html>
+            <html lang="en">
+            <body style="margin:0;padding:0;background:#fbf9f1;font-family:'Segoe UI',Arial,sans-serif;color:#1b1c17;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="padding:36px 16px;background:#fbf9f1;">
+                <tr>
+                  <td align="center">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:580px;background:#ffffff;border-radius:28px;overflow:hidden;box-shadow:0 24px 70px -32px rgba(112,88,91,.45);">
+                      <tr>
+                        <td style="padding:32px;background:#fadadd;">
+                          <div style="font-size:28px;line-height:34px;font-weight:800;color:#70585b;">Memoria</div>
+                          <div style="margin-top:4px;font-size:13px;font-weight:700;color:#4f4445;">Proof-of-life check</div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding:32px;">
+                          <h1 style="margin:0 0 12px;font-size:28px;line-height:36px;color:#1b1c17;">Are you safe?</h1>
+                          <p style="margin:0 0 20px;color:#4f4445;font-size:16px;line-height:26px;">Hi {{System.Net.WebUtility.HtmlEncode(Fallback(toName, "there"))}}, Memoria has not detected account activity. Please confirm before <strong>{{responseDeadline:yyyy-MM-dd HH:mm}} UTC</strong>.</p>
+                          <a href="{{System.Net.WebUtility.HtmlEncode(confirmAliveUrl)}}" style="display:inline-block;background:#70585b;color:#ffffff;border-radius:999px;padding:15px 28px;font-size:16px;font-weight:800;text-decoration:none;">I'm alive</a>
+                          <p style="margin:22px 0 0;color:#807475;font-size:13px;line-height:20px;">If you do not confirm after 3 checks, Memoria may notify your primary beneficiary.</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </body>
+            </html>
+            """;
+
+        await SendSimpleEmailAsync(toEmail, toName, subject, body, html, cancellationToken);
+    }
+
+    public async Task SendLegacyPrimaryBeneficiaryNoticeAsync(string toEmail, string toName, string ownerName, string claimUrl, CancellationToken cancellationToken)
+    {
+        var subject = "Memoria legacy transfer notice";
+        var body = $"""
+            Hi {Fallback(toName, "there")},
+
+            Memoria has detected prolonged inactivity for {Fallback(ownerName, "the account owner")} and marked the account as suspected absent.
+
+            You are listed as a beneficiary. Please use this secure link to submit the required identity and death-certificate documents within 7 days:
+            {claimUrl}
+            """;
+        var html = $$"""
+            <!doctype html>
+            <html lang="en">
+            <body style="margin:0;padding:0;background:#fbf9f1;font-family:'Segoe UI',Arial,sans-serif;color:#1b1c17;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="padding:36px 16px;background:#fbf9f1;">
+                <tr><td align="center">
+                  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;background:#ffffff;border-radius:28px;overflow:hidden;box-shadow:0 24px 70px -32px rgba(112,88,91,.45);">
+                    <tr><td style="padding:32px;background:#fadadd;"><div style="font-size:28px;font-weight:800;color:#70585b;">Memoria</div><div style="margin-top:4px;font-size:13px;font-weight:700;color:#4f4445;">Legacy claim verification</div></td></tr>
+                    <tr><td style="padding:32px;">
+                      <h1 style="margin:0 0 12px;font-size:28px;line-height:36px;color:#1b1c17;">Legacy documents required</h1>
+                      <p style="margin:0 0 20px;color:#4f4445;font-size:16px;line-height:26px;">Hi {{System.Net.WebUtility.HtmlEncode(Fallback(toName, "there"))}}, Memoria has detected prolonged inactivity for {{System.Net.WebUtility.HtmlEncode(Fallback(ownerName, "the account owner"))}}. Please verify your identity and upload legal documents within 7 days.</p>
+                      <a href="{{System.Net.WebUtility.HtmlEncode(claimUrl)}}" style="display:inline-block;background:#70585b;color:#ffffff;border-radius:999px;padding:15px 28px;font-size:16px;font-weight:800;text-decoration:none;">Claim legacy securely</a>
+                    </td></tr>
+                  </table>
+                </td></tr>
+              </table>
+            </body>
+            </html>
+            """;
+        await SendSimpleEmailAsync(toEmail, toName, subject, body, html, cancellationToken);
+    }
+
+    public async Task SendLegacyClaimRejectedAsync(string toEmail, string toName, string ownerName, string reason, string claimUrl, CancellationToken cancellationToken)
+    {
+        var subject = "Memoria legacy claim needs more documents";
+        var body = $"""
+            Hi {Fallback(toName, "there")},
+
+            Memoria reviewed your legacy claim for {Fallback(ownerName, "the account owner")} and needs you to resubmit documents.
+
+            Reason:
+            {reason}
+
+            Please use your secure claim link again within 7 days:
+            {claimUrl}
+            """;
+        var html = $$"""
+            <!doctype html>
+            <html lang="en">
+            <body style="margin:0;padding:0;background:#fbf9f1;font-family:'Segoe UI',Arial,sans-serif;color:#1b1c17;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="padding:36px 16px;background:#fbf9f1;">
+                <tr><td align="center">
+                  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;background:#ffffff;border-radius:28px;overflow:hidden;box-shadow:0 24px 70px -32px rgba(112,88,91,.45);">
+                    <tr><td style="padding:32px;background:#ffdad6;"><div style="font-size:28px;font-weight:800;color:#70585b;">Memoria</div><div style="margin-top:4px;font-size:13px;font-weight:700;color:#93000a;">Additional documents required</div></td></tr>
+                    <tr><td style="padding:32px;">
+                      <h1 style="margin:0 0 12px;font-size:28px;line-height:36px;color:#1b1c17;">Please resubmit your claim documents</h1>
+                      <p style="margin:0 0 14px;color:#4f4445;font-size:16px;line-height:26px;">Hi {{System.Net.WebUtility.HtmlEncode(Fallback(toName, "there"))}}, Memoria needs more information before approving the legacy claim for {{System.Net.WebUtility.HtmlEncode(Fallback(ownerName, "the account owner"))}}.</p>
+                      <div style="margin:18px 0;padding:18px;background:#fbf9f1;border:1px solid #d2c3c4;border-radius:18px;color:#1b1c17;font-size:15px;line-height:24px;"><strong>Reason:</strong><br>{{System.Net.WebUtility.HtmlEncode(reason)}}</div>
+                      <a href="{{System.Net.WebUtility.HtmlEncode(claimUrl)}}" style="display:inline-block;background:#70585b;color:#ffffff;border-radius:999px;padding:15px 28px;font-size:16px;font-weight:800;text-decoration:none;">Resubmit documents</a>
+                      <p style="margin:22px 0 0;color:#807475;font-size:13px;line-height:20px;">Please resubmit within 7 days before Memoria moves to the next beneficiary.</p>
+                    </td></tr>
+                  </table>
+                </td></tr>
+              </table>
+            </body>
+            </html>
+            """;
+        await SendSimpleEmailAsync(toEmail, toName, subject, body, html, cancellationToken);
+    }
+
+    public async Task SendLegacyReleaseAsync(
+        string toEmail,
+        string toName,
+        string ownerName,
+        IReadOnlyCollection<LegacyReleaseFile> files,
+        CancellationToken cancellationToken)
+    {
+        var fileLines = files.Count == 0
+            ? "No legacy files were attached to this account."
+            : string.Join(Environment.NewLine, files.Select(item => $"- {item.FileName}: {item.FileUrl}"));
+        var subject = "Memoria legacy archive released";
+        var body = $"""
+            Hi {Fallback(toName, "there")},
+
+            Memoria has approved your legacy claim for {Fallback(ownerName, "the account owner")}.
+
+            Legacy files:
+            {fileLines}
+            """;
+        var filesHtml = files.Count == 0
+            ? "<p style=\"margin:0;color:#4f4445;font-size:15px;line-height:24px;\">No legacy files were attached to this account.</p>"
+            : string.Join("", files.Select(item =>
+            {
+                var safeName = WebUtility.HtmlEncode(item.FileName);
+                var safeUrl = WebUtility.HtmlEncode(item.FileUrl);
+                var safeBucket = WebUtility.HtmlEncode(item.Bucket);
+                return $"""
+                    <tr>
+                      <td style="padding:12px 0;border-top:1px solid #e4e3db;">
+                        <div style="font-size:15px;font-weight:800;color:#1b1c17;word-break:break-word;">{safeName}</div>
+                        <div style="margin-top:3px;color:#807475;font-size:12px;line-height:18px;">{safeBucket} - {FormatFileSize(item.FileSizeBytes)}</div>
+                      </td>
+                      <td align="right" style="padding:12px 0 12px 12px;border-top:1px solid #e4e3db;">
+                        <a href="{safeUrl}" style="display:inline-block;background:#70585b;color:#ffffff;border-radius:999px;padding:10px 16px;font-size:13px;font-weight:800;text-decoration:none;white-space:nowrap;">Download</a>
+                      </td>
+                    </tr>
+                    """;
+            }));
+        var html = $$"""
+            <!doctype html>
+            <html lang="en">
+            <body style="margin:0;padding:0;background:#fbf9f1;font-family:'Segoe UI',Arial,sans-serif;color:#1b1c17;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="padding:36px 16px;background:#fbf9f1;">
+                <tr><td align="center">
+                  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:640px;background:#ffffff;border-radius:28px;overflow:hidden;box-shadow:0 24px 70px -32px rgba(112,88,91,.45);">
+                    <tr><td style="padding:32px;background:#caead8;"><div style="font-size:28px;font-weight:800;color:#486457;">Memoria</div><div style="margin-top:4px;font-size:13px;font-weight:700;color:#042016;">Legacy archive released</div></td></tr>
+                    <tr><td style="padding:32px;">
+                      <h1 style="margin:0 0 12px;font-size:28px;line-height:36px;color:#1b1c17;">Your claim was approved</h1>
+                      <p style="margin:0 0 22px;color:#4f4445;font-size:16px;line-height:26px;">Hi {{WebUtility.HtmlEncode(Fallback(toName, "there"))}}, Memoria has approved your claim for {{WebUtility.HtmlEncode(Fallback(ownerName, "the account owner"))}}. You can download the released legacy files below.</p>
+                      <table role="presentation" width="100%" cellspacing="0" cellpadding="0">{{filesHtml}}</table>
+                    </td></tr>
+                  </table>
+                </td></tr>
+              </table>
+            </body>
+            </html>
+            """;
+
+        await SendSimpleEmailAsync(toEmail, toName, subject, body, html, cancellationToken);
+    }
+
+    private async Task SendSimpleEmailAsync(string toEmail, string toName, string subject, string body, string? htmlBody, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(_settings.Host) ||
+            string.IsNullOrWhiteSpace(_settings.FromEmail) ||
+            string.IsNullOrWhiteSpace(_settings.Username) ||
+            string.IsNullOrWhiteSpace(_settings.Password))
+        {
+            _logger.LogWarning("SMTP is not configured. Email '{Subject}' for {Email} was not sent.", subject, toEmail);
+            return;
+        }
+
+        using var message = new MailMessage
+        {
+            From = new MailAddress(_settings.FromEmail, _settings.FromName),
+            Subject = subject,
+            Body = body,
+            IsBodyHtml = false
+        };
+        if (!string.IsNullOrWhiteSpace(htmlBody))
+        {
+            message.AlternateViews.Add(AlternateView.CreateAlternateViewFromString(htmlBody, Encoding.UTF8, MediaTypeNames.Text.Html));
+        }
+        message.To.Add(new MailAddress(toEmail, string.IsNullOrWhiteSpace(toName) ? toEmail : toName));
+
+        using var client = new SmtpClient(_settings.Host, _settings.Port)
+        {
+            EnableSsl = _settings.EnableSsl,
+            Credentials = string.IsNullOrWhiteSpace(_settings.Username)
+                ? CredentialCache.DefaultNetworkCredentials
+                : new NetworkCredential(_settings.Username, _settings.Password)
+        };
+
+        await client.SendMailAsync(message, cancellationToken);
+    }
+
     private static string BuildPlainTextBody(string toName, string code)
     {
         return $"""
@@ -330,6 +540,8 @@ public class SmtpEmailSender : IEmailSender
         {
             "Register" => "Account verification",
             "GoogleLogin" => "Google sign-in",
+            "LegacyContract" => "Legacy contract signature",
+            "LegacyClaimOtp" => "Legacy claim verification",
             _ => "Secure sign-in"
         };
     }

@@ -11,6 +11,8 @@ public partial class ProofOfLifeSchedule
 
     public int CheckIntervalDays { get; set; }
 
+    public int CheckIntervalMinutes { get; set; }
+
     public int GracePeriodDays { get; set; }
 
     public int MaxFailedAttempts { get; set; }
@@ -18,6 +20,8 @@ public partial class ProofOfLifeSchedule
     public string PreferredChannel { get; set; } = null!;
 
     public bool IsActive { get; set; }
+
+    public bool IsConfigurationLocked { get; set; }
 
     public DateTime NextCheckAt { get; set; }
 

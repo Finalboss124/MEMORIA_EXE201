@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Memoria Dashboard</title>
+<link rel="icon" type="image/svg+xml" href="../assets/memoria-logo.svg" />
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
@@ -139,8 +140,13 @@
 <!-- SideNavBar (Desktop) -->
 <nav class="hidden md:flex flex-col h-full py-stack-md border-r border-outline-variant/30 bg-surface-container-low dark:bg-surface-container-lowest shadow-sm fixed left-0 top-0 h-screen w-64 z-40">
 <div class="px-6 pb-8">
-<h1 class="font-headline-md text-headline-md text-primary font-bold">Memoria</h1>
-<p class="font-label-sm text-label-sm text-on-surface-variant opacity-70">Digital Legacy</p>
+<div class="flex items-center gap-2">
+  <img src="../assets/memoria-logo.svg" alt="Memoria" class="h-16 w-20 object-contain" />
+  <div class="leading-tight">
+    <h1 class="text-3xl font-extrabold tracking-tight text-primary">Memoria</h1>
+    <p class="mt-0.5 text-sm font-semibold text-on-surface-variant/80">Digital Legacy</p>
+  </div>
+</div>
 </div>
 <div class="flex-1 overflow-y-auto space-y-2">
 <a class="bg-primary-container text-on-primary-container rounded-full mx-2 px-4 py-3 flex items-center gap-3 font-bold scale-98 transition-transform" href="../memoria_dashboard/code.html" data-page-link>
@@ -164,33 +170,20 @@
 <span class="font-label-md text-label-md">Store</span>
 </a>
 </div>
-<div class="px-4 pt-4">
-<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-3 rounded-full hover:bg-surface-tint transition-colors flex items-center justify-center gap-2">
-<span class="material-symbols-outlined">add_circle</span>
-                Capture Memory
-            </button>
-</div>
-<div class="mt-auto pt-8 space-y-2">
-<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300" href="#">
-<span class="material-symbols-outlined">help_outline</span>
-<span class="font-label-md text-label-md">Help</span>
-</a>
-<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300" href="#" data-auth-logout>
-<span class="material-symbols-outlined">logout</span>
-<span class="font-label-md text-label-md">Sign Out</span>
-</a>
-</div>
+
+
 </nav>
 <!-- TopNavBar (Global) -->
 <header class="fixed top-0 right-0 left-0 md:left-64 z-50 flex items-center justify-between px-6 md:px-margin-desktop h-16 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md shadow-sm">
 <div class="md:hidden flex items-center gap-3">
 <span class="material-symbols-outlined text-primary">menu</span>
-<span class="font-headline-md text-headline-md text-primary font-bold tracking-tight">Memoria</span>
+<img src="../assets/memoria-logo.svg" alt="Memoria" class="h-11 w-14 object-contain" />
+<span class="text-2xl font-extrabold tracking-tight text-primary">Memoria</span>
 </div>
 <div class="hidden md:block">
 <!-- Breadcrumbs or ambient title could go here on desktop -->
 </div>
-<div class="flex items-center gap-4">
+<div class="flex items-center gap-3">
 <button class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full">
 <span class="material-symbols-outlined">search</span>
 </button>
@@ -212,7 +205,7 @@
 <div class="max-w-container-max mx-auto">
 <!-- Hero Welcome -->
 <div class="py-stack-lg mb-4">
-<h2 class="font-headline-xl text-headline-xl text-on-surface mb-2">Welcome back, <span class="text-primary">Eleanor</span>.</h2>
+<h2 class="font-headline-xl text-headline-xl text-on-surface mb-2">Welcome back, <span class="text-primary" data-dashboard-name>Memoria user</span>.</h2>
 <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Your digital time capsule is secure. What moments would you like to preserve today?</p>
 </div>
 <!-- Bento Grid -->
@@ -272,7 +265,7 @@
 </div>
 </div>
 <!-- Store Promo -->
-<div class="md:col-span-4 bg-surface-variant rounded-xl p-stack-lg soft-shadow flex items-center gap-4 hover:-translate-y-1 transition-transform cursor-pointer overflow-hidden relative">
+<div class="md:col-span-4 bg-surface-variant rounded-xl p-stack-lg soft-shadow flex items-center gap-3 hover:-translate-y-1 transition-transform cursor-pointer overflow-hidden relative">
 <div class="z-10">
 <h4 class="font-headline-md text-headline-md text-on-surface mb-1">Physical Prints</h4>
 <p class="font-body-md text-body-md text-on-surface-variant">Turn your digital vault into premium physical books.</p>
@@ -329,7 +322,7 @@
 </div>
 </main>
     <script src="../config.js?v=20260601-auth6"></script>
-    <script src="../auth.js?v=20260601-auth6"></script>
+    <script src="../auth.js?v=20260603-role3"></script>
 <script>
         (function () {
             const page = document.body;
@@ -340,6 +333,13 @@
             requestAnimationFrame(() => {
                 page.classList.add('is-ready');
             });
+
+            const currentUser = window.MemoriaAuth?.getUser?.();
+            const displayName = currentUser?.fullName || currentUser?.name || currentUser?.email?.split("@")[0] || "Memoria user";
+            const nameTarget = document.querySelector("[data-dashboard-name]");
+            if (nameTarget) {
+                nameTarget.textContent = displayName;
+            }
 
             const links = document.querySelectorAll('a[data-page-link]');
             links.forEach((link) => {
@@ -366,3 +366,11 @@
         })();
     </script>
 </body></html>
+
+
+
+
+
+
+
+

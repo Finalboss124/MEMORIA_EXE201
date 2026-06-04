@@ -1,0 +1,288 @@
+﻿<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Memoria - Claim Legacy</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/memoria-logo.svg" />
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#70585b",
+            rose: "#f7ecee",
+            surface: "#fbf9f1",
+            "surface-low": "#f5f4ec",
+            "surface-card": "#ffffff",
+            "on-surface": "#1b1c17",
+            "on-muted": "#4f4445",
+            outline: "#d2c3c4",
+            success: "#0f5132",
+            "success-bg": "#d1e7dd",
+            error: "#ba1a1a",
+            "error-bg": "#ffdad6",
+          },
+          fontFamily: { sans: ["Plus Jakarta Sans", "Arial", "sans-serif"] },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="min-h-screen bg-surface font-sans text-on-surface">
+  <main class="mx-auto flex min-h-screen max-w-6xl items-center px-5 py-8">
+    <section class="grid w-full grid-cols-1 overflow-hidden rounded-[28px] bg-surface-card shadow-2xl ring-1 ring-outline/50 lg:grid-cols-[0.85fr_1.15fr]">
+      <aside class="bg-rose p-7 sm:p-9 lg:p-10">
+        <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-primary">Memoria Secure Token Link</p>
+        <h1 class="mt-4 text-4xl font-extrabold leading-tight">Claim Legacy</h1>
+        <p class="mt-4 text-base font-semibold leading-7 text-on-muted">
+          This secure link is reserved for the beneficiary configured by the account owner. No sign-in is required, but identity, legal documents, and OTP verification are mandatory.
+        </p>
+        <div class="mt-8 space-y-3" id="steps"></div>
+      </aside>
+
+      <section class="p-6 sm:p-8 lg:p-10">
+        <div class="mb-6 rounded-2xl bg-surface-low p-4">
+          <p class="text-sm font-bold text-on-muted">Legacy claim for</p>
+          <p class="mt-1 text-xl font-extrabold" id="ownerName">Loading...</p>
+          <p class="mt-1 text-sm font-semibold text-on-muted" id="beneficiaryName"></p>
+        </div>
+
+        <div class="space-y-5" data-step-panel="1">
+          <div>
+            <h2 class="text-2xl font-extrabold">Step 1: Initial Identity Verification</h2>
+            <p class="mt-1 text-sm font-semibold text-on-muted">Enter the full name and ID number configured for you by the account owner.</p>
+          </div>
+          <label class="block text-sm font-bold text-on-muted">Full name
+            <input class="mt-1 h-12 w-full rounded-xl border-0 bg-surface-low px-4 font-semibold ring-1 ring-outline focus:ring-2 focus:ring-primary" id="fullName" autocomplete="name" />
+          </label>
+          <label class="block text-sm font-bold text-on-muted">Identity document number
+            <input class="mt-1 h-12 w-full rounded-xl border-0 bg-surface-low px-4 font-semibold ring-1 ring-outline focus:ring-2 focus:ring-primary" id="identityNumber" inputmode="numeric" />
+          </label>
+          <button class="rounded-full bg-primary px-6 py-3 font-extrabold text-white disabled:cursor-not-allowed disabled:opacity-55" id="verifyIdentity">Continue</button>
+        </div>
+
+        <div class="hidden space-y-5" data-step-panel="2">
+          <div>
+            <h2 class="text-2xl font-extrabold">Step 2: Upload Legal Documents</h2>
+            <p class="mt-1 text-sm font-semibold text-on-muted">Upload clear image or PDF files for manual review by the Memoria administration team.</p>
+          </div>
+          <label class="drop-zone flex cursor-pointer flex-col items-center rounded-2xl border-2 border-dashed border-outline bg-surface-low px-5 py-7 text-center transition hover:border-primary" data-target="deathCertificate">
+            <span class="material-symbols-outlined text-4xl text-primary">upload_file</span>
+            <span class="mt-2 font-extrabold">Upload death certificate</span>
+            <span class="mt-1 text-sm font-semibold text-on-muted" id="deathFileName">Image or PDF</span>
+            <input class="hidden" id="deathCertificate" type="file" accept=".png,.jpg,.jpeg,.pdf" />
+          </label>
+          <label class="drop-zone flex cursor-pointer flex-col items-center rounded-2xl border-2 border-dashed border-outline bg-surface-low px-5 py-7 text-center transition hover:border-primary" data-target="identityDocuments">
+            <span class="material-symbols-outlined text-4xl text-primary">badge</span>
+            <span class="mt-2 font-extrabold">Upload your identity document photos</span>
+            <span class="mt-1 text-sm font-semibold text-on-muted" id="identityFileName">Select front and back images if available</span>
+            <input class="hidden" id="identityDocuments" type="file" accept=".png,.jpg,.jpeg,.pdf" multiple />
+          </label>
+          <button class="rounded-full bg-primary px-6 py-3 font-extrabold text-white disabled:cursor-not-allowed disabled:opacity-55" id="uploadDocuments">Continue</button>
+        </div>
+
+        <div class="hidden space-y-5" data-step-panel="3">
+          <div>
+            <h2 class="text-2xl font-extrabold">Step 3: OTP Verification and Submission</h2>
+            <p class="mt-1 text-sm font-semibold text-on-muted" id="otpMessage">An OTP will be sent to the contact information assigned to you by the account owner.</p>
+          </div>
+          <label class="block text-sm font-bold text-on-muted">OTP code
+            <input class="mt-1 h-14 w-full rounded-xl border-0 bg-surface-low px-4 text-center text-2xl font-extrabold tracking-[0.3em] ring-1 ring-outline focus:ring-2 focus:ring-primary" id="otpCode" maxlength="6" placeholder="000000" inputmode="numeric" />
+          </label>
+          <button class="rounded-full bg-primary px-6 py-3 font-extrabold text-white disabled:cursor-not-allowed disabled:opacity-55" id="submitClaim">Submit claim request</button>
+        </div>
+
+        <div class="hidden rounded-2xl bg-success-bg p-5 text-sm font-bold leading-6 text-success" id="successBox">
+          Your claim has been submitted to the Memoria administration team. We will manually review it and send the legacy download link to your email within 7 business days.
+        </div>
+        <p class="mt-4 hidden rounded-xl bg-error-bg px-4 py-3 text-sm font-bold text-error" id="errorBox"></p>
+      </section>
+    </section>
+  </main>
+
+  <script src="../config.js"></script>
+  <script>
+    const apiBase = (window.MEMORIA_CONFIG && window.MEMORIA_CONFIG.apiBaseUrl) || "http://localhost:5284";
+    const token = new URLSearchParams(window.location.search).get("token") || "";
+    let currentStep = 1;
+    let verificationId = null;
+
+    const stepLabels = ["Verify identity", "Upload documents", "OTP & submit"];
+    const steps = document.getElementById("steps");
+    const errorBox = document.getElementById("errorBox");
+
+    function renderSteps() {
+      steps.innerHTML = stepLabels.map((label, index) => {
+        const n = index + 1;
+        const active = n === currentStep;
+        const done = n < currentStep;
+        return `<div class="flex items-center gap-3 rounded-2xl px-3 py-3 ${active ? "bg-white" : "bg-white/50"}">
+          <span class="flex h-8 w-8 items-center justify-center rounded-full ${done || active ? "bg-primary text-white" : "bg-surface-low text-on-muted"} font-extrabold">${done ? "âœ“" : n}</span>
+          <span class="font-extrabold">${label}</span>
+        </div>`;
+      }).join("");
+    }
+
+    function setStep(step) {
+      currentStep = step;
+      document.querySelectorAll("[data-step-panel]").forEach((panel) => panel.classList.add("hidden"));
+      document.querySelector(`[data-step-panel="${step}"]`)?.classList.remove("hidden");
+      renderSteps();
+    }
+
+    function setBusy(button, isBusy) {
+      button.disabled = isBusy;
+      button.dataset.originalText ||= button.textContent;
+      button.textContent = isBusy ? "Processing..." : button.dataset.originalText;
+    }
+
+    function showError(message) {
+      errorBox.textContent = message;
+      errorBox.classList.remove("hidden");
+    }
+
+    function clearError() {
+      errorBox.classList.add("hidden");
+    }
+
+    async function readPayload(response) {
+      const text = await response.text().catch(() => "");
+      if (!text) return {};
+      try { return JSON.parse(text); } catch { return { message: text }; }
+    }
+
+    async function api(path, options = {}) {
+      const response = await fetch(`${apiBase}/api/legacy-claims/${token}${path}`, options);
+      const payload = await readPayload(response);
+      if (!response.ok) throw new Error(payload.message || "Unable to process this request.");
+      return payload;
+    }
+
+    function describeFiles(input) {
+      const files = Array.from(input.files || []);
+      if (files.length === 0) return input.multiple ? "Select front and back images if available" : "Image or PDF";
+      if (files.length === 1) return files[0].name;
+      return `${files.length} files selected`;
+    }
+
+    function wireFileInput(inputId, labelId) {
+      const input = document.getElementById(inputId);
+      const label = document.getElementById(labelId);
+      input.addEventListener("change", () => {
+        label.textContent = describeFiles(input);
+      });
+    }
+
+    function wireDropZones() {
+      document.querySelectorAll(".drop-zone").forEach((zone) => {
+        const input = document.getElementById(zone.dataset.target);
+        zone.addEventListener("dragover", (event) => {
+          event.preventDefault();
+          zone.classList.add("border-primary");
+        });
+        zone.addEventListener("dragleave", () => zone.classList.remove("border-primary"));
+        zone.addEventListener("drop", (event) => {
+          event.preventDefault();
+          zone.classList.remove("border-primary");
+          input.files = event.dataTransfer.files;
+          input.dispatchEvent(new Event("change"));
+        });
+      });
+    }
+
+    document.getElementById("verifyIdentity").addEventListener("click", async (event) => {
+      clearError();
+      const button = event.currentTarget;
+      setBusy(button, true);
+      try {
+        await api("/verify-identity", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fullName: document.getElementById("fullName").value,
+            identityDocumentNumber: document.getElementById("identityNumber").value,
+          }),
+        });
+        setStep(2);
+      } catch (err) {
+        showError(err.message);
+      } finally {
+        setBusy(button, false);
+      }
+    });
+
+    document.getElementById("uploadDocuments").addEventListener("click", async (event) => {
+      clearError();
+      const deathFile = document.getElementById("deathCertificate").files[0];
+      const identityFiles = Array.from(document.getElementById("identityDocuments").files || []);
+      if (!deathFile || identityFiles.length === 0) {
+        showError("Please upload the death certificate and at least one identity document image.");
+        return;
+      }
+
+      const button = event.currentTarget;
+      setBusy(button, true);
+      const formData = new FormData();
+      formData.append("deathCertificate", deathFile);
+      identityFiles.forEach((file) => formData.append("identityDocuments", file));
+      try {
+        await api("/documents", { method: "POST", body: formData });
+        const result = await api("/request-otp", { method: "POST" });
+        verificationId = result.verificationId;
+        document.getElementById("otpMessage").textContent = `An OTP has been sent to ${result.contactMasked}.`;
+        setStep(3);
+      } catch (err) {
+        showError(err.message);
+      } finally {
+        setBusy(button, false);
+      }
+    });
+
+    document.getElementById("submitClaim").addEventListener("click", async (event) => {
+      clearError();
+      const button = event.currentTarget;
+      setBusy(button, true);
+      try {
+        await api("/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ verificationId, code: document.getElementById("otpCode").value }),
+        });
+        document.querySelectorAll("[data-step-panel]").forEach((panel) => panel.classList.add("hidden"));
+        document.getElementById("successBox").classList.remove("hidden");
+      } catch (err) {
+        showError(err.message);
+      } finally {
+        setBusy(button, false);
+      }
+    });
+
+    async function init() {
+      renderSteps();
+      wireFileInput("deathCertificate", "deathFileName");
+      wireFileInput("identityDocuments", "identityFileName");
+      wireDropZones();
+      if (!token) {
+        showError("The secure claim token is missing from this link.");
+        return;
+      }
+      try {
+        const info = await api("");
+        document.getElementById("ownerName").textContent = info.ownerName;
+        document.getElementById("beneficiaryName").textContent = `Beneficiary: ${info.beneficiaryName} â€¢ Contact: ${info.contactMasked}`;
+      } catch (err) {
+        showError(err.message);
+      }
+    }
+    init();
+  </script>
+</body>
+</html>
+
+
+
+

@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 
 <html class="light" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Memoria - Legacy Transfer</title>
+<link rel="icon" type="image/svg+xml" href="../assets/memoria-logo.svg" />
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
@@ -203,8 +204,13 @@
 <!-- SideNavBar (Desktop) -->
 <nav class="hidden md:flex flex-col h-full py-stack-md border-r border-outline-variant/30 bg-surface-container-low dark:bg-surface-container-lowest shadow-sm fixed left-0 top-0 h-screen w-64 z-40">
 <div class="px-6 pb-8">
-<h1 class="font-headline-md text-headline-md text-primary font-bold">Memoria</h1>
-<p class="font-label-sm text-label-sm text-on-surface-variant opacity-70">Digital Legacy</p>
+<div class="flex items-center gap-2">
+  <img src="../assets/memoria-logo.svg" alt="Memoria" class="h-16 w-20 object-contain" />
+  <div class="leading-tight">
+    <h1 class="text-3xl font-extrabold tracking-tight text-primary">Memoria</h1>
+    <p class="mt-0.5 text-sm font-semibold text-on-surface-variant/80">Digital Legacy</p>
+  </div>
+</div>
 </div>
 <div class="flex-1 overflow-y-auto space-y-2">
 <a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300" href="../memoria_dashboard/code.html" data-page-link>
@@ -228,33 +234,20 @@
 <span class="font-label-md text-label-md">Store</span>
 </a>
 </div>
-<div class="px-4 pt-4">
-<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-3 rounded-full hover:bg-surface-tint transition-colors flex items-center justify-center gap-2">
-<span class="material-symbols-outlined">add_circle</span>
-                                Capture Memory
-                        </button>
-</div>
-<div class="mt-auto pt-8 space-y-2">
-<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300" href="#">
-<span class="material-symbols-outlined">help_outline</span>
-<span class="font-label-md text-label-md">Help</span>
-</a>
-<a class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300" href="#" data-auth-logout>
-<span class="material-symbols-outlined">logout</span>
-<span class="font-label-md text-label-md">Sign Out</span>
-</a>
-</div>
+
+
 </nav>
 <!-- TopNavBar (Global) -->
 <header class="fixed top-0 right-0 left-0 md:left-64 z-50 flex items-center justify-between px-6 md:px-margin-desktop h-16 bg-surface/80 dark:bg-surface-dim/80 backdrop-blur-md shadow-sm">
 <div class="md:hidden flex items-center gap-3">
 <span class="material-symbols-outlined text-primary">menu</span>
-<span class="font-headline-md text-headline-md text-primary font-bold tracking-tight">Memoria</span>
+<img src="../assets/memoria-logo.svg" alt="Memoria" class="h-11 w-14 object-contain" />
+<span class="text-2xl font-extrabold tracking-tight text-primary">Memoria</span>
 </div>
 <div class="hidden md:block">
 <!-- Breadcrumbs or ambient title could go here on desktop -->
 </div>
-<div class="flex items-center gap-4">
+<div class="flex items-center gap-3">
 <button class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full">
 <span class="material-symbols-outlined">search</span>
 </button>
@@ -294,17 +287,17 @@
 <div class="absolute -top-10 -right-10 w-32 h-32 bg-primary-container rounded-full blur-2xl opacity-50"></div>
 <div class="flex justify-between items-center mb-stack-md relative z-10">
 <h3 class="font-headline-md text-headline-md text-on-surface">Assigned Beneficiaries</h3>
-<button class="text-primary hover:bg-primary-container/50 p-2 rounded-full transition-colors flex items-center justify-center">
+<button class="text-primary hover:bg-primary-container/50 p-2 rounded-full transition-colors flex items-center justify-center" type="button" data-beneficiary-open>
 <span class="material-symbols-outlined" data-icon="person_add">person_add</span>
 </button>
 </div>
-<div class="space-y-stack-sm relative z-10">
+<div class="space-y-stack-sm relative z-10" data-beneficiary-list>
 <!-- Beneficiary Card 1 -->
-<div class="bg-surface p-4 rounded-xl flex items-center gap-4 hover:bg-surface-container-high transition-colors cursor-pointer border border-transparent hover:border-outline-variant/20">
+<div class="bg-surface p-4 rounded-xl flex items-center gap-3 hover:bg-surface-container-high transition-colors cursor-pointer border border-transparent hover:border-outline-variant/20">
 <img alt="Sarah Jenkins" class="w-12 h-12 rounded-full object-cover shadow-sm" data-alt="A portrait of a young man with short dark hair and a slight smile, wearing a casual shirt. The lighting is soft and natural, emphasizing a warm and approachable tone suitable for a family-oriented digital legacy app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBa6aYP3otpUVVyZs3U6Q1LNBCgEEY5UUiYz1gXUwriMFviAzMth4aJd6qD14VCGkAIaiCM4LyS3L7jGaLyV_Gx0yHrreJwL-AIMGmCyyaWIiQP_XD5psx7FfdbXRrUdiqO1qQC9ywc0BtvtXyMQhRMSHqlIxLBByMQCYJQr6ubYGWjaRovFQfHtkjXUpw-S2ITLQE8rb6sqGxykezZOHH514B4Uy4KMAI0-NZD8ZJi-h8QEnhoY1XwlOtPFjHpleYb_a8g9fJY"/>
 <div class="flex-1">
 <h4 class="font-label-md text-label-md text-on-surface">Sarah Jenkins</h4>
-<p class="font-label-sm text-label-sm text-on-surface-variant">Primary Executive • Daughter</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Primary Executive â€¢ Daughter</p>
 </div>
 <div class="bg-secondary-container/50 text-on-secondary-container px-3 py-1 rounded-full font-label-sm text-label-sm flex items-center gap-1">
 <span class="material-symbols-outlined text-[14px]" data-icon="check_circle">check_circle</span>
@@ -312,13 +305,13 @@
                                 </div>
 </div>
 <!-- Beneficiary Card 2 -->
-<div class="bg-surface p-4 rounded-xl flex items-center gap-4 hover:bg-surface-container-high transition-colors cursor-pointer border border-transparent hover:border-outline-variant/20">
+<div class="bg-surface p-4 rounded-xl flex items-center gap-3 hover:bg-surface-container-high transition-colors cursor-pointer border border-transparent hover:border-outline-variant/20">
 <div class="w-12 h-12 rounded-full bg-tertiary-container flex items-center justify-center text-on-tertiary-container font-headline-md shadow-sm">
                                     M
                                 </div>
 <div class="flex-1">
 <h4 class="font-label-md text-label-md text-on-surface">Michael Chen</h4>
-<p class="font-label-sm text-label-sm text-on-surface-variant">Secondary • Legal Counsel</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Secondary â€¢ Legal Counsel</p>
 </div>
 <div class="bg-surface-variant text-on-surface-variant px-3 py-1 rounded-full font-label-sm text-label-sm flex items-center gap-1">
 <span class="material-symbols-outlined text-[14px]" data-icon="hourglass_empty">hourglass_empty</span>
@@ -326,21 +319,10 @@
                                 </div>
 </div>
 </div>
-<button class="mt-stack-md w-full bg-primary-container/30 hover:bg-primary-container text-on-primary-container font-label-md text-label-md py-3 rounded-xl transition-colors border border-primary/10 flex items-center justify-center gap-2">
+<button class="mt-stack-md w-full bg-primary-container/30 hover:bg-primary-container text-on-primary-container font-label-md text-label-md py-3 rounded-xl transition-colors border border-primary/10 flex items-center justify-center gap-2" type="button" data-beneficiary-open>
 <span class="material-symbols-outlined" data-icon="add">add</span>
                             Add Beneficiary
                         </button>
-</div>
-<!-- Transfer Trigger Info -->
-<div class="bg-surface-container-low rounded-[24px] p-stack-lg border border-outline-variant/20 flex flex-col items-center text-center">
-<div class="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center text-primary mb-4">
-<span class="material-symbols-outlined text-3xl" data-icon="timer">timer</span>
-</div>
-<h4 class="font-headline-md text-headline-md text-on-surface mb-2">Transfer Triggers</h4>
-<p class="font-body-md text-body-md text-on-surface-variant mb-4">Assets will be released based on your predefined inactivity period.</p>
-<div class="bg-surface px-4 py-2 rounded-lg font-label-md text-label-md text-primary w-full text-center border border-primary/10">
-                            Current setting: 6 Months Inactivity
-                        </div>
 </div>
 </div>
 <!-- Right Column: Legacy Assets -->
@@ -355,55 +337,50 @@
 <!-- Assets Grid -->
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-stack-lg">
 <!-- Asset Card: Vaults -->
-<div class="bg-gradient-to-br from-primary-container/40 to-surface-container-lowest p-6 rounded-2xl border border-primary/10 hover:shadow-md transition-shadow cursor-pointer group">
+<div class="bg-gradient-to-br from-primary-container/40 to-surface-container-lowest p-6 rounded-2xl border border-primary/10 hover:shadow-md transition-shadow cursor-pointer group" role="button" tabindex="0" data-storage-open="family-vault">
 <div class="flex justify-between items-start mb-4">
 <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
 <span class="material-symbols-outlined" data-icon="folder_special">folder_special</span>
 </div>
-<span class="font-headline-md text-headline-md text-primary">12</span>
+<span class="font-headline-md text-headline-md text-primary" data-storage-count="family-vault">0</span>
 </div>
 <h4 class="font-label-md text-label-md text-on-surface mb-1">Family Vaults</h4>
 <p class="font-label-sm text-label-sm text-on-surface-variant">Photos, videos &amp; stories</p>
 </div>
 <!-- Asset Card: Documents -->
-<div class="bg-gradient-to-br from-secondary-container/40 to-surface-container-lowest p-6 rounded-2xl border border-secondary/10 hover:shadow-md transition-shadow cursor-pointer group">
+<div class="bg-gradient-to-br from-secondary-container/40 to-surface-container-lowest p-6 rounded-2xl border border-secondary/10 hover:shadow-md transition-shadow cursor-pointer group" role="button" tabindex="0" data-storage-open="legal-documents">
 <div class="flex justify-between items-start mb-4">
 <div class="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
 <span class="material-symbols-outlined" data-icon="description">description</span>
 </div>
-<span class="font-headline-md text-headline-md text-secondary">5</span>
+<span class="font-headline-md text-headline-md text-secondary" data-storage-count="legal-documents">0</span>
 </div>
-<h4 class="font-label-md text-label-md text-on-surface mb-1">Legal Documents</h4>
+<h4 class="font-label-md text-label-md text-on-surface mb-1">Legal Album</h4>
 <p class="font-label-sm text-label-sm text-on-surface-variant">Wills &amp; instructions</p>
 </div>
-<!-- Asset Card: Postbox -->
-<div class="bg-gradient-to-br from-tertiary-container/40 to-surface-container-lowest p-6 rounded-2xl border border-tertiary/10 hover:shadow-md transition-shadow cursor-pointer group sm:col-span-2">
-<div class="flex justify-between items-center">
-<div class="flex items-center gap-4">
-<div class="w-12 h-12 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary group-hover:scale-110 transition-transform">
-<span class="material-symbols-outlined" data-icon="mail">mail</span>
 </div>
+<!-- Transfer Trigger Configuration -->
+<div class="rounded-2xl border border-outline-variant/30 bg-surface p-5" data-trigger-panel>
+<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 <div>
-<h4 class="font-label-md text-label-md text-on-surface mb-1">Future Postbox</h4>
-<p class="font-label-sm text-label-sm text-on-surface-variant">3 messages scheduled for delivery</p>
+<h4 class="font-headline-md text-headline-md text-on-surface">Transfer Triggers</h4>
+<p class="mt-1 font-label-sm text-label-sm text-on-surface-variant">Choose how long an account can stay inactive before Memoria starts proof-of-life checks.</p>
 </div>
+<div class="rounded-full bg-primary-container/40 px-3 py-1 text-sm font-bold text-primary" data-trigger-status>Loading</div>
 </div>
-<button class="bg-surface px-4 py-2 rounded-full font-label-sm text-label-sm border border-outline-variant/30 hover:bg-surface-container-high transition-colors">
-                                        Manage
-                                    </button>
+<div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
+<label class="text-sm font-semibold text-on-surface-variant">Inactive period
+<select class="mt-1 h-12 w-full rounded-xl border-0 bg-surface-container-low px-3 text-sm font-bold text-on-surface ring-1 ring-surface-variant focus:ring-2 focus:ring-primary-container" data-trigger-days>
+<option value="1m">1 minute (test)</option>
+<option value="30">30 days</option>
+<option value="60">60 days</option>
+<option value="90">90 days</option>
+</select>
+</label>
+<button class="h-12 rounded-full bg-primary px-5 text-sm font-bold text-on-primary hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60" type="button" data-trigger-save>Save configuration</button>
 </div>
-</div>
-</div>
-<!-- Progress Section -->
-<div>
-<div class="flex justify-between items-end mb-2">
-<h4 class="font-label-md text-label-md text-on-surface">Transfer Readiness</h4>
-<span class="font-headline-md text-headline-md text-primary">85%</span>
-</div>
-<div class="h-3 w-full bg-surface-variant rounded-full overflow-hidden">
-<div class="h-full bg-gradient-to-r from-primary to-inverse-primary rounded-full" style="width: 85%;"></div>
-</div>
-<p class="font-label-sm text-label-sm text-on-surface-variant mt-2 text-right">Complete legal review to reach 100%</p>
+<p class="mt-3 text-sm font-semibold text-on-surface-variant" data-trigger-summary>Ping emails are sent up to 3 times, 7 days apart.</p>
+<p class="mt-3 hidden rounded-xl bg-error-container px-3 py-2 text-sm font-semibold text-error" data-trigger-error></p>
 </div>
 </div>
 </div>
@@ -421,7 +398,804 @@
 </footer>
 </main>
 <script src="../config.js"></script>
-<script src="../auth.js?v=20260601-auth6"></script>
+<script src="../auth.js?v=20260603-role3"></script>
+<script>
+                (function () {
+                        const auth = window.MemoriaAuth;
+                        if (!auth) {
+                                return;
+                        }
+
+                        const overlay = document.createElement("div");
+                        overlay.className = "fixed inset-0 z-[9998] hidden overflow-hidden bg-[#30312c]/55 backdrop-blur-sm";
+                        overlay.innerHTML = `
+                                <div class="overflow-hidden bg-surface-container-lowest shadow-2xl ring-1 ring-outline-variant/40" style="position:fixed;left:50%;top:18px;width:min(90vw, 56rem);height:min(84dvh, 760px);max-height:calc(100dvh - 74px);transform:translateX(-50%);display:flex;flex-direction:column;">
+                                        <div class="shrink-0 border-b border-outline-variant/40 px-4 py-3 sm:px-6">
+                                                <div class="flex items-start justify-between gap-4">
+                                                        <div>
+                                                                <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-secondary">Legacy Transfer</p>
+                                                                <h3 class="mt-1 text-lg font-bold text-on-surface sm:text-xl">E-contract signature</h3>
+                                                        </div>
+                                                        <span class="material-symbols-outlined text-primary">verified_user</span>
+                                                </div>
+                                                <div class="mt-3 rounded-2xl border border-outline-variant/40 bg-surface-container-low px-4 py-2.5">
+                                                        <div class="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
+                                                                <label class="flex items-start gap-3 text-sm font-semibold text-on-surface-variant">
+                                                                        <input class="mt-1 rounded border-outline text-primary focus:ring-primary" type="checkbox" data-legacy-agree disabled />
+                                                                        <span>I have read, understood, and agree to all terms of the Digital Legacy Storage and Transfer Service Agreement.</span>
+                                                                </label>
+                                                                <div class="flex shrink-0 items-center justify-end gap-2">
+                                                                        <button class="rounded-full px-4 py-2 text-sm font-bold text-primary ring-1 ring-primary/30 hover:bg-primary-container/40" type="button" data-legacy-scroll-end>Scroll to end</button>
+                                                                        <button class="rounded-full bg-primary px-5 py-2 text-sm font-bold text-on-primary disabled:cursor-not-allowed disabled:opacity-50" type="button" data-legacy-request disabled>Agree and get OTP</button>
+                                                                </div>
+                                                        </div>
+                                                        <div class="mt-3 hidden grid-cols-1 gap-3 sm:grid-cols-[1fr_auto]" data-legacy-otp-row>
+                                                                <input class="h-11 rounded-xl border-0 bg-surface px-4 text-center text-xl font-bold tracking-[0.25em] text-on-surface ring-1 ring-surface-variant focus:ring-2 focus:ring-primary-container" data-legacy-otp inputmode="numeric" maxlength="6" placeholder="000000" />
+                                                                <button class="rounded-full bg-primary px-6 py-2.5 text-sm font-bold text-on-primary hover:opacity-90" type="button" data-legacy-verify>Verify OTP</button>
+                                                        </div>
+                                                        <p class="mt-2 hidden rounded-xl bg-error-container px-3 py-2 text-sm font-semibold text-error" data-legacy-error></p>
+                                                        <p class="mt-2 hidden rounded-xl bg-secondary-container px-3 py-2 text-sm font-semibold text-on-secondary-container" data-legacy-info></p>
+                                                </div>
+                                        </div>
+                                        <div class="min-h-0 overflow-y-auto bg-[#fffdf8] px-5 py-4 sm:px-7 sm:py-5" style="min-height:0;flex:1 1 auto;" data-legacy-contract-scroll>
+                                                <article class="mx-auto max-w-4xl text-sm leading-6 text-on-surface sm:text-[15px]" style="padding-bottom:160px;" data-legacy-contract-text>
+                                                        <p class="text-on-surface-variant">Loading contract...</p>
+                                                </article>
+                                        </div>
+                                </div>
+                        `;
+                        document.body.appendChild(overlay);
+
+                        const contractText = overlay.querySelector("[data-legacy-contract-text]");
+                        const scrollBox = overlay.querySelector("[data-legacy-contract-scroll]");
+                        const agree = overlay.querySelector("[data-legacy-agree]");
+                        const requestButton = overlay.querySelector("[data-legacy-request]");
+                        const scrollEndButton = overlay.querySelector("[data-legacy-scroll-end]");
+                        const otpRow = overlay.querySelector("[data-legacy-otp-row]");
+                        const otpInput = overlay.querySelector("[data-legacy-otp]");
+                        const verifyButton = overlay.querySelector("[data-legacy-verify]");
+                        const error = overlay.querySelector("[data-legacy-error]");
+                        const info = overlay.querySelector("[data-legacy-info]");
+                        let verificationId = null;
+
+                        function showOverlay() {
+                                overlay.classList.remove("hidden");
+                                overlay.classList.add("flex");
+                                document.documentElement.style.overflow = "hidden";
+                                document.body.style.overflow = "hidden";
+                        }
+
+                        function hideOverlay() {
+                                overlay.classList.add("hidden");
+                                overlay.classList.remove("flex");
+                                document.documentElement.style.overflow = "";
+                                document.body.style.overflow = "";
+                        }
+
+                        function showError(message) {
+                                error.textContent = message;
+                                error.classList.remove("hidden");
+                        }
+
+                        function showInfo(message) {
+                                info.textContent = message;
+                                info.classList.remove("hidden");
+                        }
+
+                        function clearMessages() {
+                                error.classList.add("hidden");
+                                info.classList.add("hidden");
+                        }
+
+                        function escapeHtml(value) {
+                                return String(value ?? "")
+                                        .replace(/&/g, "&amp;")
+                                        .replace(/</g, "&lt;")
+                                        .replace(/>/g, "&gt;")
+                                        .replace(/"/g, "&quot;")
+                                        .replace(/'/g, "&#039;");
+                        }
+
+                        function renderContract(rawText) {
+                                const lines = String(rawText || "")
+                                        .split(/\r?\n/)
+                                        .map((line) => line.trim())
+                                        .filter(Boolean);
+
+                                const html = lines.map((line, index) => {
+                                        const safe = escapeHtml(line);
+                                        if (index === 0 || /^Há»¢P Äá»’NG\b/i.test(line)) {
+                                                return `<h1 class="mb-5 text-center text-2xl font-extrabold uppercase leading-9 text-on-surface sm:text-3xl">${safe}</h1>`;
+                                        }
+
+                                        if (/^CÄƒn cá»©\b/i.test(line)) {
+                                                return `<p class="mx-auto max-w-3xl text-center text-sm italic leading-6 text-on-surface-variant sm:text-[15px]">${safe}</p>`;
+                                        }
+
+                                        if (/^HÃ´m nay\b/i.test(line)) {
+                                                return `<p class="mt-5 rounded-xl border border-outline-variant/50 bg-surface-container-low px-4 py-3 text-sm font-semibold leading-6 text-on-surface-variant">${safe}</p>`;
+                                        }
+
+                                        if (/^BÃŠN [AB]:/i.test(line)) {
+                                                return `<h2 class="mt-7 border-l-4 border-primary bg-primary-container/35 px-4 py-2 text-lg font-extrabold uppercase text-on-surface">${safe}</h2>`;
+                                        }
+
+                                        if (/^ÄIá»€U\s+\d+/i.test(line)) {
+                                                return `<h2 class="mt-8 border-b border-outline-variant/50 pb-2 text-xl font-extrabold uppercase leading-8 text-primary">${safe}</h2>`;
+                                        }
+
+                                        if (/^\([ivx]+\)/i.test(line) || /^BÆ°á»›c\s+\d+/i.test(line)) {
+                                                return `<p class="ml-4 mt-2 border-l-2 border-secondary-container pl-3 font-semibold leading-7 text-on-surface">${safe}</p>`;
+                                        }
+
+                                        if (/^[^:]{2,80}:/u.test(line)) {
+                                                const colonIndex = safe.indexOf(":");
+                                                return `<p class="mt-2 leading-7 text-on-surface"><strong>${safe.slice(0, colonIndex + 1)}</strong>${safe.slice(colonIndex + 1)}</p>`;
+                                        }
+
+                                        return `<p class="mt-2 leading-7 text-on-surface">${safe}</p>`;
+                                }).join("");
+
+                                contractText.innerHTML = html;
+                        }
+
+                        async function readPayload(response) {
+                                const text = await response.text().catch(() => "");
+                                if (!text) {
+                                        return {};
+                                }
+                                try {
+                                        return JSON.parse(text);
+                                } catch {
+                                        return { message: text };
+                                }
+                        }
+
+                        async function callLegacy(path, options) {
+                                const response = await fetch(`${auth.apiBase}/api/legacy/${path}`, {
+                                        ...options,
+                                        headers: {
+                                                "Content-Type": "application/json",
+                                                Authorization: `Bearer ${auth.getToken()}`,
+                                                "X-Memoria-User-Id": auth.getUser()?.userId || "",
+                                                ...(options?.headers || {}),
+                                        },
+                                });
+                                const payload = await readPayload(response);
+                                if (!response.ok) {
+                                        throw new Error(payload.message || "Unable to process legacy contract.");
+                                }
+                                return payload;
+                        }
+
+                        function refreshScrollState() {
+                                const reachedEnd = scrollBox.scrollTop + scrollBox.clientHeight >= scrollBox.scrollHeight - 24;
+                                agree.disabled = !reachedEnd;
+                                if (reachedEnd && agree.checked) {
+                                        requestButton.disabled = false;
+                                }
+                        }
+
+                        scrollBox.addEventListener("scroll", refreshScrollState);
+                        scrollEndButton.addEventListener("click", () => {
+                                scrollBox.scrollTo({ top: scrollBox.scrollHeight, behavior: "smooth" });
+                                window.setTimeout(refreshScrollState, 350);
+                                window.setTimeout(refreshScrollState, 700);
+                        });
+                        agree.addEventListener("change", () => {
+                                requestButton.disabled = !agree.checked || agree.disabled;
+                        });
+
+                        requestButton.addEventListener("click", async () => {
+                                clearMessages();
+                                requestButton.disabled = true;
+                                try {
+                                        const payload = await callLegacy("contract/request-otp", { method: "POST", body: "{}" });
+                                        if (!payload.verificationId) {
+                                                hideOverlay();
+                                                return;
+                                        }
+                                        verificationId = payload.verificationId;
+                                        otpRow.classList.remove("hidden");
+                                        otpRow.classList.add("grid");
+                                        showInfo(`An OTP was sent to ${payload.email}.`);
+                                        otpInput.focus();
+                                } catch (err) {
+                                        showError(err.message);
+                                        requestButton.disabled = false;
+                                }
+                        });
+
+                        verifyButton.addEventListener("click", async () => {
+                                clearMessages();
+                                verifyButton.disabled = true;
+                                try {
+                                        await callLegacy("contract/verify-otp", {
+                                                method: "POST",
+                                                body: JSON.stringify({ verificationId, code: otpInput.value.trim() }),
+                                        });
+                                        hideOverlay();
+                                } catch (err) {
+                                        showError(err.message);
+                                        verifyButton.disabled = false;
+                                }
+                        });
+
+                        async function initLegacyGate() {
+                                try {
+                                        const payload = await callLegacy("contract", { method: "GET" });
+                                        if (payload.isSigned) {
+                                                return;
+                                        }
+
+                                        renderContract(payload.contractText || "");
+                                        showOverlay();
+                                        requestAnimationFrame(refreshScrollState);
+                                } catch (err) {
+                                        contractText.innerHTML = `<p class="text-on-surface-variant">Unable to load the contract.</p>`;
+                                        showOverlay();
+                                        showError(err.message);
+                                }
+                        }
+
+                        document.addEventListener("DOMContentLoaded", initLegacyGate);
+                })();
+</script>
+<script>
+                (function () {
+                        const auth = window.MemoriaAuth;
+                        if (!auth) {
+                                return;
+                        }
+
+                        const list = document.querySelector("[data-beneficiary-list]");
+                        const openButtons = document.querySelectorAll("[data-beneficiary-open]");
+                        if (!list || openButtons.length === 0) {
+                                return;
+                        }
+
+                        const modal = document.createElement("div");
+                        modal.className = "fixed inset-0 z-[9997] hidden bg-[#30312c]/50 px-4 backdrop-blur-sm";
+                        modal.innerHTML = `
+                                <div class="w-full max-w-lg bg-surface-container-lowest p-6 shadow-2xl ring-1 ring-outline-variant/40" style="position:fixed;left:50%;top:18px;max-height:calc(100dvh - 74px);overflow-y:auto;transform:translateX(-50%);">
+                                        <div class="mb-5 flex items-start justify-between gap-4">
+                                                <div>
+                                                        <p class="text-xs font-bold uppercase tracking-[0.14em] text-secondary">Legacy Transfer</p>
+                                                        <h3 class="mt-1 text-2xl font-bold text-on-surface">Add Beneficiary</h3>
+                                                </div>
+                                                <button class="flex h-10 w-10 items-center justify-center rounded-full bg-surface-container-high text-on-surface-variant hover:bg-surface-variant" type="button" data-beneficiary-close>
+                                                        <span class="material-symbols-outlined">close</span>
+                                                </button>
+                                        </div>
+                                        <form class="grid grid-cols-1 gap-3 sm:grid-cols-2" data-beneficiary-form>
+                                                <label class="text-sm font-semibold text-on-surface-variant">Full name
+                                                        <input class="mt-1 h-11 w-full rounded-xl border-0 bg-surface px-3 text-sm text-on-surface ring-1 ring-surface-variant focus:ring-2 focus:ring-primary-container" name="fullName" required />
+                                                </label>
+                                                <label class="text-sm font-semibold text-on-surface-variant">Relationship
+                                                        <input class="mt-1 h-11 w-full rounded-xl border-0 bg-surface px-3 text-sm text-on-surface ring-1 ring-surface-variant focus:ring-2 focus:ring-primary-container" name="relationship" placeholder="Daughter, spouse..." required />
+                                                </label>
+                                                <label class="sm:col-span-2 text-sm font-semibold text-on-surface-variant">CCCD / Passport number
+                                                        <input class="mt-1 h-11 w-full rounded-xl border-0 bg-surface px-3 text-sm text-on-surface ring-1 ring-surface-variant focus:ring-2 focus:ring-primary-container" name="identityDocumentNumber" required />
+                                                </label>
+                                                <label class="text-sm font-semibold text-on-surface-variant">Email
+                                                        <input class="mt-1 h-11 w-full rounded-xl border-0 bg-surface px-3 text-sm text-on-surface ring-1 ring-surface-variant focus:ring-2 focus:ring-primary-container" name="email" type="email" />
+                                                </label>
+                                                <label class="text-sm font-semibold text-on-surface-variant">Phone
+                                                        <input class="mt-1 h-11 w-full rounded-xl border-0 bg-surface px-3 text-sm text-on-surface ring-1 ring-surface-variant focus:ring-2 focus:ring-primary-container" name="phoneNumber" />
+                                                </label>
+                                                <label class="sm:col-span-2 flex items-center gap-3 rounded-xl bg-surface px-3 py-3 text-sm font-semibold text-on-surface-variant">
+                                                        <input class="rounded border-outline text-primary focus:ring-primary" name="isPrimary" type="checkbox" />
+                                                        Set as primary beneficiary
+                                                </label>
+                                                <p class="hidden rounded-xl bg-error-container px-3 py-2 text-sm font-semibold text-error sm:col-span-2" data-beneficiary-error></p>
+                                                <div class="mt-2 flex justify-end gap-3 sm:col-span-2">
+                                                        <button class="rounded-full px-4 py-2 text-sm font-bold text-on-surface-variant hover:bg-surface-container-high" type="button" data-beneficiary-cancel>Cancel</button>
+                                                        <button class="rounded-full bg-primary px-5 py-2 text-sm font-bold text-on-primary hover:opacity-90" type="submit" data-beneficiary-save>Save beneficiary</button>
+                                                </div>
+                                        </form>
+                                </div>
+                        `;
+                        document.body.appendChild(modal);
+
+                        const form = modal.querySelector("[data-beneficiary-form]");
+                        const error = modal.querySelector("[data-beneficiary-error]");
+                        const saveButton = modal.querySelector("[data-beneficiary-save]");
+
+                        function escapeHtml(value) {
+                                return String(value ?? "")
+                                        .replace(/&/g, "&amp;")
+                                        .replace(/</g, "&lt;")
+                                        .replace(/>/g, "&gt;")
+                                        .replace(/"/g, "&quot;")
+                                        .replace(/'/g, "&#039;");
+                        }
+
+                        function initials(name) {
+                                return String(name || "?")
+                                        .split(/\s+/)
+                                        .filter(Boolean)
+                                        .slice(0, 2)
+                                        .map((part) => part[0])
+                                        .join("")
+                                        .toUpperCase() || "?";
+                        }
+
+                        async function readPayload(response) {
+                                const text = await response.text().catch(() => "");
+                                if (!text) {
+                                        return {};
+                                }
+
+                                try {
+                                        return JSON.parse(text);
+                                } catch {
+                                        return { message: text };
+                                }
+                        }
+
+                        async function legacyFetch(path, options = {}) {
+                                const response = await fetch(`${auth.apiBase}/api/legacy/${path}`, {
+                                        ...options,
+                                        headers: {
+                                                "Content-Type": "application/json",
+                                                Authorization: `Bearer ${auth.getToken()}`,
+                                                "X-Memoria-User-Id": auth.getUser()?.userId || "",
+                                                ...(options.headers || {}),
+                                        },
+                                });
+                                const payload = await readPayload(response);
+                                if (!response.ok) {
+                                        throw new Error(payload.message || "Unable to save beneficiary.");
+                                }
+                                return payload;
+                        }
+
+                        function renderBeneficiaries(items) {
+                                if (!items.length) {
+                                        list.innerHTML = `
+                                                <div class="rounded-xl bg-surface p-4 text-sm font-semibold text-on-surface-variant">
+                                                        No beneficiaries have been assigned yet.
+                                                </div>
+                                        `;
+                                        return;
+                                }
+
+                                list.innerHTML = items.map((item) => {
+                                        const contact = item.email || item.phoneNumber || "No contact";
+                                        const badgeClass = item.isPrimary
+                                                ? "bg-secondary-container/60 text-on-secondary-container"
+                                                : "bg-surface-variant text-on-surface-variant";
+                                        const badgeIcon = item.isPrimary ? "check_circle" : "hourglass_empty";
+                                        const badgeLabel = item.isPrimary ? "Primary" : "Backup";
+                                        return `
+                                                <div class="bg-surface p-4 rounded-xl flex items-center gap-3 border border-transparent hover:border-outline-variant/20">
+                                                        <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-tertiary-container text-on-tertiary-container font-headline-md shadow-sm">
+                                                                ${escapeHtml(initials(item.fullName))}
+                                                        </div>
+                                                        <div class="min-w-0 flex-1">
+                                                                <h4 class="truncate font-label-md text-label-md text-on-surface">${escapeHtml(item.fullName)}</h4>
+                                                                <p class="truncate font-label-sm text-label-sm text-on-surface-variant">${escapeHtml(item.relationship)} â€¢ ${escapeHtml(contact)}</p>
+                                                                <p class="mt-1 truncate text-xs font-semibold text-on-surface-variant">ID: ${escapeHtml(item.identityDocumentMasked || "Not set")}</p>
+                                                        </div>
+                                                        <div class="${badgeClass} px-3 py-1 rounded-full font-label-sm text-label-sm flex items-center gap-1">
+                                                                <span class="material-symbols-outlined text-[14px]">${badgeIcon}</span>
+                                                                ${badgeLabel}
+                                                        </div>
+                                                </div>
+                                        `;
+                                }).join("");
+                        }
+
+                        async function loadBeneficiaries() {
+                                try {
+                                        renderBeneficiaries(await legacyFetch("beneficiaries"));
+                                } catch (err) {
+                                        list.innerHTML = `
+                                                <div class="rounded-xl bg-error-container p-4 text-sm font-semibold text-error">
+                                                        ${escapeHtml(err.message)}
+                                                </div>
+                                        `;
+                                }
+                        }
+
+                        function openModal() {
+                                form.reset();
+                                error.classList.add("hidden");
+                                modal.classList.remove("hidden");
+                                modal.classList.add("flex");
+                                form.elements.fullName.focus();
+                        }
+
+                        function closeModal() {
+                                modal.classList.add("hidden");
+                                modal.classList.remove("flex");
+                        }
+
+                        openButtons.forEach((button) => button.addEventListener("click", openModal));
+                        modal.querySelector("[data-beneficiary-close]").addEventListener("click", closeModal);
+                        modal.querySelector("[data-beneficiary-cancel]").addEventListener("click", closeModal);
+
+                        form.addEventListener("submit", async (event) => {
+                                event.preventDefault();
+                                error.classList.add("hidden");
+                                saveButton.disabled = true;
+                                try {
+                                        await legacyFetch("beneficiaries", {
+                                                method: "POST",
+                                                body: JSON.stringify({
+                                                        fullName: form.elements.fullName.value.trim(),
+                                                        relationship: form.elements.relationship.value.trim(),
+                                                        identityDocumentNumber: form.elements.identityDocumentNumber.value.trim(),
+                                                        email: form.elements.email.value.trim() || null,
+                                                        phoneNumber: form.elements.phoneNumber.value.trim() || null,
+                                                        isPrimary: form.elements.isPrimary.checked,
+                                                }),
+                                        });
+                                        closeModal();
+                                        await loadBeneficiaries();
+                                } catch (err) {
+                                        error.textContent = err.message;
+                                        error.classList.remove("hidden");
+                                } finally {
+                                        saveButton.disabled = false;
+                                }
+                        });
+
+                        document.addEventListener("DOMContentLoaded", loadBeneficiaries);
+                })();
+</script>
+<script>
+                (function () {
+                        const auth = window.MemoriaAuth;
+                        if (!auth) {
+                                return;
+                        }
+
+                        const bucketConfig = {
+                                "family-vault": {
+                                        title: "Family Vaults",
+                                        subtitle: "Photos, videos, and audio memories",
+                                        accept: ".png,.jpg,.jpeg,.mp4,.mp3",
+                                        hint: "PNG, JPG, MP4, or MP3",
+                                },
+                                "legal-documents": {
+                                        title: "Legal Album",
+                                        subtitle: "Wills, instructions, and important legal files",
+                                        accept: ".pdf,.docx",
+                                        hint: "PDF or DOCX",
+                                },
+                        };
+
+                        const openCards = document.querySelectorAll("[data-storage-open]");
+                        if (!openCards.length) {
+                                return;
+                        }
+
+                        const modal = document.createElement("div");
+                        modal.className = "fixed inset-0 z-[9996] hidden bg-[#30312c]/50 px-4 py-5 backdrop-blur-sm";
+                        modal.innerHTML = `
+                                <div class="mx-auto flex h-full w-full max-w-5xl flex-col overflow-hidden bg-surface-container-lowest shadow-2xl ring-1 ring-outline-variant/40">
+                                        <div class="shrink-0 border-b border-outline-variant/40 px-5 py-4 sm:px-7">
+                                                <div class="flex items-start justify-between gap-4">
+                                                        <div>
+                                                                <p class="text-xs font-bold uppercase tracking-[0.14em] text-secondary">Legacy Storage</p>
+                                                                <h3 class="mt-1 text-2xl font-bold text-on-surface" data-storage-title>Storage</h3>
+                                                                <p class="mt-1 text-sm font-semibold text-on-surface-variant" data-storage-subtitle></p>
+                                                        </div>
+                                                        <button class="flex h-10 w-10 items-center justify-center rounded-full bg-surface-container-high text-on-surface-variant hover:bg-surface-variant" type="button" data-storage-close>
+                                                                <span class="material-symbols-outlined">close</span>
+                                                        </button>
+                                                </div>
+                                        </div>
+                                        <div class="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-7">
+                                                <label class="flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-outline-variant bg-surface px-5 py-8 text-center transition hover:border-primary hover:bg-primary-container/20" data-storage-dropzone>
+                                                        <span class="material-symbols-outlined text-4xl text-primary">cloud_upload</span>
+                                                        <span class="mt-3 text-base font-bold text-on-surface">Drop files here or click to upload</span>
+                                                        <span class="mt-1 text-sm font-semibold text-on-surface-variant" data-storage-hint></span>
+                                                        <input class="hidden" type="file" data-storage-file />
+                                                </label>
+                                                <p class="mt-3 hidden rounded-xl bg-error-container px-3 py-2 text-sm font-semibold text-error" data-storage-error></p>
+                                                <div class="mt-5 overflow-hidden rounded-2xl border border-outline-variant/40">
+                                                        <div class="grid grid-cols-[1fr_120px_160px_90px] gap-3 bg-surface-container-low px-4 py-3 text-xs font-bold uppercase tracking-[0.08em] text-on-surface-variant">
+                                                                <span>File name</span>
+                                                                <span>Size</span>
+                                                                <span>Uploaded</span>
+                                                                <span class="text-right">Action</span>
+                                                        </div>
+                                                        <div data-storage-list></div>
+                                                </div>
+                                        </div>
+                                </div>
+                        `;
+                        document.body.appendChild(modal);
+
+                        const title = modal.querySelector("[data-storage-title]");
+                        const subtitle = modal.querySelector("[data-storage-subtitle]");
+                        const hint = modal.querySelector("[data-storage-hint]");
+                        const fileInput = modal.querySelector("[data-storage-file]");
+                        const dropzone = modal.querySelector("[data-storage-dropzone]");
+                        const list = modal.querySelector("[data-storage-list]");
+                        const error = modal.querySelector("[data-storage-error]");
+                        let activeBucket = null;
+
+                        function escapeHtml(value) {
+                                return String(value ?? "")
+                                        .replace(/&/g, "&amp;")
+                                        .replace(/</g, "&lt;")
+                                        .replace(/>/g, "&gt;")
+                                        .replace(/"/g, "&quot;")
+                                        .replace(/'/g, "&#039;");
+                        }
+
+                        function formatSize(bytes) {
+                                if (bytes >= 1024 * 1024) {
+                                        return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+                                }
+                                if (bytes >= 1024) {
+                                        return `${(bytes / 1024).toFixed(1)} KB`;
+                                }
+                                return `${bytes} B`;
+                        }
+
+                        function formatDate(value) {
+                                const date = new Date(String(value).endsWith("Z") ? value : `${value}Z`);
+                                return Number.isNaN(date.getTime()) ? String(value || "") : date.toLocaleString();
+                        }
+
+                        async function readPayload(response) {
+                                const text = await response.text().catch(() => "");
+                                if (!text) {
+                                        return {};
+                                }
+                                try {
+                                        return JSON.parse(text);
+                                } catch {
+                                        return { message: text };
+                                }
+                        }
+
+                        async function storageFetch(path, options = {}) {
+                                const headers = {
+                                        Authorization: `Bearer ${auth.getToken()}`,
+                                        "X-Memoria-User-Id": auth.getUser()?.userId || "",
+                                        ...(options.headers || {}),
+                                };
+                                const response = await fetch(`${auth.apiBase}/api/legacy/${path}`, {
+                                        ...options,
+                                        headers,
+                                });
+                                const payload = await readPayload(response);
+                                if (!response.ok) {
+                                        throw new Error(payload.message || "Unable to process file.");
+                                }
+                                return payload;
+                        }
+
+                        function setCount(bucket, count) {
+                                document.querySelectorAll(`[data-storage-count="${bucket}"]`).forEach((item) => {
+                                        item.textContent = String(count);
+                                });
+                        }
+
+                        function renderFiles(files) {
+                                setCount(activeBucket, files.length);
+                                if (!files.length) {
+                                        list.innerHTML = `<div class="px-4 py-5 text-sm font-semibold text-on-surface-variant">No files uploaded yet.</div>`;
+                                        return;
+                                }
+
+                                list.innerHTML = files.map((file) => `
+                                        <div class="grid grid-cols-[1fr_120px_160px_90px] items-center gap-3 border-t border-outline-variant/30 px-4 py-3 text-sm">
+                                                <a class="min-w-0 truncate font-bold text-primary hover:underline" href="${escapeHtml(file.fileUrl)}" target="_blank" rel="noopener">${escapeHtml(file.originalFileName)}</a>
+                                                <span class="text-on-surface-variant">${escapeHtml(formatSize(file.fileSizeBytes))}</span>
+                                                <span class="text-on-surface-variant">${escapeHtml(formatDate(file.createdAt))}</span>
+                                                <button class="justify-self-end rounded-full px-3 py-1.5 text-xs font-bold text-error ring-1 ring-error/30 hover:bg-error-container" type="button" data-storage-delete="${escapeHtml(file.fileId)}">Delete</button>
+                                        </div>
+                                `).join("");
+                        }
+
+                        async function loadFiles(bucket = activeBucket) {
+                                if (!bucket) {
+                                        return;
+                                }
+                                const files = await storageFetch(`storage/${bucket}`);
+                                renderFiles(files);
+                        }
+
+                        async function uploadFile(file) {
+                                if (!activeBucket || !file) {
+                                        return;
+                                }
+                                error.classList.add("hidden");
+                                const formData = new FormData();
+                                formData.append("file", file);
+                                try {
+                                        await storageFetch(`storage/${activeBucket}`, {
+                                                method: "POST",
+                                                body: formData,
+                                        });
+                                        fileInput.value = "";
+                                        await loadFiles();
+                                } catch (err) {
+                                        error.textContent = err.message;
+                                        error.classList.remove("hidden");
+                                }
+                        }
+
+                        function openStorage(bucket) {
+                                activeBucket = bucket;
+                                const config = bucketConfig[bucket];
+                                title.textContent = config.title;
+                                subtitle.textContent = config.subtitle;
+                                hint.textContent = `Supported: ${config.hint}`;
+                                fileInput.accept = config.accept;
+                                error.classList.add("hidden");
+                                modal.classList.remove("hidden");
+                                modal.classList.add("block");
+                                loadFiles(bucket).catch((err) => {
+                                        error.textContent = err.message;
+                                        error.classList.remove("hidden");
+                                });
+                        }
+
+                        openCards.forEach((card) => {
+                                const open = () => openStorage(card.dataset.storageOpen);
+                                card.addEventListener("click", open);
+                                card.addEventListener("keydown", (event) => {
+                                        if (event.key === "Enter" || event.key === " ") {
+                                                event.preventDefault();
+                                                open();
+                                        }
+                                });
+                        });
+
+                        modal.querySelector("[data-storage-close]").addEventListener("click", () => {
+                                modal.classList.add("hidden");
+                                modal.classList.remove("block");
+                        });
+
+                        fileInput.addEventListener("change", () => uploadFile(fileInput.files?.[0]));
+                        dropzone.addEventListener("dragover", (event) => {
+                                event.preventDefault();
+                                dropzone.classList.add("border-primary", "bg-primary-container/30");
+                        });
+                        dropzone.addEventListener("dragleave", () => {
+                                dropzone.classList.remove("border-primary", "bg-primary-container/30");
+                        });
+                        dropzone.addEventListener("drop", (event) => {
+                                event.preventDefault();
+                                dropzone.classList.remove("border-primary", "bg-primary-container/30");
+                                uploadFile(event.dataTransfer.files?.[0]);
+                        });
+
+                        list.addEventListener("click", async (event) => {
+                                const button = event.target.closest("[data-storage-delete]");
+                                if (!button || !activeBucket) {
+                                        return;
+                                }
+                                error.classList.add("hidden");
+                                try {
+                                        await storageFetch(`storage/${activeBucket}/${button.dataset.storageDelete}`, { method: "DELETE" });
+                                        await loadFiles();
+                                } catch (err) {
+                                        error.textContent = err.message;
+                                        error.classList.remove("hidden");
+                                }
+                        });
+
+                        document.addEventListener("DOMContentLoaded", () => {
+                                Object.keys(bucketConfig).forEach((bucket) => {
+                                        storageFetch(`storage/${bucket}`)
+                                                .then((files) => setCount(bucket, files.length))
+                                                .catch(() => setCount(bucket, 0));
+                                });
+                        });
+                })();
+</script>
+<script>
+                (function () {
+                        const auth = window.MemoriaAuth;
+                        if (!auth) {
+                                return;
+                        }
+
+                        const panel = document.querySelector("[data-trigger-panel]");
+                        if (!panel) {
+                                return;
+                        }
+
+                        const select = panel.querySelector("[data-trigger-days]");
+                        const saveButton = panel.querySelector("[data-trigger-save]");
+                        const summary = panel.querySelector("[data-trigger-summary]");
+                        const status = panel.querySelector("[data-trigger-status]");
+                        const error = panel.querySelector("[data-trigger-error]");
+
+                        async function readPayload(response) {
+                                const text = await response.text().catch(() => "");
+                                if (!text) {
+                                        return {};
+                                }
+                                try {
+                                        return JSON.parse(text);
+                                } catch {
+                                        return { message: text };
+                                }
+                        }
+
+                        async function triggerFetch(options = {}) {
+                                const response = await fetch(`${auth.apiBase}/api/legacy/transfer-trigger`, {
+                                        ...options,
+                                        headers: {
+                                                "Content-Type": "application/json",
+                                                Authorization: `Bearer ${auth.getToken()}`,
+                                                "X-Memoria-User-Id": auth.getUser()?.userId || "",
+                                                ...(options.headers || {}),
+                                        },
+                                });
+                                const payload = await readPayload(response);
+                                if (!response.ok) {
+                                        throw new Error(payload.message || "Unable to save transfer trigger.");
+                                }
+                                return payload;
+                        }
+
+                        function renderTrigger(config) {
+                                select.value = config.inactivityMinutes === 1 ? "1m" : String(config.inactivityDays || 90);
+                                select.disabled = Boolean(config.isLocked);
+                                saveButton.disabled = Boolean(config.isLocked);
+                                saveButton.textContent = config.isLocked ? "Configuration locked" : "Save configuration";
+                                status.textContent = config.userStatus === "SuspectedAbsent" ? "Suspected absent" : "Active";
+                                status.classList.toggle("bg-error-container", config.userStatus === "SuspectedAbsent");
+                                status.classList.toggle("text-error", config.userStatus === "SuspectedAbsent");
+                                status.classList.toggle("bg-primary-container/40", config.userStatus !== "SuspectedAbsent");
+                                status.classList.toggle("text-primary", config.userStatus !== "SuspectedAbsent");
+
+                                const nextDate = config.nextCheckAt
+                                        ? new Date(`${config.nextCheckAt}${String(config.nextCheckAt).endsWith("Z") ? "" : "Z"}`).toLocaleString()
+                                        : "Not scheduled";
+                                const lockedText = config.isLocked ? " This setting is locked and cannot be changed." : " This setting can only be saved once.";
+                                const intervalLabel = config.inactivityMinutes === 1 ? "1 minute" : `${config.inactivityDays} days`;
+                                summary.textContent = `Current setting: ${intervalLabel} inactivity. Next check: ${nextDate}. If you do not click "I'm alive" within ${config.pingIntervalDays || 7} days, Memoria will contact beneficiaries one by one, 7 days apart.${lockedText}`;
+                        }
+
+                        async function loadTrigger() {
+                                try {
+                                        error.classList.add("hidden");
+                                        renderTrigger(await triggerFetch());
+                                } catch (err) {
+                                        error.textContent = err.message;
+                                        error.classList.remove("hidden");
+                                        status.textContent = "Error";
+                                }
+                        }
+
+                        saveButton.addEventListener("click", async () => {
+                                const isMinuteTest = select.value === "1m";
+                                const days = isMinuteTest ? 30 : Number(select.value);
+                                const label = isMinuteTest ? "1 minute" : `${days} days`;
+                                const confirmed = window.confirm(`Confirm ${label} as your inactivity trigger? This choice will be locked and cannot be changed later.`);
+                                if (!confirmed) {
+                                        return;
+                                }
+
+                                saveButton.disabled = true;
+                                error.classList.add("hidden");
+                                try {
+                                        renderTrigger(await triggerFetch({
+                                                method: "PUT",
+                                                body: JSON.stringify({ inactivityDays: days, inactivityMinutes: isMinuteTest ? 1 : null }),
+                                        }));
+                                } catch (err) {
+                                        error.textContent = err.message;
+                                        error.classList.remove("hidden");
+                                } finally {
+                                        saveButton.disabled = false;
+                                }
+                        });
+
+                        document.addEventListener("DOMContentLoaded", loadTrigger);
+                })();
+</script>
 <script>
                 (function () {
                         const page = document.body;
@@ -458,3 +1232,11 @@
                 })();
         </script>
 </body></html>
+
+
+
+
+
+
+
+

@@ -21,6 +21,8 @@ public partial class StoredFile
 
     public string? Sha256Hash { get; set; }
 
+    public string? StoragePurpose { get; set; }
+
     public string EncryptionStatus { get; set; } = null!;
 
     public DateTime CreatedAt { get; set; }

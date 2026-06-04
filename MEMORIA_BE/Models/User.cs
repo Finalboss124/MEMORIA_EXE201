@@ -23,11 +23,19 @@ public partial class User
 
     public string? Address { get; set; }
 
+    public string? CccdNumber { get; set; }
+
+    public DateOnly? CccdIssuedDate { get; set; }
+
+    public string? CccdIssuedPlace { get; set; }
+
     public bool IsEmailVerified { get; set; }
 
     public bool IsPhoneVerified { get; set; }
 
     public bool IsActive { get; set; }
+
+    public string UserStatus { get; set; } = null!;
 
     public DateTime? LastLoginAt { get; set; }
 

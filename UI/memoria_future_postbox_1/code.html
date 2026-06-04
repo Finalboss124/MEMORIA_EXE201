@@ -1,11 +1,12 @@
-<!doctype html>
+﻿<!doctype html>
 
 <html class="light" lang="en">
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Memoria - Future Postbox</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="icon" type="image/svg+xml" href="../assets/memoria-logo.svg" />
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap"
       rel="stylesheet"
@@ -184,14 +185,13 @@
       class="hidden md:flex flex-col h-full py-stack-md border-r border-outline-variant/30 bg-surface-container-low dark:bg-surface-container-lowest shadow-sm fixed left-0 top-0 h-screen w-64 z-40"
     >
       <div class="px-6 pb-8">
-        <h1 class="font-headline-md text-headline-md text-primary font-bold">
-          Memoria
-        </h1>
-        <p
-          class="font-label-sm text-label-sm text-on-surface-variant opacity-70"
-        >
-          Digital Legacy
-        </p>
+        <div class="flex items-center gap-2">
+  <img src="../assets/memoria-logo.svg" alt="Memoria" class="h-16 w-20 object-contain" />
+  <div class="leading-tight">
+    <h1 class="text-3xl font-extrabold tracking-tight text-primary">Memoria</h1>
+    <p class="mt-0.5 text-sm font-semibold text-on-surface-variant/80">Digital Legacy</p>
+  </div>
+</div>
       </div>
       <div class="flex-1 overflow-y-auto space-y-2">
         <a
@@ -238,31 +238,8 @@
           <span class="font-label-md text-label-md">Store</span>
         </a>
       </div>
-      <div class="px-4 pt-4">
-        <button
-          class="w-full bg-primary text-on-primary font-label-md text-label-md py-3 rounded-full hover:bg-surface-tint transition-colors flex items-center justify-center gap-2"
-        >
-          <span class="material-symbols-outlined">add_circle</span>
-          Capture Memory
-        </button>
-      </div>
-      <div class="mt-auto pt-8 space-y-2">
-        <a
-          class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300"
-          href="#"
-          data-auth-logout
-        >
-          <span class="material-symbols-outlined">help_outline</span>
-          <span class="font-label-md text-label-md">Help</span>
-        </a>
-        <a
-          class="text-on-surface-variant flex items-center gap-3 px-4 py-3 mx-2 hover:text-on-surface hover:bg-surface-container-high rounded-full transition-all duration-300"
-          href="#"
-        >
-          <span class="material-symbols-outlined">logout</span>
-          <span class="font-label-md text-label-md">Sign Out</span>
-        </a>
-      </div>
+      
+      
     </nav>
     <!-- TopNavBar (Global) -->
     <header
@@ -278,7 +255,7 @@
       <div class="hidden md:block">
         <!-- Breadcrumbs or ambient title could go here on desktop -->
       </div>
-      <div class="flex items-center gap-4">
+      <div class="flex items-center gap-3">
         <button
           class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full"
         >
@@ -521,7 +498,7 @@
     </main>
     <!-- Composer Modal Overlay (Hidden by default) -->
     <div
-      class="fixed inset-0 z-50 flex items-center justify-center px-4 py-8 opacity-0 pointer-events-none transition-opacity duration-300"
+      class="fixed inset-0 z-50 px-4 opacity-0 pointer-events-none transition-opacity duration-300"
       id="composerModal"
     >
       <!-- Backdrop -->
@@ -531,7 +508,8 @@
       ></div>
       <!-- Modal Content (Marshmallow Geometry) -->
       <div
-        class="relative bg-surface-container-lowest w-full max-w-3xl max-h-full rounded-[32px] marshmallow-shadow flex flex-col overflow-hidden transform scale-95 transition-transform duration-300"
+        class="bg-surface-container-lowest w-full max-w-3xl marshmallow-shadow flex flex-col overflow-hidden transform scale-95 transition-transform duration-300"
+        style="position:fixed;left:50%;top:18px;max-height:calc(100dvh - 74px);transform:translateX(-50%) scale(.95);"
         id="composerCard"
       >
         <!-- Header -->
@@ -738,7 +716,7 @@
       </div>
     </div>
     <script src="../config.js?v=20260601-auth6"></script>
-    <script src="../auth.js?v=20260601-auth6"></script>
+    <script src="../auth.js?v=20260603-role3"></script>
     <script>
       const modal = document.getElementById("composerModal");
       const card = document.getElementById("composerCard");
@@ -772,12 +750,14 @@
         modal.classList.remove("opacity-0", "pointer-events-none");
         card.classList.remove("scale-95");
         card.classList.add("scale-100");
+        card.style.transform = "translateX(-50%) scale(1)";
       }
 
       function closeModal() {
         modal.classList.add("opacity-0", "pointer-events-none");
         card.classList.remove("scale-100");
         card.classList.add("scale-95");
+        card.style.transform = "translateX(-50%) scale(.95)";
       }
 
       openBtn.addEventListener("click", () => {
@@ -1168,3 +1148,11 @@
     </script>
   </body>
 </html>
+
+
+
+
+
+
+
+

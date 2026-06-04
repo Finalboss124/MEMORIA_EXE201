@@ -82,6 +82,7 @@ builder.Services.AddHttpClient<ICloudFileStorage, CloudinaryFileStorage>(client 
     client.Timeout = TimeSpan.FromMinutes(10);
 });
 builder.Services.AddHostedService<FutureLetterDeliveryWorker>();
+builder.Services.AddHostedService<LegacyTransferTriggerWorker>();
 var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>();
 if (jwtSettings is null || string.IsNullOrWhiteSpace(jwtSettings.Key))
 {
@@ -112,6 +113,12 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await ApplySchemaPatchesAsync(dbContext);
+}
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
@@ -150,3 +157,83 @@ app.MapGet("/local-uploads/{**filePath}", (string filePath, IWebHostEnvironment 
 app.MapControllers();
 
 app.Run();
+
+static async Task ApplySchemaPatchesAsync(AppDbContext dbContext)
+{
+    await dbContext.Database.ExecuteSqlRawAsync("""
+        IF COL_LENGTH('Users', 'CccdNumber') IS NULL
+            ALTER TABLE Users ADD CccdNumber NVARCHAR(30) NULL;
+
+        IF COL_LENGTH('Users', 'CccdIssuedDate') IS NULL
+            ALTER TABLE Users ADD CccdIssuedDate DATE NULL;
+
+        IF COL_LENGTH('Users', 'CccdIssuedPlace') IS NULL
+            ALTER TABLE Users ADD CccdIssuedPlace NVARCHAR(255) NULL;
+
+        IF COL_LENGTH('StoredFiles', 'StoragePurpose') IS NULL
+            ALTER TABLE StoredFiles ADD StoragePurpose NVARCHAR(50) NULL;
+
+        IF COL_LENGTH('Users', 'UserStatus') IS NULL
+            ALTER TABLE Users ADD UserStatus NVARCHAR(40) NOT NULL CONSTRAINT DF_Users_UserStatus DEFAULT 'Active';
+
+        IF COL_LENGTH('ProofOfLifeSchedules', 'IsConfigurationLocked') IS NULL
+            ALTER TABLE ProofOfLifeSchedules ADD IsConfigurationLocked BIT NOT NULL CONSTRAINT DF_POLSchedules_IsConfigurationLocked DEFAULT 0;
+
+        IF COL_LENGTH('ProofOfLifeSchedules', 'CheckIntervalMinutes') IS NULL
+            ALTER TABLE ProofOfLifeSchedules ADD CheckIntervalMinutes INT NOT NULL CONSTRAINT DF_POLSchedules_CheckIntervalMinutes DEFAULT 0;
+
+        IF COL_LENGTH('Beneficiaries', 'IdentityDocumentHash') IS NULL
+            ALTER TABLE Beneficiaries ADD IdentityDocumentHash NVARCHAR(128) NULL;
+
+        IF COL_LENGTH('LegacyUnlockRequests', 'ClaimTokenHash') IS NULL
+            ALTER TABLE LegacyUnlockRequests ADD ClaimTokenHash NVARCHAR(128) NULL;
+
+        IF COL_LENGTH('LegacyUnlockRequests', 'ClaimTokenExpiresAt') IS NULL
+            ALTER TABLE LegacyUnlockRequests ADD ClaimTokenExpiresAt DATETIME2 NULL;
+
+        IF COL_LENGTH('LegacyUnlockRequests', 'BeneficiaryNotifiedAt') IS NULL
+            ALTER TABLE LegacyUnlockRequests ADD BeneficiaryNotifiedAt DATETIME2 NULL;
+
+        IF COL_LENGTH('LegacyUnlockRequests', 'BeneficiaryVerifiedAt') IS NULL
+            ALTER TABLE LegacyUnlockRequests ADD BeneficiaryVerifiedAt DATETIME2 NULL;
+
+        IF OBJECT_ID('MemoryLikes', 'U') IS NULL
+        BEGIN
+            CREATE TABLE MemoryLikes
+            (
+                MemoryLikeId UNIQUEIDENTIFIER NOT NULL CONSTRAINT PK_MemoryLikes PRIMARY KEY DEFAULT NEWID(),
+                MemoryId UNIQUEIDENTIFIER NOT NULL,
+                UserId UNIQUEIDENTIFIER NOT NULL,
+                CreatedAt DATETIME2 NOT NULL CONSTRAINT DF_MemoryLikes_CreatedAt DEFAULT SYSUTCDATETIME(),
+                CONSTRAINT FK_MemoryLikes_Memories FOREIGN KEY (MemoryId) REFERENCES Memories(MemoryId) ON DELETE CASCADE,
+                CONSTRAINT FK_MemoryLikes_Users FOREIGN KEY (UserId) REFERENCES Users(UserId)
+            );
+
+            CREATE UNIQUE INDEX IX_MemoryLikes_Memory_User ON MemoryLikes(MemoryId, UserId);
+        END;
+
+        IF EXISTS (
+            SELECT 1
+            FROM sys.check_constraints
+            WHERE name = 'CK_AuthVerificationCodes_Purpose'
+              AND parent_object_id = OBJECT_ID('AuthVerificationCodes')
+        )
+            ALTER TABLE AuthVerificationCodes DROP CONSTRAINT CK_AuthVerificationCodes_Purpose;
+
+        ALTER TABLE AuthVerificationCodes
+            ADD CONSTRAINT CK_AuthVerificationCodes_Purpose
+            CHECK (Purpose IN ('Login','Register','GoogleLogin','LegacyContract','LegacyClaimOtp'));
+
+        IF EXISTS (
+            SELECT 1
+            FROM sys.check_constraints
+            WHERE name = 'CK_LegalDoc_Type'
+              AND parent_object_id = OBJECT_ID('LegalDocumentSubmissions')
+        )
+            ALTER TABLE LegalDocumentSubmissions DROP CONSTRAINT CK_LegalDoc_Type;
+
+        ALTER TABLE LegalDocumentSubmissions
+            ADD CONSTRAINT CK_LegalDoc_Type
+            CHECK (DocumentType IN ('DeathCertificate','MissingPersonCourtDecision','BeneficiaryIdentityDocument'));
+        """);
+}

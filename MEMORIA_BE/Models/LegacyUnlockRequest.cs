@@ -15,6 +15,14 @@ public partial class LegacyUnlockRequest
 
     public string? RequestReason { get; set; }
 
+    public string? ClaimTokenHash { get; set; }
+
+    public DateTime? ClaimTokenExpiresAt { get; set; }
+
+    public DateTime? BeneficiaryNotifiedAt { get; set; }
+
+    public DateTime? BeneficiaryVerifiedAt { get; set; }
+
     public DateTime SubmittedAt { get; set; }
 
     public DateTime? DecidedAt { get; set; }
