@@ -416,6 +416,42 @@ public sealed class FutureLettersController : ControllerBase
 
     }
 
+    [HttpDelete("{letterId:guid}")]
+    public async Task<ActionResult> Delete(Guid letterId, CancellationToken cancellationToken)
+    {
+        var ownerUserId = GetCurrentUserId();
+        if (ownerUserId is null)
+        {
+            return Unauthorized();
+        }
+
+        var letter = await _dbContext.FutureLetters
+            .Include(item => item.FutureLetterRecipients)
+            .Include(item => item.FutureLetterAttachments)
+                .ThenInclude(attachment => attachment.File)
+            .Include(item => item.ScheduledDeliveryLogs)
+            .FirstOrDefaultAsync(item => item.LetterId == letterId && item.OwnerUserId == ownerUserId.Value, cancellationToken);
+
+        if (letter is null)
+        {
+            return NotFound(new { message = "Future letter was not found." });
+        }
+
+        if (letter.IsLocked)
+        {
+            return BadRequest(new { message = "This future letter is sealed and cannot be deleted." });
+        }
+
+        // Remove related entities before removing the letter
+        _dbContext.ScheduledDeliveryLogs.RemoveRange(letter.ScheduledDeliveryLogs);
+        _dbContext.FutureLetterRecipients.RemoveRange(letter.FutureLetterRecipients);
+        _dbContext.FutureLetterAttachments.RemoveRange(letter.FutureLetterAttachments);
+        _dbContext.FutureLetters.Remove(letter);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return Ok(new { message = "Future letter deleted successfully." });
+    }
+
     private Task<FutureLetter?> LoadLetterForResponse(Guid letterId, Guid ownerUserId, CancellationToken cancellationToken)
     {
         return _dbContext.FutureLetters

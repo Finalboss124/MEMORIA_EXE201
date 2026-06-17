@@ -377,6 +377,123 @@ public sealed class FamilyVaultController : ControllerBase
             comment.CreatedAt));
     }
 
+    [HttpPut("posts/{memoryId:guid}")]
+    [RequestSizeLimit(100_000_000)]
+    [RequestFormLimits(MultipartBodyLengthLimit = 100_000_000)]
+    public async Task<ActionResult<FamilyVaultPostResponse>> UpdatePost(Guid memoryId, [FromForm] UpdateFamilyPostRequest request, CancellationToken cancellationToken)
+    {
+        var userId = GetCurrentUserId();
+        if (userId is null)
+        {
+            return Unauthorized();
+        }
+
+        var post = await _dbContext.Memories
+            .Include(item => item.MemoryFiles)
+                .ThenInclude(mf => mf.File)
+            .FirstOrDefaultAsync(item => item.MemoryId == memoryId && item.CreatedByUserId == userId.Value, cancellationToken);
+
+        if (post is null)
+        {
+            return NotFound(new { message = "Post was not found or you do not have permission to edit it." });
+        }
+
+        var title = request.Title?.Trim();
+        var description = request.Description?.Trim();
+
+        if (string.IsNullOrWhiteSpace(title) && string.IsNullOrWhiteSpace(description) && post.MemoryFiles.Count == 0 && request.File is null)
+        {
+            return BadRequest(new { message = "Add a short story, a title, or an image." });
+        }
+
+        var now = DateTime.UtcNow;
+        post.Title = string.IsNullOrWhiteSpace(title) ? (post.Title) : title;
+        post.Description = description;
+
+        if (request.File is not null)
+        {
+            if (!IsAllowedPostFile(request.File))
+            {
+                return BadRequest(new { message = "Post files must be images or videos up to 80 MB." });
+            }
+
+            CloudUploadResult uploaded;
+            try
+            {
+                uploaded = await _fileStorage.UploadAsync(request.File, userId.Value, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = $"Unable to upload file. {ex.Message}" });
+            }
+
+            var storedFile = new StoredFile
+            {
+                FileId = Guid.NewGuid(),
+                OwnerUserId = userId.Value,
+                OriginalFileName = uploaded.OriginalFileName,
+                StoredFileName = uploaded.StoredFileName,
+                FileUrl = uploaded.FileUrl,
+                MimeType = uploaded.MimeType,
+                FileSizeBytes = uploaded.FileSizeBytes,
+                Sha256Hash = uploaded.Sha256Hash,
+                StoragePurpose = "family-vault-post",
+                EncryptionStatus = "Plain",
+                CreatedAt = now
+            };
+
+            // Remove old files and add new one
+            _dbContext.MemoryFiles.RemoveRange(post.MemoryFiles);
+            post.MemoryFiles.Clear();
+            post.MemoryFiles.Add(new MemoryFile
+            {
+                MemoryFileId = Guid.NewGuid(),
+                MemoryId = post.MemoryId,
+                FileId = storedFile.FileId,
+                File = storedFile,
+                Caption = title,
+                CreatedAt = now
+            });
+        }
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        var refreshed = await LoadPostAsync(post.MemoryId, userId.Value, cancellationToken);
+        return refreshed is null
+            ? NotFound(new { message = "Post was not found after saving." })
+            : Ok(refreshed);
+    }
+
+    [HttpDelete("posts/{memoryId:guid}")]
+    public async Task<ActionResult> DeletePost(Guid memoryId, CancellationToken cancellationToken)
+    {
+        var userId = GetCurrentUserId();
+        if (userId is null)
+        {
+            return Unauthorized();
+        }
+
+        var post = await _dbContext.Memories
+            .Include(item => item.MemoryFiles)
+            .Include(item => item.MemoryComments)
+            .FirstOrDefaultAsync(item => item.MemoryId == memoryId && item.CreatedByUserId == userId.Value, cancellationToken);
+
+        if (post is null)
+        {
+            return NotFound(new { message = "Post was not found or you do not have permission to delete it." });
+        }
+
+        // Delete likes via separate query since Memory model doesn't have MemoryLikes navigation property
+        var likes = await _dbContext.MemoryLikes.Where(item => item.MemoryId == memoryId).ToListAsync(cancellationToken);
+        _dbContext.MemoryLikes.RemoveRange(likes);
+        _dbContext.MemoryComments.RemoveRange(post.MemoryComments);
+        _dbContext.MemoryFiles.RemoveRange(post.MemoryFiles);
+        _dbContext.Memories.Remove(post);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return Ok(new { message = "Post deleted successfully." });
+    }
+
     private async Task<FamilyVault?> GetCurrentDisplayVaultAsync(User user, CancellationToken cancellationToken)
     {
         var email = NormalizeEmail(user.Email);
@@ -652,6 +769,13 @@ public sealed class RespondInvitationRequest
 }
 
 public sealed class CreateFamilyPostRequest
+{
+    public string? Title { get; set; }
+    public string? Description { get; set; }
+    public IFormFile? File { get; set; }
+}
+
+public sealed class UpdateFamilyPostRequest
 {
     public string? Title { get; set; }
     public string? Description { get; set; }

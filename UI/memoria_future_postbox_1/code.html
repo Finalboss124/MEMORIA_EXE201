@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 
 <html class="light" lang="en">
   <head>
@@ -901,17 +901,28 @@
             ? "bg-secondary-container text-on-secondary-container"
             : "bg-surface-container-high text-on-surface-variant";
           const statusIcon = isLocked ? "lock" : "edit";
-          const actionHtml = isLocked
-            ? ""
-            : `
-                <button
-                  class="mt-2 self-start px-4 py-2 rounded-full bg-primary text-on-primary font-label-sm text-label-sm hover:opacity-90 transition-opacity"
-                  data-edit-letter-id="${escapeHtml(letter.letterId)}"
-                  type="button"
-                >
-                  Continue draft
-                </button>
-              `;
+          const draftActionsHtml = !isLocked
+            ? `
+                <div class="flex items-center gap-2 mt-2">
+                  <button
+                    class="self-start px-4 py-2 rounded-full bg-primary text-on-primary font-label-sm text-label-sm hover:opacity-90 transition-opacity"
+                    data-edit-letter-id="${escapeHtml(letter.letterId)}"
+                    type="button"
+                  >
+                    Continue draft
+                  </button>
+                  <button
+                    class="self-start px-3 py-2 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm hover:opacity-90 transition-opacity flex items-center gap-1"
+                    data-delete-letter-id="${escapeHtml(letter.letterId)}"
+                    data-delete-letter-title="${escapeHtml(letter.title)}"
+                    type="button"
+                  >
+                    <span class="material-symbols-outlined text-[14px]">delete</span>
+                    Delete
+                  </button>
+                </div>
+              `
+            : "";
 
           return `
             <article class="bg-surface-container-lowest rounded-2xl p-6 marshmallow-shadow flex flex-col gap-4 relative overflow-hidden group hover:shadow-md transition-shadow">
@@ -920,7 +931,7 @@
                 <div class="flex flex-col">
                   <span class="font-label-sm text-label-sm text-on-surface-variant uppercase mb-1">To: ${escapeHtml(recipient)}</span>
                   <h4 class="font-headline-md text-headline-md text-on-surface">${escapeHtml(letter.title)}</h4>
-                  ${actionHtml}
+                  ${draftActionsHtml}
                 </div>
                 <div class="${statusClass} px-3 py-1 rounded-full font-label-sm text-label-sm flex items-center gap-1 shrink-0">
                   <span class="material-symbols-outlined text-[14px]">${statusIcon}</span>
@@ -952,7 +963,40 @@
             }
           });
         });
+
+        document.querySelectorAll("[data-delete-letter-id]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const letterId = button.dataset.deleteLetterId;
+            const letterTitle = button.dataset.deleteLetterTitle;
+            deleteLetter(letterId, letterTitle);
+          });
+        });
       }
+
+      async function deleteLetter(letterId, letterTitle) {
+        const confirmed = window.confirm(`Are you sure you want to delete the draft "${letterTitle}"? This cannot be undone.`);
+        if (!confirmed) {
+          return;
+        }
+
+        try {
+          const response = await fetch(`${window.MemoriaAuth.apiBase}/api/future-letters/${letterId}`, {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${window.MemoriaAuth.getToken()}`,
+              "X-Memoria-User-Id": window.MemoriaAuth.getUser()?.userId || "",
+            },
+          });
+          const payload = await readPayload(response);
+          if (!response.ok) {
+            throw new Error(payload.message || `Unable to delete this letter. HTTP ${response.status}.`);
+          }
+          await loadLetters();
+        } catch (error) {
+          alert(error.message);
+        }
+      }
+
 
       function setBusy(isBusy) {
         saveDraftBtn.disabled = isBusy;
