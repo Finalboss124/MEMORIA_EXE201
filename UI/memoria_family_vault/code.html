@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 
 <html lang="en">
   <head>
@@ -293,22 +293,12 @@
       </div>
       <div class="flex items-center gap-3">
         <button
-          class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full"
-        >
-          <span class="material-symbols-outlined">search</span>
-        </button>
-        <button
           class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full relative"
         >
           <span class="material-symbols-outlined">notifications</span>
           <span
             class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"
           ></span>
-        </button>
-        <button
-          class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full"
-        >
-          <span class="material-symbols-outlined">settings</span>
         </button>
         <button
           class="text-on-surface-variant hover:bg-primary-container hover:text-primary transition-colors duration-200 p-2 rounded-full"
@@ -509,7 +499,7 @@
                   Summer Lake House
                 </h3>
                 <p class="font-body-md text-body-md text-on-surface-variant">
-                  August 2023 â€¢ 142 Memories
+                  August 2023 Ã¢â‚¬Â¢ 142 Memories
                 </p>
               </div>
               <!-- Interaction Bar -->
@@ -536,13 +526,6 @@
                     <span class="font-label-sm text-label-sm">8</span>
                   </button>
                 </div>
-                <button
-                  class="text-on-surface-variant hover:text-primary transition-colors bg-surface/50 rounded-full p-2 backdrop-blur-sm"
-                >
-                  <span class="material-symbols-outlined text-[20px]"
-                    >share</span
-                  >
-                </button>
               </div>
             </div>
           </div>
@@ -586,13 +569,6 @@
                     >
                   </button>
                 </div>
-                <button
-                  class="text-on-surface-variant hover:text-primary transition-colors"
-                >
-                  <span class="material-symbols-outlined text-[20px]"
-                    >share</span
-                  >
-                </button>
               </div>
             </div>
           </div>
@@ -626,11 +602,6 @@
                   >favorite</span
                 >
                 <span class="font-label-sm">12</span>
-              </button>
-              <button
-                class="text-on-surface-variant hover:text-primary transition-colors"
-              >
-                <span class="material-symbols-outlined text-[18px]">share</span>
               </button>
             </div>
           </div>
@@ -732,6 +703,7 @@
 
         let vaultState = { members: [], posts: [] };
         let selectedPost = null;
+        let replyTarget = null;
 
         function headers(json = true) {
           return {
@@ -876,7 +848,7 @@
                 <button class="text-left" type="button" data-open-post-detail="${escapeHtml(post.memoryId)}">
                   <span class="material-symbols-outlined text-4xl text-primary/50">format_quote</span>
                   <p class="mt-4 text-xl font-semibold italic leading-8 text-on-primary-container">${escapeHtml(post.description || post.title)}</p>
-                  <p class="mt-6 text-sm font-bold text-on-primary-container/75">${escapeHtml(post.authorName)} • ${escapeHtml(formatDate(post.createdAt))}</p>
+                  <p class="mt-6 text-sm font-bold text-on-primary-container/75">${escapeHtml(post.authorName)} â€¢ ${escapeHtml(formatDate(post.createdAt))}</p>
                 </button>
                 ${renderActions(post)}
               </article>
@@ -934,9 +906,6 @@
               </div>
               <div class="flex items-center gap-3">
                 ${authorActionsHtml}
-                <button class="text-on-surface-variant hover:text-primary" type="button" title="Share">
-                  <span class="material-symbols-outlined text-[22px]">ios_share</span>
-                </button>
               </div>
             </div>
           `;
@@ -1023,11 +992,22 @@
           const form = event.currentTarget;
           const error = form.querySelector("[data-invite-error]");
           error.classList.add("hidden");
+          const emailInput = form.elements.email;
+          const email = emailInput.value.trim();
+          emailInput.setCustomValidity("");
+          if (!isValidEmail(email)) {
+            emailInput.setCustomValidity("Enter a valid member email address.");
+            emailInput.reportValidity();
+            error.textContent = emailInput.validationMessage;
+            error.classList.remove("hidden");
+            return;
+          }
+
           try {
             const response = await fetch(`${API_BASE}/api/family-vault/invite`, {
               method: "POST",
               headers: headers(),
-              body: JSON.stringify({ email: form.elements.email.value.trim() }),
+              body: JSON.stringify({ email }),
             });
             const payload = await response.json().catch(() => ({}));
             if (!response.ok) {
@@ -1039,6 +1019,10 @@
             error.textContent = err.message;
             error.classList.remove("hidden");
           }
+        }
+
+        function isValidEmail(value) {
+          return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(String(value || "").trim());
         }
 
         function openPostModal() {
@@ -1214,13 +1198,13 @@
           showModal(`
             <div class="grid h-[min(760px,calc(100svh-32px))] w-[min(calc(100vw-32px),88rem)] grid-cols-1 overflow-hidden bg-surface-container-lowest shadow-2xl ring-1 ring-outline-variant/40 lg:grid-cols-[1.35fr_0.65fr]" style="border-radius: 8px;">
               <div class="flex min-h-0 items-center justify-center overflow-hidden bg-[#191b17]">
-                ${hasImage ? `<img class="max-h-full max-w-full object-contain" src="${escapeHtml(post.fileUrl)}" alt="${escapeHtml(post.title)}" />` : `<div class="p-10 text-center text-white"><span class="material-symbols-outlined text-6xl opacity-60">format_quote</span><p class="mt-4 text-3xl font-bold italic leading-tight">${escapeHtml(post.description || post.title)}</p></div>`}
+                ${hasImage ? `<img class="h-full w-full object-contain" src="${escapeHtml(post.fileUrl)}" alt="${escapeHtml(post.title)}" />` : `<div class="p-10 text-center text-white"><span class="material-symbols-outlined text-6xl opacity-60">format_quote</span><p class="mt-4 text-3xl font-bold italic leading-tight">${escapeHtml(post.description || post.title)}</p></div>`}
               </div>
               <div class="flex min-h-0 flex-col">
                 <div class="flex items-start justify-between gap-4 border-b border-outline-variant/30 p-5">
                   <div>
                     <h2 class="text-2xl font-extrabold text-on-background">${escapeHtml(post.title)}</h2>
-                    <p class="mt-1 text-sm font-semibold text-on-surface-variant">${escapeHtml(post.authorName)} • ${escapeHtml(formatDate(post.createdAt))}</p>
+                    <p class="mt-1 text-sm font-semibold text-on-surface-variant">${escapeHtml(post.authorName)} â€¢ ${escapeHtml(formatDate(post.createdAt))}</p>
                     ${post.description && hasImage ? `<p class="mt-3 text-sm font-medium leading-6 text-on-surface-variant">${escapeHtml(post.description)}</p>` : ""}
                   </div>
                   <button class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-surface-container-high text-on-surface-variant" type="button" data-close-modal><span class="material-symbols-outlined">close</span></button>
@@ -1239,8 +1223,12 @@
                   ${renderComments(post)}
                 </div>
                 <form class="border-t border-outline-variant/30 p-4" data-comment-form>
+                  <div class="${replyTarget ? "flex" : "hidden"} mb-3 items-center justify-between bg-primary-container px-4 py-2 text-xs font-bold text-primary" style="border-radius: 8px;" data-reply-banner>
+                    <span>Replying to ${escapeHtml(replyTarget?.authorName || "")}</span>
+                    <button class="text-on-surface-variant hover:text-primary" type="button" data-cancel-reply>Cancel</button>
+                  </div>
                   <div class="flex gap-3">
-                    <input class="h-12 flex-1 border-0 bg-surface px-4 text-sm font-semibold ring-1 ring-outline-variant focus:ring-2 focus:ring-primary-container" style="border-radius: 8px;" name="text" placeholder="Write a comment..." required />
+                    <input class="h-12 flex-1 border-0 bg-surface px-4 text-sm font-semibold ring-1 ring-outline-variant focus:ring-2 focus:ring-primary-container" style="border-radius: 8px;" name="text" placeholder="${replyTarget ? `Reply to ${escapeHtml(replyTarget.authorName)}...` : "Write a comment..."}" required />
                     <button class="rounded-full bg-primary px-5 text-sm font-extrabold text-on-primary" type="submit">Send</button>
                   </div>
                 </form>
@@ -1254,18 +1242,56 @@
             renderDetailModal();
           });
           document.querySelector("[data-comment-form]").addEventListener("submit", submitComment);
+          document.querySelectorAll("[data-reply-comment]").forEach((button) => {
+            button.addEventListener("click", () => {
+              const comment = (selectedPost.comments || []).find((item) => item.commentId === button.dataset.replyComment);
+              if (!comment) return;
+              replyTarget = { commentId: comment.commentId, authorName: comment.authorName };
+              renderDetailModal();
+              const input = document.querySelector("[data-comment-form] input[name='text']");
+              input?.focus();
+            });
+          });
+          document.querySelector("[data-cancel-reply]")?.addEventListener("click", () => {
+            replyTarget = null;
+            renderDetailModal();
+          });
         }
 
         function renderComments(post) {
           if (!post.comments?.length) {
             return `<div class="bg-surface p-5 text-sm font-semibold text-on-surface-variant" style="border-radius: 8px;">No comments yet. Start the conversation.</div>`;
           }
-          return post.comments.map((comment) => `
+          const comments = post.comments || [];
+          const roots = comments.filter((comment) => !comment.parentCommentId);
+          const repliesByParent = comments.reduce((map, comment) => {
+            if (comment.parentCommentId) {
+              map[comment.parentCommentId] = [...(map[comment.parentCommentId] || []), comment];
+            }
+            return map;
+          }, {});
+
+          return roots.map((comment) => `
             <div class="mb-4 flex gap-3">
               <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-container text-xs font-extrabold text-primary">${escapeHtml(initials(comment.authorName))}</div>
-              <div class="bg-surface px-4 py-3" style="border-radius: 8px;">
-                <p class="text-sm font-extrabold text-on-background">${escapeHtml(comment.authorName)}</p>
-                <p class="mt-1 text-sm font-medium leading-6 text-on-surface-variant">${escapeHtml(comment.text)}</p>
+              <div class="min-w-0 flex-1">
+                <div class="bg-surface px-4 py-3" style="border-radius: 8px;">
+                  <p class="text-sm font-extrabold text-on-background">${escapeHtml(comment.authorName)}</p>
+                  <p class="mt-1 text-sm font-medium leading-6 text-on-surface-variant">${escapeHtml(comment.text)}</p>
+                </div>
+                <button class="ml-2 mt-1 text-xs font-extrabold text-primary hover:underline" type="button" data-reply-comment="${escapeHtml(comment.commentId)}">Reply</button>
+                ${(repliesByParent[comment.commentId] || []).map((reply) => `
+                  <div class="mt-3 flex gap-3 pl-5">
+                    <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary-container text-[11px] font-extrabold text-primary">${escapeHtml(initials(reply.authorName))}</div>
+                    <div class="min-w-0 flex-1">
+                      <div class="bg-surface-container-low px-4 py-3" style="border-radius: 8px;">
+                        <p class="text-sm font-extrabold text-on-background">${escapeHtml(reply.authorName)}</p>
+                        <p class="mt-1 text-sm font-medium leading-6 text-on-surface-variant">${escapeHtml(reply.text)}</p>
+                      </div>
+                      <button class="ml-2 mt-1 text-xs font-extrabold text-primary hover:underline" type="button" data-reply-comment="${escapeHtml(comment.commentId)}">Reply</button>
+                    </div>
+                  </div>
+                `).join("")}
               </div>
             </div>
           `).join("");
@@ -1281,7 +1307,7 @@
           const response = await fetch(`${API_BASE}/api/family-vault/posts/${selectedPost.memoryId}/comments`, {
             method: "POST",
             headers: headers(),
-            body: JSON.stringify({ text }),
+            body: JSON.stringify({ text, parentCommentId: replyTarget?.commentId || null }),
           });
           const payload = await response.json().catch(() => ({}));
           if (!response.ok) {
@@ -1291,6 +1317,7 @@
             ? { ...post, comments: [...(post.comments || []), payload], commentCount: (post.commentCount || 0) + 1 }
             : post);
           selectedPost = vaultState.posts.find((post) => post.memoryId === selectedPost.memoryId);
+          replyTarget = null;
           renderDetailModal();
         }
 
@@ -1340,6 +1367,8 @@
     </script>
   </body>
 </html>
+
+
 
 
 

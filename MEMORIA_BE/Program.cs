@@ -197,6 +197,19 @@ static async Task ApplySchemaPatchesAsync(AppDbContext dbContext)
         IF COL_LENGTH('LegacyUnlockRequests', 'BeneficiaryVerifiedAt') IS NULL
             ALTER TABLE LegacyUnlockRequests ADD BeneficiaryVerifiedAt DATETIME2 NULL;
 
+        IF COL_LENGTH('MemoryComments', 'ParentCommentId') IS NULL
+            ALTER TABLE MemoryComments ADD ParentCommentId UNIQUEIDENTIFIER NULL;
+
+        IF NOT EXISTS (
+            SELECT 1
+            FROM sys.foreign_keys
+            WHERE name = 'FK_MemoryComments_Parent'
+              AND parent_object_id = OBJECT_ID('MemoryComments')
+        )
+            ALTER TABLE MemoryComments
+                ADD CONSTRAINT FK_MemoryComments_Parent
+                FOREIGN KEY (ParentCommentId) REFERENCES MemoryComments(CommentId);
+
         IF OBJECT_ID('MemoryLikes', 'U') IS NULL
         BEGIN
             CREATE TABLE MemoryLikes

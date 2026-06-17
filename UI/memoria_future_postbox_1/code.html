@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 
 <html class="light" lang="en">
   <head>
@@ -257,22 +257,12 @@
       </div>
       <div class="flex items-center gap-3">
         <button
-          class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full"
-        >
-          <span class="material-symbols-outlined">search</span>
-        </button>
-        <button
           class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full relative"
         >
           <span class="material-symbols-outlined">notifications</span>
           <span
             class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"
           ></span>
-        </button>
-        <button
-          class="text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200 p-2 rounded-full"
-        >
-          <span class="material-symbols-outlined">settings</span>
         </button>
         <button
           class="text-on-surface-variant hover:bg-primary-container hover:text-primary transition-colors duration-200 p-2 rounded-full"
@@ -819,6 +809,10 @@
 
       async function createLetter(seal) {
         clearStatus();
+        if (!validateRecipientEmail(seal)) {
+          return;
+        }
+
         setBusy(true);
         try {
           const formData = new FormData();
@@ -874,6 +868,30 @@
         } finally {
           setBusy(false);
         }
+      }
+
+      function validateRecipientEmail(seal) {
+        const email = recipientEmailInput.value.trim();
+        recipientEmailInput.setCustomValidity("");
+
+        if (seal && !email) {
+          recipientEmailInput.setCustomValidity("Recipient email is required to schedule email delivery.");
+        } else if (email && !isValidEmail(email)) {
+          recipientEmailInput.setCustomValidity("Enter a valid recipient email address.");
+        }
+
+        if (!recipientEmailInput.checkValidity()) {
+          recipientEmailInput.reportValidity();
+          showStatus(recipientEmailInput.validationMessage || "Enter a valid recipient email address.");
+          recipientEmailInput.focus();
+          return false;
+        }
+
+        return true;
+      }
+
+      function isValidEmail(value) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(String(value || "").trim());
       }
 
       function renderLetters(letters) {
@@ -1256,6 +1274,7 @@
     </script>
   </body>
 </html>
+
 
 
 

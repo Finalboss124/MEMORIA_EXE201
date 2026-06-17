@@ -552,45 +552,45 @@ public sealed class LegacyController : ControllerBase
         }
 
         return """
-            Há»¢P Äá»’NG Dá»ŠCH Vá»¤ LÆ¯U TRá»® VÃ€ CHUYá»‚N GIAO DI Sáº¢N Ká»¸ THUáº¬T Sá»
+            HỢP ĐỒNG DỊCH VỤ LƯU TRỮ VÀ CHUYỂN GIAO DI SẢN KỸ THUẬT SỐ
 
-            CÄƒn cá»© Bá»™ luáº­t DÃ¢n sá»± sá»‘ 91/2015/QH13 Ä‘Æ°á»£c Quá»‘c há»™i ban hÃ nh ngÃ y 24/11/2015;
-            CÄƒn cá»© Luáº­t Giao dá»‹ch Ä‘iá»‡n tá»­ sá»‘ 20/2023/QH15 Ä‘Æ°á»£c Quá»‘c há»™i ban hÃ nh ngÃ y 22/06/2023;
-            CÄƒn cá»© Nghá»‹ Ä‘á»‹nh 13/2023/NÄ-CP vá» báº£o vá»‡ dá»¯ liá»‡u cÃ¡ nhÃ¢n;
+            Căn cứ Bộ luật Dân sự số 91/2015/QH13 được Quốc hội ban hành ngày 24/11/2015;
+            Căn cứ Luật Giao dịch điện tử số 20/2023/QH15 được Quốc hội ban hành ngày 22/06/2023;
+            Căn cứ Nghị định 13/2023/NĐ-CP về bảo vệ dữ liệu cá nhân;
 
-            BÃŠN B: KHÃCH HÃ€NG
-            Há» vÃ  tÃªn:(ThÃ´ng tin hiá»ƒn thá»‹ dáº¡ng tÄ©nh Ä‘Æ°á»£c há»‡ thá»‘ng trÃ­ch xuáº¥t tá»± Ä‘á»™ng tá»« dá»¯ liá»‡u tÃ i khoáº£n xÃ¡c thá»±c cá»§a User)
-            Sá»‘ CCCD/Há»™ chiáº¿u:(ThÃ´ng tin hiá»ƒn thá»‹ dáº¡ng tÄ©nh Ä‘Æ°á»£c há»‡ thá»‘ng trÃ­ch xuáº¥t tá»± Ä‘á»™ng tá»« dá»¯ liá»‡u tÃ i khoáº£n xÃ¡c thá»±c cá»§a User)
-            NgÃ y cáº¥p:(ThÃ´ng tin hiá»ƒn thá»‹ dáº¡ng tÄ©nh Ä‘Æ°á»£c há»‡ thá»‘ng trÃ­ch xuáº¥t tá»± Ä‘á»™ng tá»« dá»¯ liá»‡u tÃ i khoáº£n xÃ¡c thá»±c cá»§a User)
-            NÆ¡i cáº¥p:(ThÃ´ng tin hiá»ƒn thá»‹ dáº¡ng tÄ©nh Ä‘Æ°á»£c há»‡ thá»‘ng trÃ­ch xuáº¥t tá»± Ä‘á»™ng tá»« dá»¯ liá»‡u tÃ i khoáº£n xÃ¡c thá»±c cá»§a User)
-            Sá»‘ Ä‘iá»‡n thoáº¡i Ä‘Äƒng kÃ½ tÃ i khoáº£n (SÄT nháº­n OTP):(ThÃ´ng tin hiá»ƒn thá»‹ dáº¡ng tÄ©nh Ä‘Æ°á»£c há»‡ thá»‘ng trÃ­ch xuáº¥t tá»± Ä‘á»™ng tá»« dá»¯ liá»‡u tÃ i khoáº£n xÃ¡c thá»±c cá»§a User)
-            Email liÃªn há»‡ chÃ­nh thá»©c:(ThÃ´ng tin hiá»ƒn thá»‹ dáº¡ng tÄ©nh Ä‘Æ°á»£c há»‡ thá»‘ng trÃ­ch xuáº¥t tá»± Ä‘á»™ng tá»« dá»¯ liá»‡u tÃ i khoáº£n xÃ¡c thá»±c cá»§a User)
+            BÊN B: KHÁCH HÀNG
+            Họ và tên:(Thông tin hiển thị dạng tĩnh được hệ thống trích xuất tự động từ dữ liệu tài khoản xác thực của User)
+            Số CCCD/Hộ chiếu:(Thông tin hiển thị dạng tĩnh được hệ thống trích xuất tự động từ dữ liệu tài khoản xác thực của User)
+            Ngày cấp:(Thông tin hiển thị dạng tĩnh được hệ thống trích xuất tự động từ dữ liệu tài khoản xác thực của User)
+            Nơi cấp:(Thông tin hiển thị dạng tĩnh được hệ thống trích xuất tự động từ dữ liệu tài khoản xác thực của User)
+            Số điện thoại đăng ký tài khoản (SĐT nhận OTP):(Thông tin hiển thị dạng tĩnh được hệ thống trích xuất tự động từ dữ liệu tài khoản xác thực của User)
+            Email liên hệ chính thức:(Thông tin hiển thị dạng tĩnh được hệ thống trích xuất tự động từ dữ liệu tài khoản xác thực của User)
 
-            ÄIá»€U 1: PHáº M VI Dá»ŠCH Vá»¤
-            BÃªn A cung cáº¥p dá»‹ch vá»¥ lÆ°u trá»¯ dá»¯ liá»‡u sá»‘, cáº¥u hÃ¬nh ngÆ°á»i nháº­n di sáº£n vÃ  há»— trá»£ chuyá»ƒn giao di sáº£n ká»¹ thuáº­t sá»‘ khi cÃ¡c Ä‘iá»u kiá»‡n xÃ¡c minh Ä‘Æ°á»£c Ä‘Ã¡p á»©ng.
+            ĐIỀU 1: PHẠM VI DỊCH VỤ
+            Bên A cung cấp dịch vụ lưu trữ dữ liệu số, cấu hình người nhận di sản và hỗ trợ chuyển giao di sản kỹ thuật số khi các điều kiện xác minh được đáp ứng.
 
-            ÄIá»€U 2: NGUYÃŠN Táº®C Báº¢O Máº¬T VÃ€ XÃC THá»°C
-            Viá»‡c truy cáº­p, giáº£i mÃ£ vÃ  chuyá»ƒn giao di sáº£n chá»‰ Ä‘Æ°á»£c thá»±c hiá»‡n thÃ´ng qua cÆ¡ cháº¿ xÃ¡c thá»±c nhiá»u bÆ°á»›c, bao gá»“m thÃ´ng tin Ä‘á»‹nh danh, há»“ sÆ¡ phÃ¡p lÃ½ vÃ  mÃ£ OTP gá»­i tá»›i kÃªnh liÃªn há»‡ Ä‘Ã£ Ä‘Æ°á»£c chá»§ tÃ i khoáº£n thiáº¿t láº­p trÆ°á»›c.
+            ĐIỀU 2: NGUYÊN TẮC BẢO MẬT VÀ XÁC THỰC
+            Việc truy cập, giải mã và chuyển giao di sản chỉ được thực hiện thông qua cơ chế xác thực nhiều bước, bao gồm thông tin định danh, hồ sơ pháp lý và mã OTP gửi tới kênh liên hệ đã được chủ tài khoản thiết lập trước.
 
-            ÄIá»€U 3: QUYá»€N VÃ€ NGHÄ¨A Vá»¤ Cá»¦A CHá»¦ TÃ€I KHOáº¢N
-            Chá»§ tÃ i khoáº£n chá»‹u trÃ¡ch nhiá»‡m cung cáº¥p thÃ´ng tin chÃ­nh xÃ¡c, cáº­p nháº­t ngÆ°á»i nháº­n di sáº£n vÃ  báº£o máº­t tÃ i khoáº£n, email, sá»‘ Ä‘iá»‡n thoáº¡i nháº­n OTP cá»§a mÃ¬nh.
+            ĐIỀU 3: QUYỀN VÀ NGHĨA VỤ CỦA CHỦ TÀI KHOẢN
+            Chủ tài khoản chịu trách nhiệm cung cấp thông tin chính xác, cập nhật người nhận di sản và bảo mật tài khoản, email, số điện thoại nhận OTP của mình.
 
-            ÄIá»€U 4: Báº¢O Vá»† Dá»® LIá»†U CÃ NHÃ‚N
-            BÃªn B Ä‘á»“ng Ã½ cho BÃªn A xá»­ lÃ½ dá»¯ liá»‡u cÃ¡ nhÃ¢n cáº§n thiáº¿t Ä‘á»ƒ váº­n hÃ nh dá»‹ch vá»¥, xÃ¡c minh yÃªu cáº§u nháº­n di sáº£n vÃ  thá»±c hiá»‡n nghÄ©a vá»¥ báº£o máº­t theo quy Ä‘á»‹nh phÃ¡p luáº­t.
+            ĐIỀU 4: BẢO VỆ DỮ LIỆU CÁ NHÂN
+            Bên B đồng ý cho Bên A xử lý dữ liệu cá nhân cần thiết để vận hành dịch vụ, xác minh yêu cầu nhận di sản và thực hiện nghĩa vụ bảo mật theo quy định pháp luật.
 
-            ÄIá»€U 5: Há»’ SÆ  PHÃP LÃ VÃ€ QUY TRÃŒNH XÃC THá»°C KÃCH HOáº T BIá»†N PHÃP THá»¦ CÃ”NG
-            ThÃ´ng tin Ä‘á»‹nh danh cá»§a NgÆ°á»i nháº­n: Nháº­p Há» tÃªn vÃ  Sá»‘ CCCD vÃ o Ã´ input trÃªn há»‡ thá»‘ng Ä‘á»ƒ BÃªn A Ä‘á»‘i chiáº¿u xem cÃ³ trÃ¹ng khá»›p vá»›i thÃ´ng tin mÃ  Chá»§ tÃ i khoáº£n Ä‘Ã£ cÃ i Ä‘áº·t sáºµn ban Ä‘áº§u hay khÃ´ng.
-            Há»“ sÆ¡ chá»©ng minh Sá»± kiá»‡n tá»­ vong: Sá»­ dá»¥ng nÃºt upload trÃªn há»‡ thá»‘ng Ä‘á»ƒ táº£i lÃªn file áº£nh hoáº·c file PDF cá»§a Giáº¥y chá»©ng tá»­; hoáº·c Quyáº¿t Ä‘á»‹nh tuyÃªn bá»‘ má»™t ngÆ°á»i Ä‘Ã£ cháº¿t cá»§a TÃ²a Ã¡n.
-            XÃ¡c thá»±c qua mÃ£ OTP: Há»‡ thá»‘ng sáº½ gá»­i má»™t mÃ£ OTP vá» sá»‘ Ä‘iá»‡n thoáº¡i hoáº·c email cá»§a chÃ­nh NgÆ°á»i nháº­n di sáº£n, lÃ  thÃ´ng tin liÃªn láº¡c Ä‘Ã£ Ä‘Æ°á»£c Chá»§ tÃ i khoáº£n gÃ¡n cho há» tá»« trÆ°á»›c. NgÆ°á»i nháº­n di sáº£n pháº£i nháº­p Ä‘Ãºng mÃ£ OTP nÃ y Ä‘á»ƒ xÃ¡c nháº­n quyá»n thá»±c hiá»‡n yÃªu cáº§u.
+            ĐIỀU 5: HỒ SƠ PHÁP LÝ VÀ QUY TRÌNH XÁC THỰC KÍCH HOẠT BIỆN PHÁP THỦ CÔNG
+            Thông tin định danh của Người nhận: Nhập Họ tên và Số CCCD vào ô input trên hệ thống để Bên A đối chiếu xem có trùng khớp với thông tin mà Chủ tài khoản đã cài đặt sẵn ban đầu hay không.
+            Hồ sơ chứng minh Sự kiện tử vong: Sử dụng nút upload trên hệ thống để tải lên file ảnh hoặc file PDF của Giấy chứng tử; hoặc Quyết định tuyên bố một người đã chết của Tòa án.
+            Xác thực qua mã OTP: Hệ thống sẽ gửi một mã OTP về số điện thoại hoặc email của chính Người nhận di sản, là thông tin liên lạc đã được Chủ tài khoản gán cho họ từ trước. Người nhận di sản phải nhập đúng mã OTP này để xác nhận quyền thực hiện yêu cầu.
 
-            ÄIá»€U 6: QUY TRÃŒNH KHÃNG NGHá»Š "BÃO Äá»˜NG GIáº¢"
-            Náº¿u Chá»§ tÃ i khoáº£n Ä‘Äƒng nháº­p láº¡i vÃ  xÃ¡c thá»±c OTP thÃ nh cÃ´ng, há»‡ thá»‘ng há»§y tiáº¿n trÃ¬nh nghi váº¥n váº¯ng máº·t vÃ  Ä‘Æ°a tÃ i khoáº£n vá» tráº¡ng thÃ¡i hoáº¡t Ä‘á»™ng bÃ¬nh thÆ°á»ng.
+            ĐIỀU 6: QUY TRÌNH KHÁNG NGHỊ "BÁO ĐỘNG GIẢ"
+            Nếu Chủ tài khoản đăng nhập lại và xác thực OTP thành công, hệ thống hủy tiến trình nghi vấn vắng mặt và đưa tài khoản về trạng thái hoạt động bình thường.
 
-            ÄIá»€U 7: GIá»šI Háº N TRÃCH NHIá»†M DO Sá»° Cá» CÃ”NG NGHá»† VÃ€ Lá»–I Báº¢O Máº¬T USER
-            BÃªn A Ä‘Æ°á»£c miá»…n trá»« trÃ¡ch nhiá»‡m Ä‘á»‘i vá»›i cÃ¡c thiá»‡t háº¡i phÃ¡t sinh tá»« sá»± kiá»‡n báº¥t kháº£ khÃ¡ng, rÃ² rá»‰ thÃ´ng tin do BÃªn B Ä‘á»ƒ lá»™ tÃ i khoáº£n, máº­t kháº©u, email hoáº·c mÃ£ OTP.
+            ĐIỀU 7: GIỚI HẠN TRÁCH NHIỆM DO SỰ CỐ CÔNG NGHỆ VÀ LỖI BẢO MẬT USER
+            Bên A được miễn trừ trách nhiệm đối với các thiệt hại phát sinh từ sự kiện bất khả kháng, rò rỉ thông tin do Bên B để lộ tài khoản, mật khẩu, email hoặc mã OTP.
 
-            ÄIá»€U 8: GIÃ TRá»Š PHÃP LÃ VÃ€ PHÆ¯Æ NG THá»¨C GIAO Káº¾T Há»¢P Äá»’NG ÄIá»†N Tá»¬
-            Há»£p Ä‘á»“ng nÃ y Ä‘Æ°á»£c giao káº¿t Ä‘iá»‡n tá»­ trÃªn cÆ¡ sá»Ÿ tá»± nguyá»‡n. BÃªn B xÃ¡c nháº­n Ä‘Ã£ Ä‘á»c, hiá»ƒu rÃµ vÃ  Ä‘á»“ng Ã½ vá»›i toÃ n bá»™ Ä‘iá»u khoáº£n cá»§a Há»£p Ä‘á»“ng dá»‹ch vá»¥ lÆ°u trá»¯ vÃ  chuyá»ƒn giao di sáº£n ká»¹ thuáº­t sá»‘.
+            ĐIỀU 8: GIÁ TRỊ PHÁP LÝ VÀ PHƯƠNG THỨC GIAO KẾT HỢP ĐỒNG ĐIỆN TỬ
+            Hợp đồng này được giao kết điện tử trên cơ sở tự nguyện. Bên B xác nhận đã đọc, hiểu rõ và đồng ý với toàn bộ điều khoản của Hợp đồng dịch vụ lưu trữ và chuyển giao di sản kỹ thuật số.
             """;
     }
     private static string ExtractDocxText(string path)
@@ -683,7 +683,7 @@ public sealed class LegacyController : ControllerBase
         }
     }
 
-    private static string ValueOrMissing(string? value) => string.IsNullOrWhiteSpace(value) ? "ChÆ°a cáº­p nháº­t" : value.Trim();
+    private static string ValueOrMissing(string? value) => string.IsNullOrWhiteSpace(value) ? "Chưa cập nhật" : value.Trim();
 
     private static string MaskEmail(string email)
     {

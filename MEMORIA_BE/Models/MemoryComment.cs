@@ -11,6 +11,8 @@ public partial class MemoryComment
 
     public Guid UserId { get; set; }
 
+    public Guid? ParentCommentId { get; set; }
+
     public string CommentText { get; set; } = null!;
 
     public DateTime CreatedAt { get; set; }

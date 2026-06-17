@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Mail;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -107,6 +108,11 @@ public sealed class FamilyVaultController : ControllerBase
             return BadRequest(new { message = "Enter the email of a Memoria user." });
         }
 
+        if (!IsValidEmail(email))
+        {
+            return BadRequest(new { message = "Enter a valid member email address." });
+        }
+
         var targetUser = await _dbContext.Users
             .FirstOrDefaultAsync(item => item.Email.ToLower() == email && item.IsActive, cancellationToken);
         if (targetUser is null)
@@ -123,12 +129,36 @@ public sealed class FamilyVaultController : ControllerBase
         var existing = await _dbContext.FamilyVaultMembers
             .FirstOrDefaultAsync(item =>
                 item.VaultId == vault.VaultId &&
-                (item.UserId == targetUser.UserId || (item.InviteEmail != null && item.InviteEmail.ToLower() == email)) &&
-                item.InviteStatus != "Rejected",
+                (item.UserId == targetUser.UserId || (item.InviteEmail != null && item.InviteEmail.ToLower() == email)),
                 cancellationToken);
 
         if (existing is not null)
         {
+            if (existing.InviteStatus == "Rejected")
+            {
+                existing.UserId = targetUser.UserId;
+                existing.InviteEmail = targetUser.Email;
+                existing.MemberName = targetUser.FullName;
+                existing.MemberRole = "Contributor";
+                existing.InviteStatus = "Pending";
+                existing.InvitedAt = DateTime.UtcNow;
+                existing.AcceptedAt = null;
+
+                _dbContext.NotificationLogs.Add(new NotificationLog
+                {
+                    NotificationId = Guid.NewGuid(),
+                    UserId = targetUser.UserId,
+                    RecipientEmail = targetUser.Email,
+                    Channel = "App",
+                    Subject = $"FamilyVaultInvite:{existing.VaultMemberId}",
+                    Message = $"{owner.FullName} invited you to join {vault.VaultName}.",
+                    SendStatus = "Pending",
+                    CreatedAt = DateTime.UtcNow
+                });
+
+                await _dbContext.SaveChangesAsync(cancellationToken);
+            }
+
             return Ok(ToMemberResponse(existing));
         }
 
@@ -140,7 +170,7 @@ public sealed class FamilyVaultController : ControllerBase
             UserId = targetUser.UserId,
             InviteEmail = targetUser.Email,
             MemberName = targetUser.FullName,
-            MemberRole = "Member",
+            MemberRole = "Contributor",
             InviteStatus = "Pending",
             InvitedAt = now
         };
@@ -190,15 +220,31 @@ public sealed class FamilyVaultController : ControllerBase
             return NotFound(new { message = "Invitation was not found." });
         }
 
+        var now = DateTime.UtcNow;
         member.UserId = user.UserId;
         member.MemberName = user.FullName;
         member.InviteEmail = user.Email;
+        member.MemberRole = "Contributor";
+
+        if (request.Accept)
+        {
+            await _dbContext.FamilyVaultMembers
+                .Where(item =>
+                    item.UserId == user.UserId &&
+                    item.VaultMemberId != memberId &&
+                    item.InviteStatus == "Accepted")
+                .ExecuteUpdateAsync(setters => setters
+                    .SetProperty(item => item.InviteStatus, "Removed")
+                    .SetProperty(item => item.AcceptedAt, (DateTime?)null),
+                    cancellationToken);
+        }
+
         member.InviteStatus = request.Accept ? "Accepted" : "Rejected";
-        member.AcceptedAt = request.Accept ? DateTime.UtcNow : null;
+        member.AcceptedAt = request.Accept ? now : null;
 
         await _dbContext.NotificationLogs
             .Where(item => item.UserId == user.UserId && item.Subject == $"FamilyVaultInvite:{memberId}")
-            .ExecuteUpdateAsync(setters => setters.SetProperty(item => item.SendStatus, "Resolved"), cancellationToken);
+            .ExecuteUpdateAsync(setters => setters.SetProperty(item => item.SendStatus, "Sent"), cancellationToken);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
         return Ok(new { message = request.Accept ? "Invitation accepted." : "Invitation rejected." });
@@ -355,11 +401,25 @@ public sealed class FamilyVaultController : ControllerBase
             return NotFound(new { message = "Post was not found." });
         }
 
+        if (request.ParentCommentId is not null)
+        {
+            var parentExists = await _dbContext.MemoryComments.AnyAsync(item =>
+                item.CommentId == request.ParentCommentId.Value &&
+                item.MemoryId == memoryId &&
+                !item.IsDeleted,
+                cancellationToken);
+            if (!parentExists)
+            {
+                return BadRequest(new { message = "The comment you are replying to was not found." });
+            }
+        }
+
         var comment = new MemoryComment
         {
             CommentId = Guid.NewGuid(),
             MemoryId = memoryId,
             UserId = userId.Value,
+            ParentCommentId = request.ParentCommentId,
             CommentText = text,
             CreatedAt = DateTime.UtcNow,
             IsDeleted = false
@@ -371,6 +431,7 @@ public sealed class FamilyVaultController : ControllerBase
         var user = await _dbContext.Users.AsNoTracking().FirstAsync(item => item.UserId == userId.Value, cancellationToken);
         return Ok(new FamilyPostCommentResponse(
             comment.CommentId,
+            comment.ParentCommentId,
             user.FullName,
             user.AvatarUrl,
             comment.CommentText,
@@ -679,6 +740,7 @@ public sealed class FamilyVaultController : ControllerBase
             .OrderBy(item => item.CreatedAt)
             .Select(item => new FamilyPostCommentResponse(
                 item.CommentId,
+                item.ParentCommentId,
                 item.User.FullName,
                 item.User.AvatarUrl,
                 item.CommentText,
@@ -731,6 +793,23 @@ public sealed class FamilyVaultController : ControllerBase
     private static string NormalizeEmail(string? email)
     {
         return string.IsNullOrWhiteSpace(email) ? string.Empty : email.Trim().ToLowerInvariant();
+    }
+
+    private static bool IsValidEmail(string email)
+    {
+        try
+        {
+            var address = new MailAddress(email);
+            var domain = address.Host;
+            return string.Equals(address.Address, email, StringComparison.OrdinalIgnoreCase) &&
+                domain.Contains('.') &&
+                !domain.StartsWith('.') &&
+                !domain.EndsWith('.');
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private Guid? GetCurrentUserId()
@@ -804,6 +883,7 @@ public sealed class UpdateFamilyPostRequest
 public sealed class AddFamilyCommentRequest
 {
     public string? Text { get; set; }
+    public Guid? ParentCommentId { get; set; }
 }
 
 public sealed record FamilyVaultResponse(
@@ -849,6 +929,7 @@ public sealed record FamilyVaultPostResponse(
 
 public sealed record FamilyPostCommentResponse(
     Guid CommentId,
+    Guid? ParentCommentId,
     string AuthorName,
     string? AuthorAvatarUrl,
     string Text,

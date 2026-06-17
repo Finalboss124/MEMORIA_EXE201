@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Mail;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MEMORIA_BE.Data;
@@ -115,9 +116,15 @@ public sealed class FutureLettersController : ControllerBase
             return BadRequest(new { message = "Delivery channel must be Email, SMS, or Zalo." });
         }
 
-        if (request.Seal && deliveryChannel.Equals("Email", StringComparison.OrdinalIgnoreCase) && string.IsNullOrWhiteSpace(request.RecipientEmail))
+        var recipientEmail = NormalizeOptionalEmail(request.RecipientEmail);
+        if (request.Seal && deliveryChannel.Equals("Email", StringComparison.OrdinalIgnoreCase) && string.IsNullOrWhiteSpace(recipientEmail))
         {
             return BadRequest(new { message = "Recipient email is required to schedule email delivery." });
+        }
+
+        if (!string.IsNullOrWhiteSpace(recipientEmail) && !IsValidEmail(recipientEmail))
+        {
+            return BadRequest(new { message = "Enter a valid recipient email address." });
         }
 
         if (request.Seal && request.Files is not null)
@@ -156,7 +163,7 @@ public sealed class FutureLettersController : ControllerBase
             RecipientId = Guid.NewGuid(),
             LetterId = letter.LetterId,
             RecipientName = recipientName,
-            RecipientEmail = string.IsNullOrWhiteSpace(request.RecipientEmail) ? null : request.RecipientEmail.Trim(),
+            RecipientEmail = recipientEmail,
             RecipientPhone = string.IsNullOrWhiteSpace(request.RecipientPhone) ? null : request.RecipientPhone.Trim(),
             RecipientZalo = string.IsNullOrWhiteSpace(request.RecipientZalo) ? null : request.RecipientZalo.Trim(),
             Relationship = string.IsNullOrWhiteSpace(request.Relationship) ? null : request.Relationship.Trim(),
@@ -281,9 +288,15 @@ public sealed class FutureLettersController : ControllerBase
             return BadRequest(new { message = "Delivery channel must be Email, SMS, or Zalo." });
         }
 
-        if (request.Seal && deliveryChannel.Equals("Email", StringComparison.OrdinalIgnoreCase) && string.IsNullOrWhiteSpace(request.RecipientEmail))
+        var recipientEmail = NormalizeOptionalEmail(request.RecipientEmail);
+        if (request.Seal && deliveryChannel.Equals("Email", StringComparison.OrdinalIgnoreCase) && string.IsNullOrWhiteSpace(recipientEmail))
         {
             return BadRequest(new { message = "Recipient email is required to schedule email delivery." });
+        }
+
+        if (!string.IsNullOrWhiteSpace(recipientEmail) && !IsValidEmail(recipientEmail))
+        {
+            return BadRequest(new { message = "Enter a valid recipient email address." });
         }
 
         if (request.Files is not null)
@@ -333,7 +346,7 @@ public sealed class FutureLettersController : ControllerBase
                 RecipientId = recipientId.Value,
                 LetterId = letterId,
                 RecipientName = recipientName,
-                RecipientEmail = string.IsNullOrWhiteSpace(request.RecipientEmail) ? null : request.RecipientEmail.Trim(),
+                RecipientEmail = recipientEmail,
                 RecipientPhone = string.IsNullOrWhiteSpace(request.RecipientPhone) ? null : request.RecipientPhone.Trim(),
                 RecipientZalo = string.IsNullOrWhiteSpace(request.RecipientZalo) ? null : request.RecipientZalo.Trim(),
                 Relationship = string.IsNullOrWhiteSpace(request.Relationship) ? null : request.Relationship.Trim(),
@@ -347,7 +360,7 @@ public sealed class FutureLettersController : ControllerBase
             await _dbContext.Database.ExecuteSqlInterpolatedAsync($"""
                 UPDATE FutureLetterRecipients
                 SET RecipientName = {recipientName},
-                    RecipientEmail = {(string.IsNullOrWhiteSpace(request.RecipientEmail) ? null : request.RecipientEmail.Trim())},
+                    RecipientEmail = {recipientEmail},
                     RecipientPhone = {(string.IsNullOrWhiteSpace(request.RecipientPhone) ? null : request.RecipientPhone.Trim())},
                     RecipientZalo = {(string.IsNullOrWhiteSpace(request.RecipientZalo) ? null : request.RecipientZalo.Trim())},
                     Relationship = {(string.IsNullOrWhiteSpace(request.Relationship) ? null : request.Relationship.Trim())},
@@ -568,6 +581,28 @@ public sealed class FutureLettersController : ControllerBase
 
         return AllowedMimeTypes.Contains(contentType) ||
             AllowedMimePrefixes.Any(prefix => contentType.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static string? NormalizeOptionalEmail(string? email)
+    {
+        return string.IsNullOrWhiteSpace(email) ? null : email.Trim();
+    }
+
+    private static bool IsValidEmail(string email)
+    {
+        try
+        {
+            var address = new MailAddress(email);
+            var domain = address.Host;
+            return string.Equals(address.Address, email, StringComparison.OrdinalIgnoreCase) &&
+                domain.Contains('.') &&
+                !domain.StartsWith('.') &&
+                !domain.EndsWith('.');
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private FutureLetterResponse ToResponse(FutureLetter letter)

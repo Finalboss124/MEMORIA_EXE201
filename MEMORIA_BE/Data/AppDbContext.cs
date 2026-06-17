@@ -537,6 +537,8 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.CommentText).HasMaxLength(1000);
             entity.Property(e => e.CreatedAt).HasDefaultValueSql("(sysdatetime())");
 
+            entity.Property(e => e.ParentCommentId);
+
             entity.HasOne(d => d.Memory).WithMany(p => p.MemoryComments)
                 .HasForeignKey(d => d.MemoryId)
                 .HasConstraintName("FK_MemoryComments_Memories");
