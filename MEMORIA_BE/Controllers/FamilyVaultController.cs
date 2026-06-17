@@ -442,18 +442,37 @@ public sealed class FamilyVaultController : ControllerBase
                 CreatedAt = now
             };
 
-            // Remove old files and add new one
-            _dbContext.MemoryFiles.RemoveRange(post.MemoryFiles);
+            // Use direct SQL delete to fully bypass EF Core Change Tracker and avoid
+            // DbUpdateConcurrencyException caused by ClientSetNull generating extra UPDATE before DELETE.
+            var oldMemoryFileIds = post.MemoryFiles.Select(mf => mf.MemoryFileId).ToList();
             post.MemoryFiles.Clear();
-            post.MemoryFiles.Add(new MemoryFile
+            _dbContext.ChangeTracker.Clear();
+
+            if (oldMemoryFileIds.Count > 0)
+            {
+                await _dbContext.MemoryFiles
+                    .Where(mf => oldMemoryFileIds.Contains(mf.MemoryFileId))
+                    .ExecuteDeleteAsync(cancellationToken);
+            }
+
+            _dbContext.StoredFiles.Add(storedFile);
+            _dbContext.MemoryFiles.Add(new MemoryFile
             {
                 MemoryFileId = Guid.NewGuid(),
-                MemoryId = post.MemoryId,
+                MemoryId = memoryId,
                 FileId = storedFile.FileId,
-                File = storedFile,
                 Caption = title,
                 CreatedAt = now
             });
+
+            // Re-attach post for the title/description update
+            var postToUpdate = await _dbContext.Memories
+                .FirstOrDefaultAsync(item => item.MemoryId == memoryId && item.CreatedByUserId == userId.Value, cancellationToken);
+            if (postToUpdate is not null)
+            {
+                postToUpdate.Title = string.IsNullOrWhiteSpace(title) ? postToUpdate.Title : title;
+                postToUpdate.Description = description;
+            }
         }
 
         await _dbContext.SaveChangesAsync(cancellationToken);

@@ -922,7 +922,30 @@
                   </button>
                 </div>
               `
-            : "";
+            : (letter.sealStatus !== "Delivered" && !letter.deliveredAt)
+              ? `
+                <div class="flex items-center gap-2 mt-2">
+                  <button
+                    class="self-start px-4 py-2 rounded-full bg-secondary text-on-primary font-label-sm text-label-sm hover:opacity-90 transition-opacity flex items-center gap-1"
+                    data-unseal-letter-id="${escapeHtml(letter.letterId)}"
+                    data-unseal-letter-title="${escapeHtml(letter.title)}"
+                    type="button"
+                  >
+                    <span class="material-symbols-outlined text-[14px]">lock_open</span>
+                    Unseal &amp; Edit
+                  </button>
+                  <button
+                    class="self-start px-3 py-2 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm hover:opacity-90 transition-opacity flex items-center gap-1"
+                    data-delete-letter-id="${escapeHtml(letter.letterId)}"
+                    data-delete-letter-title="${escapeHtml(letter.title)}"
+                    type="button"
+                  >
+                    <span class="material-symbols-outlined text-[14px]">delete</span>
+                    Delete
+                  </button>
+                </div>
+              `
+              : "";
 
           return `
             <article class="bg-surface-container-lowest rounded-2xl p-6 marshmallow-shadow flex flex-col gap-4 relative overflow-hidden group hover:shadow-md transition-shadow">
@@ -964,17 +987,29 @@
           });
         });
 
+        document.querySelectorAll("[data-unseal-letter-id]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const letterId = button.dataset.unsealLetterId;
+            const letterTitle = button.dataset.unsealLetterTitle;
+            unsealLetter(letterId, letterTitle);
+          });
+        });
+
         document.querySelectorAll("[data-delete-letter-id]").forEach((button) => {
           button.addEventListener("click", () => {
             const letterId = button.dataset.deleteLetterId;
             const letterTitle = button.dataset.deleteLetterTitle;
-            deleteLetter(letterId, letterTitle);
+            const isSealed = loadedLetters.find((item) => item.letterId === letterId)?.isLocked;
+            deleteLetter(letterId, letterTitle, isSealed);
           });
         });
       }
 
-      async function deleteLetter(letterId, letterTitle) {
-        const confirmed = window.confirm(`Are you sure you want to delete the draft "${letterTitle}"? This cannot be undone.`);
+      async function deleteLetter(letterId, letterTitle, isSealed) {
+        const warningText = isSealed
+          ? `Are you sure you want to delete the sealed letter "${letterTitle}"? This will cancel its scheduled delivery and cannot be undone.`
+          : `Are you sure you want to delete the draft "${letterTitle}"? This cannot be undone.`;
+        const confirmed = window.confirm(warningText);
         if (!confirmed) {
           return;
         }
@@ -992,6 +1027,35 @@
             throw new Error(payload.message || `Unable to delete this letter. HTTP ${response.status}.`);
           }
           await loadLetters();
+        } catch (error) {
+          alert(error.message);
+        }
+      }
+
+      async function unsealLetter(letterId, letterTitle) {
+        const confirmed = window.confirm(`Unseal "${letterTitle}"? This will cancel the scheduled delivery and convert it back to a draft so you can edit it.`);
+        if (!confirmed) {
+          return;
+        }
+
+        try {
+          const response = await fetch(`${window.MemoriaAuth.apiBase}/api/future-letters/${letterId}/unseal`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${window.MemoriaAuth.getToken()}`,
+              "X-Memoria-User-Id": window.MemoriaAuth.getUser()?.userId || "",
+            },
+          });
+          const payload = await readPayload(response);
+          if (!response.ok) {
+            throw new Error(payload.message || `Unable to unseal this letter. HTTP ${response.status}.`);
+          }
+          // Re-load letters and open draft editor for the unsealed letter
+          await loadLetters();
+          const letter = loadedLetters.find((item) => item.letterId === letterId);
+          if (letter) {
+            openDraft(letter);
+          }
         } catch (error) {
           alert(error.message);
         }
