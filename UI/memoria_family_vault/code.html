@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 
 <html lang="en">
   <head>
@@ -857,6 +857,15 @@
           feed.innerHTML = vaultState.posts.map(renderPostCard).join("");
           feed.querySelectorAll("[data-like-post]").forEach((button) => button.addEventListener("click", toggleLike));
           feed.querySelectorAll("[data-open-post-detail]").forEach((button) => button.addEventListener("click", openPostDetail));
+          feed.querySelectorAll("[data-edit-post]").forEach((button) => button.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const post = vaultState.posts.find((p) => p.memoryId === button.dataset.editPost);
+            if (post) openEditPostModal(post);
+          }));
+          feed.querySelectorAll("[data-delete-post]").forEach((button) => button.addEventListener("click", (e) => {
+            e.stopPropagation();
+            deletePost(button.dataset.deletePost, button.dataset.deletePostTitle);
+          }));
         }
 
         function renderPostCard(post) {
@@ -898,6 +907,19 @@
         }
 
         function renderActions(post) {
+          const isAuthor = user.userId && post.authorUserId === user.userId;
+          const authorActionsHtml = isAuthor ? `
+            <div class="flex items-center gap-2">
+              <button class="flex items-center gap-1 text-xs font-bold text-on-surface-variant hover:text-primary transition-colors" type="button" data-edit-post="${escapeHtml(post.memoryId)}">
+                <span class="material-symbols-outlined text-[16px]">edit</span>
+                Edit
+              </button>
+              <button class="flex items-center gap-1 text-xs font-bold text-on-error-container hover:text-error transition-colors" type="button" data-delete-post="${escapeHtml(post.memoryId)}" data-delete-post-title="${escapeHtml(post.title)}">
+                <span class="material-symbols-outlined text-[16px]">delete</span>
+                Delete
+              </button>
+            </div>
+          ` : "";
           return `
             <div class="mt-4 flex items-center justify-between border-t border-outline-variant/30 pt-4">
               <div class="flex items-center gap-4">
@@ -910,12 +932,16 @@
                   <span>${post.commentCount || 0}</span>
                 </button>
               </div>
-              <button class="text-on-surface-variant hover:text-primary" type="button" title="Share">
-                <span class="material-symbols-outlined text-[22px]">ios_share</span>
-              </button>
+              <div class="flex items-center gap-3">
+                ${authorActionsHtml}
+                <button class="text-on-surface-variant hover:text-primary" type="button" title="Share">
+                  <span class="material-symbols-outlined text-[22px]">ios_share</span>
+                </button>
+              </div>
             </div>
           `;
         }
+
 
         async function loadVault() {
           try {
@@ -1074,6 +1100,88 @@
             error.classList.remove("hidden");
           }
         }
+
+        function openEditPostModal(post) {
+          showModal(`
+            <div class="mx-auto mt-10 w-[min(94vw,44rem)] bg-surface-container-lowest shadow-2xl ring-1 ring-outline-variant/40" style="border-radius: 8px;">
+              <div class="flex items-center justify-between border-b border-outline-variant/30 p-6">
+                <div>
+                  <p class="text-sm font-extrabold uppercase tracking-[0.18em] text-secondary">Family Vault</p>
+                  <h2 class="mt-1 text-3xl font-extrabold text-on-background">Edit post</h2>
+                </div>
+                <button class="flex h-11 w-11 items-center justify-center rounded-full bg-surface-container-high text-on-surface-variant" type="button" data-close-modal><span class="material-symbols-outlined">close</span></button>
+              </div>
+              <form class="grid gap-4 p-6" data-edit-post-form data-memory-id="${escapeHtml(post.memoryId)}">
+                <input class="h-13 border-0 bg-surface px-4 text-base font-semibold ring-1 ring-outline-variant focus:ring-2 focus:ring-primary-container" style="border-radius: 8px;" name="title" placeholder="Memory title" value="${escapeHtml(post.title)}" />
+                <textarea class="min-h-32 border-0 bg-surface px-4 py-3 text-base font-medium ring-1 ring-outline-variant focus:ring-2 focus:ring-primary-container" style="border-radius: 8px;" name="description" placeholder="Write a short story for your family...">${escapeHtml(post.description || "")}</textarea>
+                <label class="flex min-h-28 cursor-pointer flex-col items-center justify-center border-2 border-dashed border-outline-variant bg-surface text-center" style="border-radius: 8px;">
+                  <span class="material-symbols-outlined text-3xl text-primary">add_photo_alternate</span>
+                  <span class="mt-1 text-sm font-extrabold text-on-surface">Replace image (optional)</span>
+                  <span class="mt-1 text-xs font-semibold text-on-surface-variant" data-edit-file-name>PNG, JPG, MP4 up to 80 MB</span>
+                  <input class="hidden" name="file" type="file" accept="image/*,video/*" />
+                </label>
+                <p class="hidden bg-error-container p-3 text-sm font-bold text-error" style="border-radius: 8px;" data-edit-post-error></p>
+                <button class="rounded-full bg-primary px-5 py-4 text-base font-extrabold text-on-primary" type="submit">Save changes</button>
+              </form>
+            </div>
+          `);
+          const form = document.querySelector("[data-edit-post-form]");
+          form.elements.file.addEventListener("change", () => {
+            form.querySelector("[data-edit-file-name]").textContent = form.elements.file.files?.[0]?.name || "PNG, JPG, MP4 up to 80 MB";
+          });
+          form.addEventListener("submit", submitEditPost);
+        }
+
+        async function submitEditPost(event) {
+          event.preventDefault();
+          const form = event.currentTarget;
+          const error = form.querySelector("[data-edit-post-error]");
+          error.classList.add("hidden");
+          const memoryId = form.dataset.memoryId;
+          const data = new FormData();
+          data.append("title", form.elements.title.value.trim());
+          data.append("description", form.elements.description.value.trim());
+          if (form.elements.file.files?.[0]) {
+            data.append("file", form.elements.file.files[0]);
+          }
+          try {
+            const response = await fetch(`${API_BASE}/api/family-vault/posts/${memoryId}`, {
+              method: "PUT",
+              headers: headers(false),
+              body: data,
+            });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok) {
+              throw new Error(payload.message || "Unable to update post.");
+            }
+            closeModal();
+            await loadVault();
+          } catch (err) {
+            error.textContent = err.message;
+            error.classList.remove("hidden");
+          }
+        }
+
+        async function deletePost(memoryId, postTitle) {
+          const confirmed = window.confirm(`Are you sure you want to delete "${postTitle}"? This cannot be undone.`);
+          if (!confirmed) {
+            return;
+          }
+          try {
+            const response = await fetch(`${API_BASE}/api/family-vault/posts/${memoryId}`, {
+              method: "DELETE",
+              headers: headers(),
+            });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok) {
+              throw new Error(payload.message || "Unable to delete post.");
+            }
+            await loadVault();
+          } catch (err) {
+            alert(err.message);
+          }
+        }
+
 
         async function toggleLike(event) {
           event.preventDefault();

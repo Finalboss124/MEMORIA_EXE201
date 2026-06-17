@@ -416,6 +416,92 @@ public sealed class FutureLettersController : ControllerBase
 
     }
 
+    [HttpDelete("{letterId:guid}")]
+    public async Task<ActionResult> Delete(Guid letterId, CancellationToken cancellationToken)
+    {
+        var ownerUserId = GetCurrentUserId();
+        if (ownerUserId is null)
+        {
+            return Unauthorized();
+        }
+
+        var letter = await _dbContext.FutureLetters
+            .Include(item => item.FutureLetterRecipients)
+            .Include(item => item.FutureLetterAttachments)
+                .ThenInclude(attachment => attachment.File)
+            .Include(item => item.ScheduledDeliveryLogs)
+            .FirstOrDefaultAsync(item => item.LetterId == letterId && item.OwnerUserId == ownerUserId.Value, cancellationToken);
+
+        if (letter is null)
+        {
+            return NotFound(new { message = "Future letter was not found." });
+        }
+
+        // Allow deleting sealed letters that have not been delivered yet.
+        // Letters that are already delivered cannot be deleted.
+        if (letter.DeliveredAt.HasValue || letter.SealStatus == "Delivered")
+        {
+            return BadRequest(new { message = "This future letter has already been delivered and cannot be deleted." });
+        }
+
+        // Remove related entities before removing the letter
+        _dbContext.ScheduledDeliveryLogs.RemoveRange(letter.ScheduledDeliveryLogs);
+        _dbContext.FutureLetterRecipients.RemoveRange(letter.FutureLetterRecipients);
+        _dbContext.FutureLetterAttachments.RemoveRange(letter.FutureLetterAttachments);
+        _dbContext.FutureLetters.Remove(letter);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return Ok(new { message = "Future letter deleted successfully." });
+    }
+
+    [HttpPost("{letterId:guid}/unseal")]
+    public async Task<ActionResult<FutureLetterResponse>> Unseal(Guid letterId, CancellationToken cancellationToken)
+    {
+        var ownerUserId = GetCurrentUserId();
+        if (ownerUserId is null)
+        {
+            return Unauthorized();
+        }
+
+        var letter = await _dbContext.FutureLetters
+            .Include(item => item.FutureLetterRecipients)
+            .Include(item => item.FutureLetterAttachments)
+                .ThenInclude(attachment => attachment.File)
+            .Include(item => item.ScheduledDeliveryLogs)
+            .FirstOrDefaultAsync(item => item.LetterId == letterId && item.OwnerUserId == ownerUserId.Value, cancellationToken);
+
+        if (letter is null)
+        {
+            return NotFound(new { message = "Future letter was not found." });
+        }
+
+        if (letter.DeliveredAt.HasValue || letter.SealStatus == "Delivered")
+        {
+            return BadRequest(new { message = "This future letter has already been delivered and cannot be unsealed." });
+        }
+
+        if (!letter.IsLocked)
+        {
+            return BadRequest(new { message = "This letter is already a draft." });
+        }
+
+        // Cancel any pending scheduled delivery logs
+        _dbContext.ScheduledDeliveryLogs.RemoveRange(letter.ScheduledDeliveryLogs);
+
+        // Reset the letter to Draft
+        letter.IsLocked = false;
+        letter.SealStatus = "Draft";
+        letter.SealedAt = null;
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        // Reload for response
+        var refreshed = await LoadLetterForResponse(letterId, ownerUserId.Value, cancellationToken);
+        return refreshed is null
+            ? NotFound(new { message = "Future letter was not found after unsealing." })
+            : Ok(ToResponse(refreshed));
+    }
+
     private Task<FutureLetter?> LoadLetterForResponse(Guid letterId, Guid ownerUserId, CancellationToken cancellationToken)
     {
         return _dbContext.FutureLetters
