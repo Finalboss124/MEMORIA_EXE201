@@ -382,6 +382,10 @@
           : '<span class="material-symbols-outlined text-[20px]">login</span> Sign In';
       }
 
+      if (new URLSearchParams(window.location.search).get("mode") === "register") {
+        setMode("register");
+      }
+
       function showError(box, message) {
         box.textContent = message;
         box.classList.remove("hidden");

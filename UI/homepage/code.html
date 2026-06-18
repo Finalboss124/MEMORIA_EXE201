@@ -1,0 +1,294 @@
+<!doctype html>
+<html class="light" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Memoria | Preserving Legacies</title>
+    <link rel="icon" type="image/svg+xml" href="../assets/memoria-logo.svg" />
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400..800&family=Work+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              background: "#fcf9f8",
+              surface: "#fcf9f8",
+              "surface-low": "#f6f3f2",
+              "surface-card": "#ffffff",
+              "surface-warm": "#f5f1ec",
+              "on-surface": "#1b1c1c",
+              "on-muted": "#4f4745",
+              primary: "#51634e",
+              "primary-soft": "#d3e8ce",
+              "primary-soft-dim": "#b8ccb3",
+              secondary: "#7b5455",
+              "secondary-soft": "#ffdad9",
+              "secondary-soft-dim": "#ecbbba",
+              outline: "#c4c8bf",
+              "outline-soft": "#e4e2e1",
+            },
+            fontFamily: {
+              serif: ['"Source Serif 4"', "serif"],
+              sans: ['"Work Sans"', "sans-serif"],
+            },
+            boxShadow: {
+              soft: "0 24px 60px rgba(81, 99, 78, 0.10)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        font-family: "Work Sans", sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 24;
+        vertical-align: middle;
+      }
+      .serif {
+        font-family: "Source Serif 4", serif;
+      }
+      .nav-scrolled {
+        box-shadow: 0 12px 34px rgba(27, 28, 28, 0.06);
+      }
+      .bento-card {
+        transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+      }
+      .bento-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(81, 99, 78, 0.25);
+        box-shadow: 0 22px 50px rgba(81, 99, 78, 0.10);
+      }
+      .ambient-bg {
+        background:
+          radial-gradient(circle at 18% 22%, rgba(211, 232, 206, 0.55), transparent 34%),
+          radial-gradient(circle at 86% 18%, rgba(255, 218, 217, 0.48), transparent 32%),
+          linear-gradient(180deg, #fcf9f8 0%, #f6f3f2 100%);
+      }
+    </style>
+  </head>
+  <body class="min-h-screen overflow-x-hidden bg-background text-on-surface antialiased">
+    <header id="main-nav" class="sticky top-0 z-50 border-b border-outline-soft/70 bg-background/86 backdrop-blur-xl transition-shadow duration-200">
+      <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 md:px-8">
+        <a class="flex items-center gap-3" href="../homepage/code.html" aria-label="Memoria home">
+          <img class="h-16 w-20 object-contain" src="../assets/memoria-logo.svg" alt="Memoria" />
+          <div class="leading-tight">
+            <p class="text-3xl font-extrabold tracking-tight text-secondary">Memoria</p>
+            <p class="text-base font-semibold text-on-muted">Digital Legacy</p>
+          </div>
+        </a>
+
+        <div class="hidden md:block"></div>
+
+        <div class="flex items-center gap-3">
+          <a class="hidden rounded-full px-4 py-2 text-sm font-bold text-primary transition hover:bg-primary-soft/55 sm:inline-flex" href="../memoria_login/code.html">Log In</a>
+          <a class="rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-white shadow-soft transition hover:bg-secondary" href="../memoria_login/code.html?mode=register">Get Started</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="ambient-bg relative overflow-hidden px-5 py-20 md:px-8 md:py-28">
+        <div class="mx-auto max-w-5xl text-center">
+          <span class="inline-flex rounded-full border border-outline bg-white/70 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.22em] text-primary">
+            Preserving the unforgettable
+          </span>
+          <h1 class="serif mx-auto mt-8 max-w-4xl text-6xl font-bold leading-[0.98] tracking-tight text-on-surface md:text-7xl">
+            Your Legacy, <span class="italic text-primary">Beautifully</span> Preserved
+          </h1>
+          <p class="serif mx-auto mt-6 max-w-2xl text-2xl italic leading-9 text-primary">Send the Present - Touch the Future</p>
+          <p class="mx-auto mt-5 max-w-3xl text-lg leading-8 text-on-muted">
+            A digital vault designed for quiet moments, loud celebrations, and every story in between. Keep memories, letters, legal documents, and final wishes ready for the people you trust.
+          </p>
+          <div class="mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <a class="inline-flex h-14 items-center justify-center gap-2 rounded-full bg-primary px-8 text-base font-bold text-white shadow-soft transition hover:bg-secondary" href="../memoria_login/code.html?mode=register">
+              Start Your Archive
+              <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+            </a>
+            <a class="inline-flex h-14 items-center justify-center rounded-full border border-outline bg-white/64 px-8 text-base font-bold text-primary transition hover:bg-white" href="#services">
+              How it Works
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section id="services" class="bg-surface-low px-5 py-16 md:px-8 md:py-24">
+        <div class="mx-auto max-w-7xl">
+          <div class="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+            <div>
+              <h2 class="serif text-4xl font-bold text-on-surface md:text-5xl">Our Sanctuary Services</h2>
+              <p class="mt-3 max-w-2xl text-base leading-7 text-on-muted">The tools you need to curate a timeless digital heritage.</p>
+            </div>
+            <a class="inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline" href="../memoria_dashboard/code.html">
+              Open dashboard
+              <span class="material-symbols-outlined text-[18px]">north_east</span>
+            </a>
+          </div>
+
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-12">
+            <article class="bento-card overflow-hidden rounded-lg border border-outline-soft bg-surface-card md:col-span-8">
+              <div class="grid min-h-[360px] md:grid-cols-[0.95fr_1.05fr]">
+                <div class="flex flex-col justify-between p-7 md:p-9">
+                  <div>
+                    <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-primary-soft text-primary">
+                      <span class="material-symbols-outlined">folder_special</span>
+                    </div>
+                    <h3 class="serif text-3xl font-bold text-on-surface">Family Vault</h3>
+                    <p class="mt-4 text-base leading-7 text-on-muted">
+                      Invite trusted Memoria users into a private album, share meaningful posts, and keep reactions and comments together in one family space.
+                    </p>
+                  </div>
+                  <a class="mt-8 inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline" href="../memoria_family_vault/code.html">
+                    Explore the Vault
+                    <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+                  </a>
+                </div>
+                <img class="h-full min-h-[260px] w-full object-cover" src="https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=1200&q=86" alt="Family gathered together at sunset" />
+              </div>
+            </article>
+
+            <article class="bento-card rounded-lg border border-secondary-soft-dim/70 bg-secondary-soft/60 p-7 md:col-span-4">
+              <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-white/65 text-secondary">
+                <span class="material-symbols-outlined">forward_to_inbox</span>
+              </div>
+              <h3 class="serif text-3xl font-bold text-on-surface">Future Postbox</h3>
+              <p class="mt-4 text-base leading-7 text-on-muted">Write letters today and schedule them to arrive later, with recipients, attachments, editing, and delete controls.</p>
+              <a class="mt-8 inline-flex items-center gap-2 text-sm font-bold text-secondary hover:underline" href="../memoria_future_postbox_1/code.html">
+                Schedule a message
+                <span class="material-symbols-outlined text-[18px]">edit</span>
+              </a>
+            </article>
+
+            <article class="bento-card rounded-lg border border-outline-soft bg-primary-soft/45 p-7 md:col-span-4">
+              <div class="mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-white/65 text-primary">
+                <span class="material-symbols-outlined">move_group</span>
+              </div>
+              <h3 class="serif text-3xl font-bold text-on-surface">Legacy Transfer</h3>
+              <p class="mt-4 text-base leading-7 text-on-muted">Set beneficiaries, sign the e-contract once, and let proof-of-life checks protect the release process.</p>
+              <a class="mt-8 inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline" href="../memoria_legacy_transfer/code.html">
+                Review transfer setup
+                <span class="material-symbols-outlined text-[18px]">shield</span>
+              </a>
+            </article>
+
+            <article class="bento-card flex min-h-[245px] items-center justify-between overflow-hidden rounded-lg bg-on-surface p-7 text-white md:col-span-8">
+              <div class="max-w-xl">
+                <p class="serif text-5xl font-bold">1.2M+</p>
+                <p class="mt-4 text-base leading-7 text-white/76">Memories, letters, and records protected for future generations through calm, secure digital preservation.</p>
+              </div>
+              <span class="material-symbols-outlined hidden text-[148px] text-white/14 sm:block" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="px-5 py-16 md:px-8 md:py-24">
+        <div class="mx-auto max-w-7xl">
+          <div class="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+            <div class="max-w-2xl">
+              <h2 class="serif text-4xl font-bold text-on-surface md:text-5xl">Featured Stories</h2>
+              <p class="mt-3 text-base leading-7 text-on-muted">The stories we keep define us. Memoria gives those moments a permanent, private home.</p>
+            </div>
+            <a class="text-sm font-bold text-primary hover:underline" href="../memoria_family_vault/code.html">View Family Vault</a>
+          </div>
+
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+            <article class="group cursor-pointer">
+              <div class="relative aspect-[4/5] overflow-hidden rounded-lg">
+                <img class="h-full w-full object-cover transition duration-700 group-hover:scale-105" src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=900&q=84" alt="Family portrait in warm light" />
+                <span class="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-primary">Traditions</span>
+              </div>
+              <h3 class="serif mt-5 text-3xl font-bold transition group-hover:text-primary">The Sunday Album</h3>
+              <p class="mt-3 text-base italic leading-7 text-on-muted">"A small photo became the story our family kept returning to."</p>
+            </article>
+
+            <article class="group cursor-pointer">
+              <div class="relative aspect-[4/5] overflow-hidden rounded-lg">
+                <img class="h-full w-full object-cover transition duration-700 group-hover:scale-105" src="https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=900&q=84" alt="Handwritten letters on a desk" />
+                <span class="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-primary">Letters</span>
+              </div>
+              <h3 class="serif mt-5 text-3xl font-bold transition group-hover:text-primary">A Letter for Later</h3>
+              <p class="mt-3 text-base italic leading-7 text-on-muted">Words written today can still arrive at exactly the right moment.</p>
+            </article>
+
+            <article class="group cursor-pointer">
+              <div class="relative aspect-[4/5] overflow-hidden rounded-lg">
+                <img class="h-full w-full object-cover transition duration-700 group-hover:scale-105" src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=900&q=84" alt="Friends and family laughing together" />
+                <span class="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-primary">Shared Vault</span>
+              </div>
+              <h3 class="serif mt-5 text-3xl font-bold transition group-hover:text-primary">One Private Circle</h3>
+              <p class="mt-3 text-base italic leading-7 text-on-muted">Invite trusted accounts and let the album become a living family thread.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="px-5 pb-16 md:px-8 md:pb-24">
+        <div class="mx-auto max-w-7xl overflow-hidden rounded-lg bg-primary p-8 text-center text-white md:p-16">
+          <img class="mx-auto h-20 w-24 object-contain" src="../assets/memoria-logo.svg" alt="Memoria" />
+          <h2 class="serif mx-auto mt-6 max-w-3xl text-4xl font-bold leading-tight md:text-6xl">Do not let your stories fade into the digital noise.</h2>
+          <p class="mx-auto mt-5 max-w-2xl text-base leading-8 text-white/80">Begin with a secure vault, invite the people you trust, and keep your legacy ready before anyone needs it.</p>
+          <div class="mt-9 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <a class="inline-flex h-14 items-center justify-center rounded-full bg-white px-8 text-base font-bold text-primary transition hover:bg-primary-soft" href="../memoria_login/code.html?mode=register">Start Free</a>
+            <a class="inline-flex h-14 items-center justify-center rounded-full border border-white/35 px-8 text-base font-bold text-white transition hover:bg-white/10" href="../memoria_login/code.html">Log In</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-outline-soft bg-white px-5 py-10 md:px-8">
+      <div class="mx-auto flex max-w-7xl flex-col gap-8 md:flex-row md:items-start md:justify-between">
+        <div class="max-w-sm">
+          <a class="flex items-center gap-3" href="../homepage/code.html">
+            <img class="h-16 w-20 object-contain" src="../assets/memoria-logo.svg" alt="Memoria" />
+            <div>
+              <p class="text-3xl font-extrabold tracking-tight text-secondary">Memoria</p>
+              <p class="text-base font-semibold text-on-muted">Digital Legacy</p>
+            </div>
+          </a>
+          <p class="mt-5 text-sm leading-6 text-on-muted">Designing a quiet gallery for precious memories. Encrypted, intentional, and human.</p>
+        </div>
+        <div class="grid grid-cols-2 gap-10 text-sm sm:grid-cols-3">
+          <div class="flex flex-col gap-3">
+            <p class="font-extrabold uppercase tracking-[0.18em] text-primary">Product</p>
+            <a class="text-on-muted hover:text-primary" href="../memoria_family_vault/code.html">Family Vault</a>
+            <a class="text-on-muted hover:text-primary" href="../memoria_legacy_transfer/code.html">Legacy Transfer</a>
+            <a class="text-on-muted hover:text-primary" href="../memoria_future_postbox_1/code.html">Future Postbox</a>
+          </div>
+          <div class="flex flex-col gap-3">
+            <p class="font-extrabold uppercase tracking-[0.18em] text-primary">Access</p>
+            <a class="text-on-muted hover:text-primary" href="../memoria_login/code.html">Log In</a>
+            <a class="text-on-muted hover:text-primary" href="../memoria_login/code.html?mode=register">Create Account</a>
+            <a class="text-on-muted hover:text-primary" href="../memoria_dashboard/code.html">Dashboard</a>
+          </div>
+          <div class="flex flex-col gap-3">
+            <p class="font-extrabold uppercase tracking-[0.18em] text-primary">Trust</p>
+            <span class="text-on-muted">OTP protected</span>
+            <span class="text-on-muted">Manual review</span>
+            <span class="text-on-muted">Secure transfer</span>
+          </div>
+        </div>
+      </div>
+      <div class="mx-auto mt-10 flex max-w-7xl flex-col gap-3 border-t border-outline-soft pt-6 text-sm font-semibold text-on-muted md:flex-row md:items-center md:justify-between">
+        <p>(c) 2026 Memoria. All rights reserved.</p>
+        <p>Protected memories, delivered responsibly.</p>
+      </div>
+    </footer>
+
+    <script>
+      window.addEventListener("scroll", () => {
+        const nav = document.getElementById("main-nav");
+        if (window.scrollY > 24) {
+          nav.classList.add("nav-scrolled");
+        } else {
+          nav.classList.remove("nav-scrolled");
+        }
+      });
+    </script>
+  </body>
+</html>

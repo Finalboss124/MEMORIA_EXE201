@@ -86,5 +86,9 @@
     {
         "value":  "7VpaACkSqRW93lNTRIQ+r1GbB4XnfNhLhe3U1AUn4cg=",
         "name":  "FutureLetterEncryption__Key"
+    },
+    {
+        "value":  "https://memoria-api-thien-180547.azurewebsites.net",
+        "name":  "Frontend__BaseUrl"
     }
 ]
