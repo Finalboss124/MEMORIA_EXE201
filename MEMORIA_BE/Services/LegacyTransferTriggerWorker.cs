@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System.Security.Cryptography;
 using System.Text;
+using MEMORIA_BE.Configurations;
 using MEMORIA_BE.Data;
 using MEMORIA_BE.Models;
 
@@ -10,11 +12,16 @@ public sealed class LegacyTransferTriggerWorker : BackgroundService
 {
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<LegacyTransferTriggerWorker> _logger;
+    private readonly FrontendSettings _frontendSettings;
 
-    public LegacyTransferTriggerWorker(IServiceScopeFactory scopeFactory, ILogger<LegacyTransferTriggerWorker> logger)
+    public LegacyTransferTriggerWorker(
+        IServiceScopeFactory scopeFactory,
+        ILogger<LegacyTransferTriggerWorker> logger,
+        IOptions<FrontendSettings> frontendSettings)
     {
         _scopeFactory = scopeFactory;
         _logger = logger;
+        _frontendSettings = frontendSettings.Value;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -46,7 +53,7 @@ public sealed class LegacyTransferTriggerWorker : BackgroundService
 
             foreach (var schedule in schedules)
             {
-                await ProcessScheduleAsync(dbContext, emailSender, schedule, now, cancellationToken);
+                await ProcessScheduleAsync(dbContext, emailSender, schedule, now, _frontendSettings, cancellationToken);
             }
 
             await dbContext.SaveChangesAsync(cancellationToken);
@@ -65,6 +72,7 @@ public sealed class LegacyTransferTriggerWorker : BackgroundService
         IEmailSender emailSender,
         ProofOfLifeSchedule schedule,
         DateTime now,
+        FrontendSettings frontendSettings,
         CancellationToken cancellationToken)
     {
         var user = schedule.LegacyPlan.OwnerUser;
@@ -80,7 +88,7 @@ public sealed class LegacyTransferTriggerWorker : BackgroundService
 
         if (user.UserStatus == "SuspectedAbsent")
         {
-            await ProcessBeneficiaryEscalationAsync(dbContext, emailSender, schedule.LegacyPlan, now, cancellationToken);
+            await ProcessBeneficiaryEscalationAsync(dbContext, emailSender, schedule.LegacyPlan, now, frontendSettings, cancellationToken);
             return;
         }
 
@@ -124,7 +132,7 @@ public sealed class LegacyTransferTriggerWorker : BackgroundService
             user.UpdatedAt = now;
             schedule.LegacyPlan.PlanStatus = "FrozenPendingLegalVerification";
             schedule.LegacyPlan.UpdatedAt = now;
-            await ProcessBeneficiaryEscalationAsync(dbContext, emailSender, schedule.LegacyPlan, now, cancellationToken);
+            await ProcessBeneficiaryEscalationAsync(dbContext, emailSender, schedule.LegacyPlan, now, frontendSettings, cancellationToken);
             return;
         }
 
@@ -132,12 +140,12 @@ public sealed class LegacyTransferTriggerWorker : BackgroundService
         {
             if (schedule.NextCheckAt <= now)
             {
-                await SendPingAsync(dbContext, emailSender, schedule, 1, now, cancellationToken);
+                await SendPingAsync(dbContext, emailSender, schedule, 1, now, frontendSettings, cancellationToken);
             }
             return;
         }
 
-        await SendPingAsync(dbContext, emailSender, schedule, currentCycleAttempts + 1, now, cancellationToken);
+        await SendPingAsync(dbContext, emailSender, schedule, currentCycleAttempts + 1, now, frontendSettings, cancellationToken);
     }
 
     private static async Task ProcessBeneficiaryEscalationAsync(
@@ -145,6 +153,7 @@ public sealed class LegacyTransferTriggerWorker : BackgroundService
         IEmailSender emailSender,
         LegacyPlan plan,
         DateTime now,
+        FrontendSettings frontendSettings,
         CancellationToken cancellationToken)
     {
         var beneficiaries = await dbContext.Beneficiaries
@@ -204,7 +213,7 @@ public sealed class LegacyTransferTriggerWorker : BackgroundService
             SubmittedAt = now
         });
 
-        var claimUrl = $"http://localhost:5500/claim_legacy/code.html?token={Uri.EscapeDataString(token)}";
+        var claimUrl = BuildClaimUrl(frontendSettings, token);
         await emailSender.SendLegacyPrimaryBeneficiaryNoticeAsync(nextBeneficiary.Email, nextBeneficiary.FullName, plan.OwnerUser.FullName, claimUrl, cancellationToken);
     }
 
@@ -238,6 +247,7 @@ public sealed class LegacyTransferTriggerWorker : BackgroundService
         ProofOfLifeSchedule schedule,
         int attemptNumber,
         DateTime now,
+        FrontendSettings frontendSettings,
         CancellationToken cancellationToken)
     {
         if (attemptNumber > 3)
@@ -261,7 +271,7 @@ public sealed class LegacyTransferTriggerWorker : BackgroundService
         schedule.ProofOfLifeCheckins.Add(checkin);
         dbContext.ProofOfLifeCheckins.Add(checkin);
         schedule.NextCheckAt = deadline;
-        var confirmUrl = $"http://localhost:5284/api/legacy/proof-of-life/confirm/{checkin.CheckinId}";
+        var confirmUrl = $"{GetBaseUrl(frontendSettings)}/api/legacy/proof-of-life/confirm/{checkin.CheckinId}";
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
@@ -273,4 +283,12 @@ public sealed class LegacyTransferTriggerWorker : BackgroundService
             confirmUrl,
             cancellationToken);
     }
+
+    private static string BuildClaimUrl(FrontendSettings frontendSettings, string token) =>
+        $"{GetBaseUrl(frontendSettings)}/claim_legacy/code.html?token={Uri.EscapeDataString(token)}";
+
+    private static string GetBaseUrl(FrontendSettings frontendSettings) =>
+        string.IsNullOrWhiteSpace(frontendSettings.BaseUrl)
+            ? "http://localhost:5500"
+            : frontendSettings.BaseUrl.TrimEnd('/');
 }

@@ -418,8 +418,9 @@ public class AuthController : ControllerBase
         user.CreatedAt,
         user.UpdatedAt,
         user.UserRoles
-            .Select(item => item.Role.RoleName)
+            .Select(item => item.Role?.RoleName)
             .Where(role => !string.IsNullOrWhiteSpace(role))
+            .Select(role => role!)
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(role => role)
             .ToArray());

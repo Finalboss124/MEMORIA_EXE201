@@ -5,6 +5,8 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using MEMORIA_BE.Configurations;
 using MEMORIA_BE.Data;
 using MEMORIA_BE.Models;
 using MEMORIA_BE.Services;
@@ -18,11 +20,13 @@ public sealed class AdminController : ControllerBase
 {
     private readonly AppDbContext _dbContext;
     private readonly IEmailSender _emailSender;
+    private readonly FrontendSettings _frontendSettings;
 
-    public AdminController(AppDbContext dbContext, IEmailSender emailSender)
+    public AdminController(AppDbContext dbContext, IEmailSender emailSender, IOptions<FrontendSettings> frontendSettings)
     {
         _dbContext = dbContext;
         _emailSender = emailSender;
+        _frontendSettings = frontendSettings.Value;
     }
 
     [HttpGet("dashboard")]
@@ -69,7 +73,11 @@ public sealed class AdminController : ControllerBase
                 item.UserStatus,
                 item.LastLoginAt,
                 item.CreatedAt,
-                item.UserRoles.Select(role => role.Role.RoleName).ToArray()))
+                item.UserRoles
+                    .Select(role => role.Role != null ? role.Role.RoleName : null)
+                    .Where(role => !string.IsNullOrWhiteSpace(role))
+                    .Select(role => role!)
+                    .ToArray()))
             .ToListAsync(cancellationToken);
 
         return Ok(users);
@@ -246,7 +254,7 @@ public sealed class AdminController : ControllerBase
 
         if (!string.IsNullOrWhiteSpace(request.RequestedByBeneficiary.Email))
         {
-            var claimUrl = $"http://localhost:5500/claim_legacy/code.html?token={Uri.EscapeDataString(token)}";
+            var claimUrl = BuildClaimUrl(token);
             await _emailSender.SendLegacyClaimRejectedAsync(
                 request.RequestedByBeneficiary.Email,
                 request.RequestedByBeneficiary.FullName,
@@ -356,6 +364,15 @@ public sealed class AdminController : ControllerBase
     }
 
     private static string FormatRequestCode(Guid id) => $"#REQ-{Math.Abs(id.GetHashCode()) % 10000:0000}";
+
+    private string BuildClaimUrl(string token)
+    {
+        var baseUrl = string.IsNullOrWhiteSpace(_frontendSettings.BaseUrl)
+            ? $"{Request.Scheme}://{Request.Host}"
+            : _frontendSettings.BaseUrl.TrimEnd('/');
+
+        return $"{baseUrl}/claim_legacy/code.html?token={Uri.EscapeDataString(token)}";
+    }
 
     private static string CreateClaimToken()
     {

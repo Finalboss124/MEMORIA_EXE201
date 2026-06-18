@@ -74,6 +74,7 @@ builder.Services.Configure<GoogleAuthSettings>(builder.Configuration.GetSection(
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("Cloudinary"));
 builder.Services.Configure<FutureLetterDeliverySettings>(builder.Configuration.GetSection("FutureLetterDelivery"));
 builder.Services.Configure<FutureLetterEncryptionSettings>(builder.Configuration.GetSection("FutureLetterEncryption"));
+builder.Services.Configure<FrontendSettings>(builder.Configuration.GetSection("Frontend"));
 builder.Services.AddScoped<IEmailSender, SmtpEmailSender>();
 builder.Services.AddSingleton<IFutureLetterCrypto, FutureLetterCrypto>();
 builder.Services.AddHttpContextAccessor();
