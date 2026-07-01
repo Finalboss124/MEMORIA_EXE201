@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html class="light" lang="en"><head>
 <meta charset="utf-8"/>
@@ -15,53 +15,53 @@
           theme: {
             extend: {
               "colors": {
-                      "outline-variant": "#d2c3c4",
+                      "outline-variant": "#E9D5FF",
                       "on-primary": "#ffffff",
-                      "on-tertiary-container": "#616373",
-                      "inverse-primary": "#debfc2",
-                      "on-secondary-fixed-variant": "#314c3f",
-                      "on-surface-variant": "#4f4445",
-                      "surface-container-low": "#f5f4ec",
-                      "on-primary-fixed-variant": "#574144",
+                      "on-tertiary-container": "#4C3D75",
+                      "inverse-primary": "#D6BBFB",
+                      "on-secondary-fixed-variant": "#F43F5E",
+                      "on-surface-variant": "#7C6E9F",
+                      "surface-container-low": "#FFE4E6",
+                      "on-primary-fixed-variant": "#7F56D9",
                       "surface-container-lowest": "#ffffff",
-                      "on-secondary-fixed": "#042016",
-                      "inverse-surface": "#30312c",
-                      "surface-variant": "#e4e3db",
-                      "secondary-fixed": "#caead8",
-                      "primary-fixed-dim": "#debfc2",
-                      "error": "#ba1a1a",
-                      "surface": "#fbf9f1",
-                      "surface-container-high": "#eae8e0",
-                      "background": "#fbf9f1",
-                      "secondary-fixed-dim": "#aecebd",
+                      "on-secondary-fixed": "#F43F5E",
+                      "inverse-surface": "#342A45",
+                      "surface-variant": "#FFE4E6",
+                      "secondary-fixed": "#FFF1F2",
+                      "primary-fixed-dim": "#D6BBFB",
+                      "error": "#F04438",
+                      "surface": "#FAF7FD",
+                      "surface-container-high": "#FECDD3",
+                      "background": "#FAF7FD",
+                      "secondary-fixed-dim": "#FECDD3",
                       "on-secondary": "#ffffff",
-                      "outline": "#807475",
-                      "on-tertiary-fixed-variant": "#444655",
-                      "on-tertiary-fixed": "#191b29",
-                      "primary": "#70585b",
-                      "primary-fixed": "#fbdbde",
-                      "tertiary": "#5c5d6e",
-                      "surface-container-highest": "#e4e3db",
-                      "on-background": "#1b1c17",
-                      "on-primary-fixed": "#281719",
-                      "inverse-on-surface": "#f3f1e9",
-                      "tertiary-container": "#e0e0f4",
-                      "tertiary-fixed": "#e1e1f5",
-                      "surface-dim": "#dcdad2",
-                      "secondary-container": "#caead8",
-                      "on-surface": "#1b1c17",
+                      "outline": "#E9D5FF",
+                      "on-tertiary-fixed-variant": "#E0E7FF",
+                      "on-tertiary-fixed": "#E0E7FF",
+                      "primary": "#7F56D9",
+                      "primary-fixed": "#F4F3FF",
+                      "tertiary": "#6366F1",
+                      "surface-container-highest": "#F3E8FF",
+                      "on-background": "#4C3D75",
+                      "on-primary-fixed": "#7F56D9",
+                      "inverse-on-surface": "#FAF5FF",
+                      "tertiary-container": "#E0E7FF",
+                      "tertiary-fixed": "#E0E7FF",
+                      "surface-dim": "#F3E8FF",
+                      "secondary-container": "#FFF1F2",
+                      "on-surface": "#4C3D75",
                       "on-error": "#ffffff",
-                      "error-container": "#ffdad6",
-                      "surface-tint": "#70585b",
-                      "on-primary-container": "#765e61",
-                      "on-error-container": "#93000a",
-                      "surface-container": "#f0eee6",
-                      "secondary": "#486457",
-                      "primary-container": "#fadadd",
+                      "error-container": "#FEE4E2",
+                      "surface-tint": "#7F56D9",
+                      "on-primary-container": "#7F56D9",
+                      "on-error-container": "#F04438",
+                      "surface-container": "#FAF5FF",
+                      secondary: "#F43F5E",
+                      "primary-container": "#F4F3FF",
                       "on-tertiary": "#ffffff",
-                      "surface-bright": "#fbf9f1",
-                      "on-secondary-container": "#4e6a5c",
-                      "tertiary-fixed-dim": "#c5c5d8"
+                      "surface-bright": "#FAF7FD",
+                      "on-secondary-container": "#F43F5E",
+                      "tertiary-fixed-dim": "#E0E7FF"
               },
               "borderRadius": {
                       "DEFAULT": "0.25rem",
@@ -174,28 +174,24 @@
             color: theme('colors.on-background');
         }
         .soft-shadow {
-            box-shadow: 0 10px 20px -5px rgba(222, 191, 194, 0.2);
+            box-shadow: 0 10px 20px -5px rgba(127, 86, 217, 0.1);
         }
         .interactive-shadow {
-            box-shadow: 0 4px 12px rgba(112, 88, 91, 0.15);
+            box-shadow: 0 4px 12px rgba(127, 86, 217, 0.15);
         }
                 .page-shell {
                         opacity: 0;
-                        transform: translateY(6px);
-                        transition: opacity 180ms ease, transform 180ms ease;
+                        transition: opacity 180ms ease;
                 }
                 .page-shell.is-ready {
                         opacity: 1;
-                        transform: translateY(0);
                 }
                 .page-shell.is-leaving {
                         opacity: 0;
-                        transform: translateY(6px);
                 }
                 @media (prefers-reduced-motion: reduce) {
                         .page-shell {
                                 transition: none;
-                                transform: none;
                         }
                 }
     </style>
@@ -264,7 +260,7 @@
 <!-- Header Section -->
 <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-stack-lg gap-stack-md">
 <div>
-<h2 class="font-headline-xl text-headline-lg-mobile md:text-headline-xl text-on-surface mb-2">Legacy Transfer</h2>
+<h2 class="font-headline-xl text-headline-lg-mobile md:text-headline-xl mb-2 bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent inline-block pb-2">Legacy Transfer</h2>
 <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Manage how and when your digital assets are securely passed on to your chosen beneficiaries.</p>
 </div>
 <div class="flex items-center bg-tertiary-container/50 px-4 py-2 rounded-full gap-2 soft-shadow border border-white/40">
@@ -1223,6 +1219,33 @@
                                 page.classList.add('is-ready');
                                 page.classList.remove('is-leaving');
                         });
+
+                        // Toggle mobile sidebar drawer
+                        const menuBtn = document.querySelector('header .md:hidden span.material-symbols-outlined');
+                        const sidebar = document.querySelector('nav');
+                        if (menuBtn && sidebar) {
+                            menuBtn.classList.add('cursor-pointer');
+                            menuBtn.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                sidebar.classList.toggle('hidden');
+                                sidebar.classList.toggle('flex');
+                                sidebar.classList.toggle('fixed');
+                                sidebar.classList.toggle('z-[60]');
+                                sidebar.classList.toggle('left-0');
+                                sidebar.classList.toggle('top-0');
+                                sidebar.classList.toggle('bottom-0');
+                                sidebar.classList.toggle('w-64');
+                                sidebar.classList.toggle('shadow-2xl');
+                            });
+                            
+                            // Close sidebar when clicking outside on mobile
+                            document.addEventListener('click', (e) => {
+                                if (window.innerWidth < 768 && !sidebar.contains(e.target) && e.target !== menuBtn) {
+                                    sidebar.classList.add('hidden');
+                                    sidebar.classList.remove('flex', 'fixed', 'z-[60]', 'left-0', 'top-0', 'bottom-0', 'w-64', 'shadow-2xl');
+                                }
+                            });
+                        }
                 })();
         </script>
 </body></html>

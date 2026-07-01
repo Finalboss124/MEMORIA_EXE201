@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html class="light" lang="en">
 <head>
   <meta charset="utf-8" />
@@ -13,21 +13,21 @@
       theme: {
         extend: {
           colors: {
-            background: "#fbf9f1",
-            surface: "#fbf9f1",
-            "surface-low": "#f5f4ec",
+            background: "#FAF7FD",
+            surface: "#FAF7FD",
+            "surface-low": "#FFE4E6",
             "surface-card": "#ffffff",
-            "surface-line": "#e4e3db",
-            primary: "#70585b",
-            "primary-soft": "#fadadd",
-            success: "#486457",
-            "success-soft": "#caead8",
-            warning: "#735b00",
-            "warning-soft": "#fff1c2",
-            error: "#ba1a1a",
-            "error-soft": "#ffdad6",
-            muted: "#4f4445",
-            ink: "#1b1c17"
+            "surface-line": "#E9D5FF",
+            primary: "#7F56D9",
+            "primary-soft": "#F4F3FF",
+            success: "#12B76A",
+            "success-soft": "#ECFDF3",
+            warning: "#DC6803",
+            "warning-soft": "#FEF0C7",
+            error: "#F04438",
+            "error-soft": "#FEE4E2",
+            muted: "#7C6E9F",
+            ink: "#4C3D75"
           },
           fontFamily: { sans: ["Plus Jakarta Sans", "Arial", "sans-serif"] }
         }
@@ -36,9 +36,9 @@
   </script>
   <style>
     html, body { overflow-x: hidden; }
-    body { background: #fbf9f1; color: #1b1c17; }
-    .soft-shadow { box-shadow: 0 10px 30px -12px rgba(112, 88, 91, .22); }
-    .admin-tab.is-active { background: #fadadd; color: #70585b; font-weight: 800; }
+    body { background: #FAF7FD; color: #342A45; }
+    .soft-shadow { box-shadow: 0 10px 30px -12px rgba(127, 86, 217, .22); }
+    .admin-tab.is-active { background: #F4F3FF; color: #7F56D9; font-weight: 800; }
     .admin-view { display: none; }
     .admin-view.is-active { display: block; }
   </style>
@@ -90,7 +90,7 @@
       <div class="mb-4 hidden rounded-2xl bg-error-soft px-4 py-3 text-sm font-extrabold text-error" id="adminError"></div>
       <section class="admin-view is-active" data-view="dashboard">
         <div class="mb-6">
-          <h1 class="text-3xl font-extrabold">Dashboard</h1>
+          <h1 class="text-3xl font-extrabold bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent inline-block pb-2">Dashboard</h1>
           <p class="mt-2 max-w-2xl text-sm font-semibold leading-6 text-muted">Live overview of legacy claim workload and account moderation.</p>
         </div>
 
@@ -156,7 +156,7 @@
       <section class="admin-view" data-view="users">
         <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 class="text-3xl font-extrabold">User Management</h1>
+            <h1 class="text-3xl font-extrabold bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent inline-block pb-2">User Management</h1>
             <p class="mt-2 text-sm font-semibold text-muted">Lock or unlock user accounts.</p>
           </div>
           <input class="h-11 rounded-full border-0 bg-surface-card px-4 text-sm font-semibold ring-1 ring-surface-line focus:ring-2 focus:ring-primary" id="userSearch" placeholder="Search user" />
@@ -182,7 +182,7 @@
       <section class="admin-view" data-view="requests">
         <div class="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 class="text-3xl font-extrabold">Legacy Requests</h1>
+            <h1 class="text-3xl font-extrabold bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent inline-block pb-2">Legacy Requests</h1>
             <p class="mt-2 text-sm font-semibold text-muted">Requests are loaded directly from the database.</p>
           </div>
           <select class="h-11 rounded-full border-0 bg-surface-card px-4 text-sm font-extrabold ring-1 ring-surface-line focus:ring-2 focus:ring-primary" id="requestFilter">

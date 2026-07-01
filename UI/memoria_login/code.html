@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html class="light" lang="en">
   <head>
     <meta charset="utf-8" />
@@ -16,25 +16,25 @@
         theme: {
           extend: {
             colors: {
-              "outline-variant": "#d2c3c4",
-              "on-surface-variant": "#4f4445",
-              "surface-container-low": "#f5f4ec",
+              "outline-variant": "#E9D5FF",
+              "on-surface-variant": "#7C6E9F",
+              "surface-container-low": "#FFE4E6",
               "surface-container-lowest": "#ffffff",
-              "surface-container-high": "#eae8e0",
-              "surface-variant": "#e4e3db",
-              surface: "#fbf9f1",
-              background: "#fbf9f1",
-              primary: "#70585b",
-              "primary-container": "#fadadd",
+              "surface-container-high": "#FECDD3",
+              "surface-variant": "#FFE4E6",
+              surface: "#FAF7FD",
+              background: "#FAF7FD",
+              primary: "#7F56D9",
+              "primary-container": "#F4F3FF",
               "on-primary": "#ffffff",
-              secondary: "#486457",
-              "secondary-container": "#caead8",
-              tertiary: "#5c5d6e",
-              "tertiary-container": "#e0e0f4",
-              "on-background": "#1b1c17",
-              "on-surface": "#1b1c17",
-              error: "#ba1a1a",
-              "error-container": "#ffdad6",
+              secondary: "#F43F5E",
+              "secondary-container": "#FFF1F2",
+              tertiary: "#6366F1",
+              "tertiary-container": "#E0E7FF",
+              "on-background": "#4C3D75",
+              "on-surface": "#4C3D75",
+              error: "#F04438",
+              "error-container": "#FEE4E2",
             },
             fontFamily: {
               body: ["Plus Jakarta Sans", "sans-serif"],
@@ -48,22 +48,22 @@
         font-family: "Plus Jakarta Sans", sans-serif;
       }
       .soft-shadow {
-        box-shadow: 0 24px 70px -28px rgba(112, 88, 91, 0.42);
+        box-shadow: 0 24px 70px -28px rgba(127, 86, 217, 0.35);
       }
       .ambient-shadow {
-        box-shadow: 0 18px 38px -20px rgba(72, 100, 87, 0.38);
+        box-shadow: 0 18px 38px -20px rgba(244, 63, 94, 0.3);
       }
       .auth-bg {
         background:
-          radial-gradient(circle at 20% 18%, rgba(250, 218, 221, 0.72), transparent 32%),
-          radial-gradient(circle at 84% 12%, rgba(202, 234, 216, 0.62), transparent 30%),
-          radial-gradient(circle at 52% 88%, rgba(224, 224, 244, 0.72), transparent 34%),
-          #fbf9f1;
+          radial-gradient(circle at 20% 18%, rgba(254, 228, 230, 0.8), transparent 35%),
+          radial-gradient(circle at 84% 12%, rgba(235, 225, 255, 0.8), transparent 35%),
+          radial-gradient(circle at 52% 88%, rgba(224, 231, 255, 0.8), transparent 35%),
+          #FAF7FD;
       }
       .photo-veil {
         background:
-          linear-gradient(105deg, rgba(251, 249, 241, 0.96) 0%, rgba(251, 249, 241, 0.76) 44%, rgba(250, 218, 221, 0.18) 100%),
-          linear-gradient(0deg, rgba(27, 28, 23, 0.14), rgba(27, 28, 23, 0.02));
+          linear-gradient(105deg, rgba(250, 247, 253, 0.96) 0%, rgba(250, 247, 253, 0.76) 44%, rgba(254, 228, 230, 0.18) 100%),
+          linear-gradient(0deg, rgba(52, 42, 69, 0.14), rgba(52, 42, 69, 0.02));
       }
       .grain {
         background-image:
@@ -73,9 +73,9 @@
         mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.42), transparent 76%);
       }
       .glass-card {
-        background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(245, 244, 236, 0.82));
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(243, 232, 255, 0.82));
         box-shadow:
-          0 30px 80px -34px rgba(112, 88, 91, 0.56),
+          0 30px 80px -34px rgba(127, 86, 217, 0.45),
           inset 0 1px 0 rgba(255, 255, 255, 0.86);
       }
       .glass-card::before {
@@ -84,7 +84,7 @@
         inset: 0;
         border-radius: 32px;
         padding: 1px;
-        background: linear-gradient(135deg, rgba(250, 218, 221, 0.95), rgba(202, 234, 216, 0.78), rgba(224, 224, 244, 0.82));
+        background: linear-gradient(135deg, rgba(254, 228, 230, 0.95), rgba(235, 225, 255, 0.85), rgba(224, 231, 255, 0.85));
         -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
         -webkit-mask-composite: xor;
         mask-composite: exclude;
@@ -98,23 +98,23 @@
       }
       .input-shell:focus-within {
         transform: translateY(-1px);
-        box-shadow: 0 16px 34px -24px rgba(112, 88, 91, 0.75);
+        box-shadow: 0 16px 34px -24px rgba(127, 86, 217, 0.45);
       }
       .primary-action {
-        background: linear-gradient(135deg, #70585b 0%, #836366 52%, #486457 100%);
-        box-shadow: 0 18px 34px -18px rgba(112, 88, 91, 0.85);
+        background: linear-gradient(135deg, #7F56D9 0%, #9E77ED 52%, #EC4899 100%);
+        box-shadow: 0 18px 34px -18px rgba(127, 86, 217, 0.55);
       }
       .primary-action:hover {
         transform: translateY(-1px);
-        box-shadow: 0 22px 42px -18px rgba(112, 88, 91, 0.92);
+        box-shadow: 0 22px 42px -18px rgba(127, 86, 217, 0.65);
       }
       .tab-active {
-        background: linear-gradient(135deg, #70585b, #85666a);
+        background: linear-gradient(135deg, #7F56D9, #9E77ED);
         color: #ffffff;
-        box-shadow: 0 10px 22px -14px rgba(112, 88, 91, 0.9);
+        box-shadow: 0 10px 22px -14px rgba(127, 86, 217, 0.6);
       }
       .otp-card {
-        background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(245, 244, 236, 0.92));
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(243, 232, 255, 0.92));
       }
       @keyframes softFloat {
         0%, 100% {
